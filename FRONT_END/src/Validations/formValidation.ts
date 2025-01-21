@@ -1,4 +1,4 @@
-export const formValidation = (formData: any, mode: "login" | "signup" = "signup", fieldName?: string) => {
+export const formValidation = (formData: any, mode: "login" | "signup" | "forgot" | "changePassword" = "signup", fieldName?: string) => {
     let errors: any = {};
     let valid = true;
 
@@ -18,8 +18,8 @@ export const formValidation = (formData: any, mode: "login" | "signup" = "signup
                 if (!formData.email.trim()) {
                     errors.email = "Email is required";
                     valid = false;
-                } else if (!/^[^!#$%&'*+/=?^_`{|}~]+@gmail\.com$/i.test(formData.email.trim())) {
-                    errors.email = "Please enter a valid email ID.";
+                } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email.trim())) {
+                    errors.email = "Please enter a valid email address.";
                     valid = false;
                 }
                 break;
@@ -58,6 +58,16 @@ export const formValidation = (formData: any, mode: "login" | "signup" = "signup
                 }
                 break;
 
+            case "confirmPassword":
+                if (!formData.confirmPassword.trim()) {
+                    errors.confirmPassword = "Confirm password is required";
+                    valid = false;
+                } else if (formData.password.trim() !== formData.confirmPassword.trim()) {
+                    errors.confirmPassword = "Passwords do not match";
+                    valid = false;
+                }
+                break;
+
             default:
                 break;
         }
@@ -76,6 +86,11 @@ export const formValidation = (formData: any, mode: "login" | "signup" = "signup
         } else if (mode === "login") {
             validateField("email");
             validateField("password");
+        } else if (mode === "forgot") {
+            validateField("email");
+        }else if (mode === "changePassword") {
+            validateField("password");
+            validateField("confirmPassword");
         }
     }
 

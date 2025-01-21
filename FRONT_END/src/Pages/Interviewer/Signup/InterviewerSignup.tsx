@@ -49,7 +49,7 @@ const InterviewerSignup = () => {
                     confirmButtonText: 'OK'
                 });
                 console.log(response.data.interviewerData.email, ' this data');
-                navigate('/interviewer/otp', { state: { email: response.data.interviewerData.email } })
+                navigate('/interviewer/otp', { state: { email: response.data.interviewerData.email, context:"Registration" } })
             } else {
                 Swal.fire({
                     title: "Error!",

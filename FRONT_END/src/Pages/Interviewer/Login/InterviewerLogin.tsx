@@ -94,11 +94,16 @@ const CandidateLogin = () => {
         navigate('/interviewer/sign-up');
     }
 
+    const handleToForgotPassword = () => {
+        navigate('/interviewer/forgot-password');
+    }
+
     return (
         <div>
             <Login
                 heading="Interviewer Login"
                 onNavigate={handleNavigate}
+                forgotPassword={handleToForgotPassword}
                 formDataLogin={formDataLogin}
                 handleTakeInput={handleTakeInput}
                 handleToSubmit={handleToSubmit}

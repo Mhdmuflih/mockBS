@@ -89,11 +89,16 @@ const CandidateLogin = () => {
         navigate('/candidate/sign-up');
     }
 
+    const handleToForgotPassword = () => {
+        navigate('/candidate/forgot-password');
+    }
+
     return (
         <div>
             <Login
                 heading="Candidate Login"
                 onNavigate={handleNavigate}
+                forgotPassword={handleToForgotPassword}
                 formDataLogin={formDataLogin}
                 handleTakeInput={handleTakeInput}
                 handleToSubmit={handleToSubmit}

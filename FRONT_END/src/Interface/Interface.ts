@@ -43,6 +43,27 @@ export interface LoginProps {
         password: string;
     }
     onNavigate: () => void;
+    forgotPassword: () => void;
+    handleTakeInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleToSubmit: (event: React.FormEvent) => void;
+    errors: any
+}
+
+export interface forgotProps {
+    formData: {
+        email: string;
+    } 
+    onNavigate: () => void;
+    handleTakeInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleToSubmit: (event: React.FormEvent) => void;
+    errors: any
+}
+
+export interface changePassword {
+    formData: {
+        password: string;
+        confirmPassword: string;
+    }
     handleTakeInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
     handleToSubmit: (event: React.FormEvent) => void;
     errors: any

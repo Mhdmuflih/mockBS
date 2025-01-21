@@ -7,6 +7,8 @@ import InterviewerRouteProtector from '../RouterProtector/InterviewerRouteProtec
 import InterviewerOtp from '../Pages/Interviewer/OTP/InterviewerOtp';
 import InterviewerProfile from '../Pages/Interviewer/Profile/InterviewerProfile';
 import InterviewerDetails from '../Pages/Interviewer/InterviewerDetails/InterviewerDetails';
+import InterviewerForgotPassword from '../Pages/Interviewer/ForgotPassword/InterviewerForgotPassword';
+import InterviewerChangePassword from '../Pages/Interviewer/ChangePassword/InterviewerChangePassword';
 
 const InterviewerRoutes = () => {
     return (
@@ -16,6 +18,8 @@ const InterviewerRoutes = () => {
                     <Route path="/sign-up" element={<InterviewerSignup />}></Route>
                     <Route path="/login" element={<InterviewerLogin />}></Route>
                     <Route path='/otp' element={<InterviewerOtp />}></Route>
+                    <Route path='/forgot-password' element={<InterviewerForgotPassword />}></Route>
+                    <Route path='/change-password' element={<InterviewerChangePassword />}></Route>
                 </Route>
                 <Route element={<InterviewerRouteProtector />}>
                     <Route path="/details" element={<InterviewerDetails />}></Route>

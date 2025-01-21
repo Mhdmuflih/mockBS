@@ -52,7 +52,7 @@ const Login = (props: LoginProps) => {
                                     {props.errors.password}
                                 </p>
                             )}
-                            <p className='absolute right-32 top-14 text-sm text-gray-400 cursor-pointer hover:text-white'>forgot password?</p>
+                            <p className='absolute right-32 top-14 text-sm text-gray-400 cursor-pointer hover:text-white' onClick={props.forgotPassword}>forgot password?</p>
                         </div>
 
                         <div className=" flex justify-center relative top-3">

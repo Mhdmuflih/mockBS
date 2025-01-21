@@ -49,7 +49,7 @@ const CandidateSignup = () => {
                     confirmButtonText: 'OK'
                 });
                 console.log(response.data.candidateData.email, ' this data');
-                navigate('/candidate/otp', { state: { email: response.data.candidateData.email } })
+                navigate('/candidate/otp', { state: { email: response.data.candidateData.email, context: "Registration" } })
             } else {
                 Swal.fire({
                     title: "Error!",

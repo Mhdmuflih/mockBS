@@ -34,7 +34,7 @@ const CandidateOtp = () => {
         setTimer(30);
         setCanResend(false);
         try {
-            const email = location.state.email;
+            const {email} = location.state.email;
             console.log(email, 'this is the email form location')
             const response: any = await axios.post('http://localhost:8080/auth-service/candidate/resend-otp', { email });
             if (response.data.success) {
@@ -78,7 +78,7 @@ const CandidateOtp = () => {
         const OtpData = otp.join("");
 
         try {
-            const email = location.state.email
+            const {email, context} = location.state.email
             // console.log(location.state.email, 'what is this');
             // console.log(otp, ' this is the otp for the candidate');
             const response: any = await axios.post('http://localhost:8080/auth-service/candidate/otp', { otp: Number(OtpData), email: email });
@@ -89,7 +89,13 @@ const CandidateOtp = () => {
                     icon: "success",
                     confirmButtonText: "OK"
                 });
-                navigate('/');
+                if(context === "Registration") {
+                    navigate('/');
+                }else if(context === "CandidateForgotPassword") {
+                    navigate('/candidate/change-password');
+                }else if(context === "InterviewerForgotPassword") {
+                    navigate('/interviewer/change-password');
+                }
             } else {
                 Swal.fire({
                     titleText: "Error!",

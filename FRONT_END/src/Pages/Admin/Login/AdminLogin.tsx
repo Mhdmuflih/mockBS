@@ -90,7 +90,7 @@ const AdminLogin = () => {
     }
 
     const handleToForgotPassword = () => {
-        navigate('/candidate/forgot-password');
+        navigate('/admin/forgot-password');
     }
 
     return (

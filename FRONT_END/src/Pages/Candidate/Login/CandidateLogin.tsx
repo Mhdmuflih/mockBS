@@ -49,6 +49,15 @@ const CandidateLogin = () => {
                         confirmButtonText: 'OK'
                     });
                     return;
+                }else if (!response.candidateData.isVerified){
+                    Swal.fire({
+                        title: 'Error!',
+                        text: "Your account is not verified. Please verify your accound.",
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    navigate('/candidate/otp', { state: { email: response.candidateData.email, context: "Registration" } })
+                    return;
                 } else {
 
                     dispatch(loginSuccess({

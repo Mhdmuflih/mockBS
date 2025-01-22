@@ -8,7 +8,7 @@ import { loginSuccess } from "../../../Store/Slice/InterviewerSlice";
 import { formValidation } from "../../../Validations/formValidation";
 import { loginInterviewer } from "../../../Services/authService";
 
-const CandidateLogin = () => {
+const InterviewerLogin = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -42,7 +42,7 @@ const CandidateLogin = () => {
         try {
             const response: any = await loginInterviewer(formDataLogin);
             if (response.success) {
-                console.log(response.data, ' this ist response candidate');
+                // console.log(response.data, ' this ist response candidate');
                 if (response.interviewerData.isBlocked) {
                     Swal.fire({
                         title: 'Error!',
@@ -50,6 +50,15 @@ const CandidateLogin = () => {
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
+                    return;
+                } else if (!response.interviewerData.isVerified) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: "Your account is not verified. Please verify your accound.",
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    navigate('/interviewer/otp', { state: { email: response.interviewerData.email, context: "Registration" } })
                     return;
                 } else {
                     dispatch(loginSuccess({
@@ -113,4 +122,5 @@ const CandidateLogin = () => {
     )
 }
 
-export default CandidateLogin;
+export default InterviewerLogin;
+

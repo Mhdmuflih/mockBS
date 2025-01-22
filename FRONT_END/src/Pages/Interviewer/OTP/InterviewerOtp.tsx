@@ -2,7 +2,7 @@ import Otp from "../../../components/Otp";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { resendInterviewerOTP, verifyInterviewerOTP } from "../../../Services/authService";
+import { resendInterviewerOTP, verifyInterviewerForgotPasswordOTP, verifyInterviewerOTP } from "../../../Services/authService";
 
 const InterviewerOtp = () => {
 
@@ -35,16 +35,28 @@ const InterviewerOtp = () => {
         setTimer(30);
         setCanResend(false);
         try {
-            const email = location.state.email;
+            const { email, context }: { email: string; context: string } = location.state;
             console.log(email, 'this is the email from location');
-            const response: any = await resendInterviewerOTP(email);
-            if (response.data.success) {
-                console.log(email, 'okokoko');
+            const response: any = await resendInterviewerOTP(email, context);
+
+            if (response && response.success) {
+                console.log("OTP resent successfully:", response.message);
             } else {
-                console.log("failed guysss");
+                Swal.fire({
+                    titleText: "Error!",
+                    text: response?.message || "Failed to resend OTP. Please try again later.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
             }
         } catch (error: any) {
-            console.log(error.message);
+            console.error("Error while resending OTP:", error.message);
+            Swal.fire({
+                titleText: "Error!",
+                text: error.message || "An unexpected error occurred while resending the OTP.",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
         }
     }
 
@@ -79,11 +91,18 @@ const InterviewerOtp = () => {
 
         const OtpData: string = otp.join("");
         try {
-            const email = location.state.email;
-            // console.log(email, 'what is this');
-            // console.log(otp, ' this is the otp for the interviewer');
-            const response: any = await verifyInterviewerOTP(Number(OtpData), email);
-            console.log(response, " otp response data");
+            const { email, context }: { email: string, context: string } = location.state;
+            console.log(location.state, 'what is this');
+            console.log(otp, ' this is the otp for the candidate');
+            let response: any;
+            if (context === "Registration") {
+                console.log("Verifying OTP for Registration");
+                response = await verifyInterviewerOTP(Number(OtpData), email);
+            } else if (context === "InterviewerForgotPassword") {
+                console.log("Verifying OTP for Candidate Forgot Password");
+                response = await verifyInterviewerForgotPasswordOTP(Number(OtpData), email);
+            }
+
             if (response.success) {
                 Swal.fire({
                     titleText: "Success!",
@@ -91,7 +110,12 @@ const InterviewerOtp = () => {
                     icon: "success",
                     confirmButtonText: "OK"
                 });
-                navigate('/');
+                if (context === "Registration") {
+                    navigate('/');
+                } else if (context === "InterviewerForgotPassword") {
+                    navigate('/interviewer/change-password', { state: { email: email } });
+                }
+
             } else {
                 Swal.fire({
                     titleText: "Error!",
@@ -101,10 +125,10 @@ const InterviewerOtp = () => {
                 });
             }
         } catch (error: any) {
-            console.log(error.message);
+            console.log(error.message, 'this is error');
             Swal.fire({
                 titleText: "Error!",
-                text: error?.message || "An unexpected error occurred. Please try again later.",
+                text: error.message || "An unexpected error occurred. Please try again later.",
                 icon: "error",
                 confirmButtonText: "OK"
             });

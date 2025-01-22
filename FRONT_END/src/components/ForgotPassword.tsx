@@ -18,9 +18,9 @@ const ForgotPassword = (props: forgotProps) => {
                     <h2 className="text-center text-2xl font-serif  text-white"> Forgot Your Password ? </h2>
                     <p className='text-center mb-12 text-[11px] font-extralight'> No worries! We will send you reset instructions. </p>
 
-                    <form className="space-y-8" >
+                    <form className="space-y-8" onSubmit={props.handleToSubmit} >
 
-                        <div className="flex justify-center pt-4 relative" onSubmit={props.handleToSubmit}>
+                        <div className="flex justify-center pt-4 relative">
                             <input
                                 type="email"
                                 id="email"

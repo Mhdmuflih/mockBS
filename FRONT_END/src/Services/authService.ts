@@ -13,7 +13,7 @@ const handleError = (error: any): never => {
 
     // Check if the error has a response object from the server
     const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
-    
+
     // Throw a structured error with the message
     throw new Error(errorMessage);
 };
@@ -41,12 +41,39 @@ export const verifyCandidateOTP = async (otp: number, email: string) => {
     }
 }
 
-export const resendCandidateOTP = async (email: string) => {
+export const resendCandidateOTP = async (email: string, context: string) => {
     try {
-        const response = await UnProtectedAPI.post('/candidate/resend-otp', {email});
+        const response = await UnProtectedAPI.post('/candidate/resend-otp', { email, context });
         return response.data;
     } catch (error: any) {
         handleError(error)
+    }
+}
+
+export const forgotPasswordCandidate = async ({ email }: { email: string }) => {
+    try {
+        const response = await UnProtectedAPI.post('/candidate/forgot-password', { email });
+        return response.data;
+    } catch (error: any) {
+        handleError(error);
+    }
+}
+
+export const verifyCandidateForgotPasswordOTP = async (otp: number, email: string) => {
+    try {
+        const response = await UnProtectedAPI.post('/candidate/email-verify', { email, otp });
+        return response.data;
+    } catch (error: any) {
+        handleError(error);
+    }
+}
+
+export const changeCandidatePassword = async ({ email, password, confirmPassword }: { email: string, password: string, confirmPassword: string }) => {
+    try {
+        const response = await UnProtectedAPI.patch('/candidate/change-password', { email, password, confirmPassword });
+        return response.data;
+    } catch (error: any) {
+        handleError(error);
     }
 }
 
@@ -82,12 +109,39 @@ export const verifyInterviewerOTP = async (otp: number, email: string) => {
     }
 }
 
-export const resendInterviewerOTP = async (email: string) => {
+export const resendInterviewerOTP = async (email: string, context: string) => {
     try {
-        const response = await UnProtectedAPI.post('/interviewer/resend-otp', {email});
+        const response = await UnProtectedAPI.post('/interviewer/resend-otp', { email, context });
         return response.data;
     } catch (error: any) {
         handleError(error)
+    }
+}
+
+export const forgotPasswordInterviewer = async ({ email }: { email: string }) => {
+    try {
+        const response = await UnProtectedAPI.post('/interviewer/forgot-password', { email });
+        return response.data;
+    } catch (error: any) {
+        handleError(error);
+    }
+}
+
+export const verifyInterviewerForgotPasswordOTP = async (otp: number, email: string) => {
+    try {
+        const response = await UnProtectedAPI.post('/interviewer/email-verify', { email, otp });
+        return response.data;
+    } catch (error: any) {
+        handleError(error);
+    }
+}
+
+export const changeInterviewerPassword = async ({ email, password, confirmPassword }: { email: string, password: string, confirmPassword: string }) => {
+    try {
+        const response = await UnProtectedAPI.patch('/interviewer/change-password', { email, password, confirmPassword });
+        return response.data;
+    } catch (error: any) {
+        handleError(error);
     }
 }
 
@@ -124,7 +178,7 @@ export const verifyAdminOTP = async (otp: number, email: string) => {
 
 export const resendAdminOTP = async (email: string) => {
     try {
-        const response = await UnProtectedAPI.post('/admin/resend-otp', {email});
+        const response = await UnProtectedAPI.post('/admin/resend-otp', { email });
         return response.data;
     } catch (error: any) {
         handleError(error)

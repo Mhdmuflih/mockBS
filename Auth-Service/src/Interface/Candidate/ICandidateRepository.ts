@@ -6,6 +6,9 @@ export interface ICandidateRepository {
     findOtpByEmail(email: string): Promise<IOtp | null>;
     deleteOtpByEmail(email: string): Promise<void>;
     updateOtp(otpData: Partial<any>): Promise<void>;
+    candidateChangePassword({email, password}: {email: string, password: string | undefined}): Promise<ICandidate>;
     createCandidate(candidateData: Partial<ICandidate>): Promise<ICandidate>;
     findCandidateByEmail(email: string): Promise<ICandidate | null>;
+    deleteCandidateOTP(email:string): Promise<ICandidate | null>;
+    updateCandidateOTP(email: string, otp: number): Promise<ICandidate | null>;
 }

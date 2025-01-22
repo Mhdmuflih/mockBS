@@ -63,6 +63,33 @@ class InterviewerRepository extends BaseRepository<any> implements IInterviewerR
         }
     }
 
+    async interviewerChangePassword({ email, password }: { email: string; password: string }): Promise<IInterviewer> {
+        try {
+            return await this.changePassword(email, password);
+        } catch (error: any) {
+            console.log(error.message);
+            throw new Error(`Error changing password: ${error.message}`);
+        }
+    }
+
+    async deleteInterviewerOTP(email: string): Promise<IInterviewer | null> {
+        try {
+            return await this.deleteOTP(email);
+        } catch (error: any) {
+            console.log(error.message);
+            throw new Error(`Error while delete Candidate OTP : ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
+    async updateInterviewerOTP(email: string, otp: number): Promise<IInterviewer | null> {
+        try {
+            return await this.updateOTP(email, otp);
+        } catch (error: any) {
+            console.log(error.message);
+            throw new Error(`Error while delete Candidate OTP : ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
     async addInterviewerDetails(interviewerData: Partial<any>): Promise<IInterviewer | null> {
         try {
             return await interviewerModel.findOneAndUpdate(

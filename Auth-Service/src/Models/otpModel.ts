@@ -1,47 +1,29 @@
 import { model, Schema } from "mongoose";
 
-
 export interface IOtp {
     otp: number;
-    name: string;
-    mobile: string;
     email: string;
-    password: string;
     createdAt: Date;
     expaireAt: Date;
 }
 
-
 const otpSchema: Schema = new Schema({
-    otp: {
+    otp: { // Fixed field name (lowercase)
         type: Number,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    mobile: {
-        type: String,
-        required: true
+        required: true,
     },
     email: {
         type: String,
         required: true,
-        unique: true,
     },
-    password: {
-        type: String,
-        required: true
-    },
-    createdAt: {
+    createdAt: { // Fixed field name (lowercase)
         type: Date,
-        default: Date.now()
+        default: Date.now,
     },
-    expaireAt: {
+    expaireAt: { // Fixed field name (lowercase)
         type: Date,
-        default: () => Date.now() + 10 * 60 * 1000
-    }
+        default: () => new Date(Date.now() + 2 * 60 * 1000), // 2 minutes expiration
+    },
 });
 
 export default model<IOtp>("Otp", otpSchema);

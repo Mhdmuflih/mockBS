@@ -18,21 +18,26 @@ export class CandidateService implements ICandidateService {
     async createCandidate(name: string, mobile: string, email: string, password: string): Promise<any> {
         try {
 
-            const otp = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false }));
-            if (!otp) {
+            const OTP = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false }));
+            if (!OTP) {
                 throw new Error("OTP is required and must be a valid number.");
             }
 
+            const existingEmail = await this.candidateRepository.findCandidateByEmail(email);
+            if (existingEmail) {
+                throw new Error("Email already exists. Please use a different email.");
+            }
+
+            const securePassword: string | undefined = await passwordHashing(password);
             console.log(password, "real password in candidate signup");
 
-            const otpData = await this.candidateRepository.saveOtp({ name, mobile, email, password, otp });
+            const otpData = await this.candidateRepository.createCandidate({ name, mobile, email, password: securePassword, OTP });
             if (!otpData) {
                 throw new Error("Failed to save OTP data.");
             }
 
-            await sendEmail({ to: email, subject: "OTP Verification", otp: otp });
+            await sendEmail({ to: email, subject: "OTP Verification", otp: OTP });
 
-            console.log("OTP Data saved successfully:", otpData);
             return otpData;
 
         } catch (error: any) {
@@ -45,14 +50,12 @@ export class CandidateService implements ICandidateService {
     async otpVerification(otp: number, email: string): Promise<ICandidate> {
         try {
 
-            const candidate = await this.candidateRepository.findOtpByEmail(email);
-            console.log(candidate, 'service candidate');
-
+            const candidate = await this.candidateRepository.findCandidateByEmail(email);
             if (!candidate) {
                 throw new Error(MESSAGES.CANDIDATE_NOT_FOUND);
             }
 
-            if (candidate.otp !== otp) {
+            if (candidate.OTP !== otp) {
                 throw new Error("Invalid OTP.")
             }
 
@@ -60,18 +63,9 @@ export class CandidateService implements ICandidateService {
                 throw new Error("OTP has expired.");
             }
 
-            const securePassword: string | undefined = await passwordHashing(candidate.password);
+            await this.candidateRepository.deleteCandidateOTP(email);
 
-            const newCandidate = await this.candidateRepository.createCandidate({
-                name: candidate.name,
-                mobile: candidate.mobile,
-                email: candidate.email,
-                password: securePassword,
-            });
-
-            await this.candidateRepository.deleteOtpByEmail(email);
-
-            return newCandidate
+            return candidate;
 
         } catch (error: any) {
             console.log(error.message);
@@ -80,16 +74,104 @@ export class CandidateService implements ICandidateService {
     }
 
 
-    async resendOtp(email: string): Promise<void> {
+    async resendOtp(email: string, context: string): Promise<void> {
         try {
             const otp: number = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, specialChars: false, upperCaseAlphabets: false }));
             await sendEmail({ to: email, subject: "OTP Verification", otp: otp });
-            await this.candidateRepository.updateOtp({otp, email});
+            if (context === "Registration") {
+                await this.candidateRepository.updateCandidateOTP(email, otp);
+            } else if (context === "CandidateForgotPassword") {
+                await this.candidateRepository.updateOtp({ email, otp });
+            }
         } catch (error: any) {
             console.log(error.message);
             throw error;
         }
     }
+
+    async forgotPassword(email: string): Promise<ICandidate | null> {
+        try {
+            const candidate: ICandidate | null = await this.candidateRepository.findCandidateByEmail(email);
+            if (!candidate) {
+                throw new Error(MESSAGES.CANDIDATE_NOT_FOUND);
+            }
+
+            const OTP = parseInt(
+                otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
+            );
+            console.log(OTP, "this is the OTP in service");
+
+            if (!OTP) {
+                throw new Error("OTP is required and must be a valid number.");
+            }
+
+            await sendEmail({ to: email, subject: "OTP Verification", otp: OTP });
+
+            const otpData = await this.candidateRepository.saveOtp({ email, otp: OTP }); // Pass `OTP` field
+            console.log(otpData, 'this is the OTP saved in service');
+            return candidate;
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
+    }
+
+    async verifyEmail(email: string, otp: number): Promise<any> {
+        try {
+            const candidate = await this.candidateRepository.findOtpByEmail(email);
+
+            if (!candidate) {
+                throw new Error(MESSAGES.CANDIDATE_NOT_FOUND);
+            }
+
+            if (candidate.otp !== otp) { // Ensure field name matches `OTP`
+                throw new Error("Invalid OTP.");
+            }
+
+            if (new Date() > candidate.expaireAt) {
+                throw new Error("OTP has expired.");
+            }
+
+            await this.candidateRepository.deleteOtpByEmail(email);
+
+            return candidate;
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
+    }
+
+    async changePassword(email: string, password: string, confirmPassword: string): Promise<any> {
+        try {
+            if (password !== confirmPassword) {
+                throw new Error("Passwords do not match.");
+            }
+
+            const candidateData = await this.candidateRepository.findCandidateByEmail(email);
+
+            if (!candidateData) {
+                throw new Error("Candidate not found.");
+            }
+
+            const securePassword: string | undefined = await passwordHashing(password);
+
+            // Call the repository method to change the password
+            const updatedCandidate = await this.candidateRepository.candidateChangePassword({
+                email,
+                password: securePassword
+            });
+
+            if (!updatedCandidate) {
+                throw new Error("Error updating password.");
+            }
+
+            return updatedCandidate;
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
+    }
+
 
 
     async loginCandidate(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; candidate: ICandidate }> {
@@ -97,6 +179,12 @@ export class CandidateService implements ICandidateService {
             const candidate = await this.candidateRepository.findCandidateByEmail(email);
             if (!candidate) {
                 throw new Error(MESSAGES.CANDIDATE_NOT_FOUND);
+            }
+
+            if (!candidate.isVerified) {
+                const otp: number = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, specialChars: false, upperCaseAlphabets: false }));
+                await sendEmail({ to: email, subject: "OTP Verification", otp: otp });
+                await this.candidateRepository.updateCandidateOTP(email, otp);
             }
 
             const matchPassword: boolean | undefined = await passwordCompare(password, candidate?.password);

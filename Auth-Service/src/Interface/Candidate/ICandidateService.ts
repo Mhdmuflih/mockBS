@@ -3,6 +3,9 @@ import { ICandidate } from "../../Models/candidateModel";
 export interface ICandidateService {
     createCandidate(name: string, mobile: string, email: string, password: string): Promise<ICandidate>;
     otpVerification(otp: number, email: string): Promise<ICandidate>;
-    resendOtp(email: string): Promise<void>;
+    resendOtp(email: string, context: string): Promise<void>;
+    forgotPassword(email: string): Promise<ICandidate | null>;
+    verifyEmail(email: string, otp: number): Promise<any>;
+    changePassword(email: string, password: string, confirmPassword: string): Promise<any>;
     loginCandidate(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; candidate: ICandidate }>;
 }

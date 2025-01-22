@@ -44,6 +44,17 @@ class CandidateRepository extends BaseRepository<ICandidate> implements ICandida
         }
     }
 
+    async candidateChangePassword({ email, password }: { email: string; password: string }): Promise<ICandidate> {
+        try {
+            return await this.changePassword(email, password);
+        } catch (error: any) {
+            console.log(error.message);
+            throw new Error(`Error changing password: ${error.message}`);
+        }
+    }
+    
+
+
     async createCandidate(candidateData: Partial<ICandidate>): Promise<ICandidate> {
         try {
             return await this.create(candidateData);
@@ -55,10 +66,28 @@ class CandidateRepository extends BaseRepository<ICandidate> implements ICandida
 
     async findCandidateByEmail(email: string): Promise<ICandidate | null> {
         try {
-            return await this.findOne({ email });
+            return await this.findByEmail(email);
         } catch (error: any) {
             console.log(error.message);
             throw new Error(`Error while finding Candidate : ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
+    async deleteCandidateOTP(email: string): Promise<ICandidate | null> {
+        try {
+            return await this.deleteOTP(email);
+        } catch (error: any) {
+            console.log(error.message);
+            throw new Error(`Error while delete Candidate OTP : ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
+    async updateCandidateOTP(email: string, otp: number): Promise<ICandidate | null> {
+        try {
+            return await this.updateOTP(email,otp);
+        } catch (error: any) {
+            console.log(error.message);
+            throw new Error(`Error while delete Candidate OTP : ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 

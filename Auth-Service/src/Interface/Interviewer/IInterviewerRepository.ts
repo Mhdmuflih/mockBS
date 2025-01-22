@@ -6,8 +6,11 @@ export interface IInterviewerRepository {
     findOtpByEmail(email: string): Promise<IOtp | null>;
     deleteOtpByEmail(email: string): Promise<void>;
     updateOtp(otpData: Partial<any>): Promise<void>;
+    interviewerChangePassword({email, password}: {email: string, password: string | undefined}): Promise<IInterviewer>;
     createInterviewer(interviewerData: Partial<IInterviewer>): Promise<IInterviewer>;
     findInterviewerByEmail(email: string): Promise<IInterviewer | null>;
+    deleteInterviewerOTP(email: string): Promise<IInterviewer | null>;
+    updateInterviewerOTP(email: string, otp: number): Promise<IInterviewer | null>;
     addInterviewerDetails(interviewerData: Partial<any>): Promise<IInterviewer | null>;
     // loginInterviewer(interviewerData: Partial<IInterviewer>): Promise<IInterviewer>;
 }

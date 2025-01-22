@@ -14,6 +14,9 @@ const Candidate_Route = Router();
 Candidate_Route.post('/sign-up', candidateController.signUpCanidate.bind(candidateController));
 Candidate_Route.post('/otp', candidateController.otpVerification.bind(candidateController));
 Candidate_Route.post('/resend-otp',candidateController.resendOtp.bind(candidateController));
+Candidate_Route.post('/forgot-password', candidateController.forgotPassword.bind(candidateController));
+Candidate_Route.post('/email-verify', candidateController.verifyEmail.bind(candidateController));
+Candidate_Route.patch('/change-password', candidateController.changePassword.bind(candidateController));
 Candidate_Route.post('/login', candidateController.loginCandidate.bind(candidateController));
 
 export default Candidate_Route;

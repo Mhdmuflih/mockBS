@@ -3,10 +3,13 @@ import { Document, model, Schema } from "mongoose";
 
 
 export interface IInterviewer extends Document {
+    OTP: number;
     name: string;
     mobile: string;
     email: string;
     password: string;
+    createdAt: Date;
+    expaireAt: Date;
     isBlocked?: boolean;
     isVerified?: boolean;
     isDetails?: boolean;
@@ -36,6 +39,18 @@ const interviewerSchema: Schema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    OTP:{
+        type:Number,
+        required:true
+    },
+    createdAT:{
+        type:Date,
+        default:Date.now
+    },
+    expaireAt:{
+        type:Date,
+        default: () => new Date(Date.now() + 2 * 60 * 1000) // 2 minutes expiration
     },
     isBlocked: {
         type: Boolean,

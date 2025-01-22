@@ -14,17 +14,20 @@ export class InterviewerService implements IInterviewerService {
     async createInterviewer(name: string, mobile: string, email: string, password: string): Promise<any> {
         try {
 
-            const otp = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false }));
-            if (!otp) {
+            const OTP = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false }));
+            if (!OTP) {
                 throw new Error("OTP is required and must be a valid number.");
             }
+            const securePassword: string | undefined = await passwordHashing(password);
 
-            const otpData = await this.interviewerRepository.saveOtp({ name, mobile, email, password, otp });
+            console.log(password, "real password in candidate signup");
+
+            const otpData = await this.interviewerRepository.createInterviewer({ name, mobile, email, password: securePassword, OTP });
             if (!otpData) {
                 throw new Error("Failed to save OTP data.");
             }
 
-            await sendEmail({ to: email, subject: "OTP Verification", otp: otp });
+            await sendEmail({ to: email, subject: "OTP Verification", otp: OTP });
 
             console.log("OTP Data saved successfully:", otpData);
             return otpData;
@@ -37,44 +40,123 @@ export class InterviewerService implements IInterviewerService {
 
     async otpVerification(otp: number, email: string): Promise<IInterviewer> {
         try {
-            const interviewer = await this.interviewerRepository.findOtpByEmail(email);
+            const interviewer = await this.interviewerRepository.findInterviewerByEmail(email);
             console.log(interviewer, "this is the interviewer of the otp verification");
 
             if (!interviewer) {
                 throw new Error(MESSAGES.INTERVIEWER_NOT_FOUND);
             }
 
-            if (interviewer.otp !== otp) {
+            if (interviewer.OTP !== otp) {
                 throw new Error("Invalid OTP.");
             }
 
-            // if (new Date() > interviewer.expaireAt) {
-            //     throw new Error("OTP has expired.");
-            // }
+            if (new Date() > interviewer.expaireAt) {
+                throw new Error("OTP has expired.");
+            }
 
-            const securePassword: string | undefined = await passwordHashing(interviewer.password);
+            await this.interviewerRepository.deleteInterviewerOTP(email);
 
-            const newInterviewer = await this.interviewerRepository.createInterviewer({
-                name: interviewer.name,
-                mobile: interviewer.mobile,
-                email: interviewer.email,
-                password: securePassword
-            });
+            return interviewer;
 
-            await this.interviewerRepository.deleteOtpByEmail(email);
-
-            return newInterviewer;
         } catch (error: any) {
             console.log(error.message);
             throw error;
         }
     }
 
-    async resendOtp(email: string): Promise<void> {
+    async resendOtp(email: string, context: string): Promise<void> {
         try {
             const otp: number = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, specialChars: false, upperCaseAlphabets: false }));
             await sendEmail({ to: email, subject: "OTP Verification", otp: otp });
-            await this.interviewerRepository.updateOtp({ otp, email });
+            if(context === "Registration"){
+                await this.interviewerRepository.updateInterviewerOTP(email, otp);
+            }else if(context === "CandidateForgotPassword") {
+                await this.interviewerRepository.updateOtp({email, otp});
+            }
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
+    }
+
+    async forgotPassword(email: string): Promise<IInterviewer | null> {
+        try {
+            const candidate: IInterviewer | null = await this.interviewerRepository.findInterviewerByEmail(email);
+            if (!candidate) {
+                throw new Error(MESSAGES.CANDIDATE_NOT_FOUND);
+            }
+    
+            const OTP = parseInt(
+                otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
+            );
+            console.log(OTP, "this is the OTP in service");
+    
+            if (!OTP) {
+                throw new Error("OTP is required and must be a valid number.");
+            }
+    
+            await sendEmail({ to: email, subject: "OTP Verification", otp: OTP });
+    
+            const otpData = await this.interviewerRepository.saveOtp({ email, otp: OTP }); // Pass `OTP` field
+            console.log(otpData, 'this is the OTP saved in service');
+            return candidate;
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
+    }
+    
+    async verifyEmail(email: string, otp: number): Promise<any> {
+        try {
+            const candidate = await this.interviewerRepository.findOtpByEmail(email);
+    
+            if (!candidate) {
+                throw new Error(MESSAGES.CANDIDATE_NOT_FOUND);
+            }
+    
+            if (candidate.otp !== otp) { // Ensure field name matches `OTP`
+                throw new Error("Invalid OTP.");
+            }
+    
+            if (new Date() > candidate.expaireAt) {
+                throw new Error("OTP has expired.");
+            }
+    
+            await this.interviewerRepository.deleteOtpByEmail(email);
+    
+            return candidate;
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
+    }
+    
+    async changePassword(email: string, password: string, confirmPassword: string): Promise<any> {
+        try {
+            if (password !== confirmPassword) {
+                throw new Error("Passwords do not match.");
+            }
+    
+            const candidateData = await this.interviewerRepository.findInterviewerByEmail(email);
+    
+            if (!candidateData) {
+                throw new Error("Candidate not found.");
+            }
+    
+            const securePassword: string | undefined = await passwordHashing(password);
+    
+            // Call the repository method to change the password
+            const updatedCandidate = await this.interviewerRepository.interviewerChangePassword({
+                email,
+                password: securePassword
+            });
+    
+            if (!updatedCandidate) {
+                throw new Error("Error updating password.");
+            }
+    
+            return updatedCandidate;
         } catch (error: any) {
             console.log(error.message);
             throw error;
@@ -86,6 +168,12 @@ export class InterviewerService implements IInterviewerService {
             const interviewer = await this.interviewerRepository.findInterviewerByEmail(email);
             if (!interviewer) {
                 throw new Error(MESSAGES.INTERVIEWER_NOT_FOUND);
+            }
+
+            if (!interviewer.isVerified) {
+                const otp: number = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, specialChars: false, upperCaseAlphabets: false }));
+                await sendEmail({ to: email, subject: "OTP Verification", otp: otp });
+                await this.interviewerRepository.updateInterviewerOTP(email, otp);
             }
 
             const matchPassword: boolean | undefined = await passwordCompare(password, interviewer?.password);

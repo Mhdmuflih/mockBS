@@ -16,19 +16,18 @@ export class AdminServices implements IAdminService {
             }
 
             const existAdmin = await this.adminRepository.findByEmail(email);
-            // console.log(existAdmin,' this is exist admin data')
             if (existAdmin) {
                 return { success: false, message: "Admin with this email already exists." };
             }
 
-            const admin = await this.adminRepository.createAdmin({ name, mobile, email, password });
-            console.log(admin, ' this is admin in service')
-            return { success: true, message: "Admin Registration Successfully completed" }
+            await this.adminRepository.createAdmin({ name, mobile, email, password });
+            // console.log(admin, ' this is admin in service')
+            // return { success: true, message: "Admin Registration Successfully completed" }
 
             // return admin;
         } catch (error: any) {
             console.log(error.message);
-            throw new Error(error instanceof Error ? error.message : "")
+            throw error;
         }
     }
 

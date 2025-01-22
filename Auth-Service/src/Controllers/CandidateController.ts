@@ -18,7 +18,7 @@ export class CandidateControllers implements ICandidateController {
 
             const candidate = await this.candidateService.createCandidate(name, mobile, email, password);
             console.log(candidate, "this is the candidate data");
-            res.status(HTTP_STATUS.OK).json({ success: true, message: "OTP sent successfully.", candidateData: candidate });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "OTP send successfully.", candidateData: candidate });
 
         } catch (error: any) {
             if (error instanceof Error) {
@@ -40,7 +40,7 @@ export class CandidateControllers implements ICandidateController {
                 return;
             }
 
-            const otpCandidateData: any = await this.candidateService.otpVerification(parseInt(otp), email);
+            const otpCandidateData: any = await this.candidateService.otpVerification(otp, email);
 
             if (!otpCandidateData) {
                 res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: otpCandidateData.message });
@@ -61,10 +61,10 @@ export class CandidateControllers implements ICandidateController {
 
     async resendOtp(req: Request, res: Response): Promise<void> {
         try {
-            const { email } = req.body;
-            await this.candidateService.resendOtp(email);
+            const { email, context } = req.body;
+            await this.candidateService.resendOtp(email, context);
 
-            res.status(HTTP_STATUS.OK).json({success: true, message: "Resend OTP send Successfully."})
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "Resend OTP send Successfully." })
         } catch (error: any) {
             if (error instanceof Error) {
                 res.status(409).json({ message: error.message });
@@ -75,6 +75,64 @@ export class CandidateControllers implements ICandidateController {
         }
     }
 
+    async forgotPassword(req: Request, res: Response): Promise<void> {
+        try {
+            const { email } = req.body;
+            console.log(req.body, 'this is the forgot password body');
+            const candidate = await this.candidateService.forgotPassword(email);
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "OTP send in your Email for forgot password", candidateData: candidate });
+        } catch (error: any) {
+            if (error instanceof Error) {
+                res.status(409).json({ message: error.message });
+            } else {
+                console.log(error.message);
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+            }
+        }
+    }
+
+    async verifyEmail(req: Request, res: Response): Promise<void> {
+        try {
+            const { email, otp } = req.body;
+            console.log(req.body, ' this is the verify email in forgot passoword controller');
+            await this.candidateService.verifyEmail(email, otp);
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "OTP Verified To change Your Password" });
+
+
+        } catch (error: any) {
+            if (error instanceof Error) {
+                res.status(409).json({ message: error.message });
+            } else {
+                console.log(error.message);
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+            }
+        }
+    }
+
+    async changePassword(req: Request, res: Response): Promise<void> {
+        try {
+            const { email, password, confirmPassword } = req.body;
+            console.log(req.body, 'this is the change password body data in controller');
+            
+            if (!email || !password || !confirmPassword) {
+                res.status(400).json({ success: false, message: "Please provide email, password, and confirm password." });
+                return;
+            }
+    
+            // Call the service method to change the password
+            await this.candidateService.changePassword(email, password, confirmPassword);
+    
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "Your password changed successfully." });
+        } catch (error: any) {
+            if (error instanceof Error) {
+                res.status(409).json({ message: error.message });
+            } else {
+                console.log(error.message);
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+            }
+        }
+    }
+    
 
     async loginCandidate(req: Request, res: Response): Promise<void> {
         try {

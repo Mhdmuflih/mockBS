@@ -10,16 +10,9 @@ export class AdminControllers implements IAdminController {
     async signUp(req: Request, res: Response): Promise<void> {
         try {
             const { name, mobile, email, password } = req.body;
-            const response = await this.adminService.createAdmin(name, mobile, email, password);
-            if (response) {
-                res.json({ response: response })
-            } else {
-                res.status(200).json({ success: true, message: "Admin Registration Successfully completed" })
-            }
-            // console.log(admin,'this is the controller of the admin in data admin');
-            // if(admin) {
-            //     res.status(200).json({success: true, message: "Admin Registration Successfully completed"})
-            // }
+            await this.adminService.createAdmin(name, mobile, email, password);
+
+            res.status(200).json({ success: true, message: "Admin Registration Successfully completed" })
 
         } catch (error: any) {
             console.log(error.message);
@@ -36,17 +29,15 @@ export class AdminControllers implements IAdminController {
                 return
             }
 
-            const { accessToken, refreshToken, admin } = await this.adminService.loginAdmin(email,password);
-            res.cookie("refreshToken", refreshToken,  {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                maxAge: 10 * 1000
-            });
-
-            const adminData = admin;
+            const { accessToken, refreshToken, admin } = await this.adminService.loginAdmin(email, password);
+            // res.cookie("refreshToken", refreshToken, {
+            //     httpOnly: true,
+            //     secure: process.env.NODE_ENV === "production",
+            //     maxAge: 10 * 1000
+            // });
 
             console.log("successfully login in admin");
-            res.status(HTTP_STATUS.OK).json({success: true, message: "Login successfully completed.", token: accessToken, adminData: adminData});
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, adminData: admin });
 
         } catch (error: any) {
             console.log(error.message);

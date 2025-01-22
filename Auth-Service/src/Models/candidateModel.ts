@@ -3,10 +3,12 @@ import { Document, model, Schema } from "mongoose";
 
 
 export interface ICandidate extends Document {
+    OTP: number;
     name: string;
     mobile: string;
     email: string;
     password: string;
+    expaireAt: Date;
     isBlocked?: boolean;
     isVerified?: boolean;
 }
@@ -39,8 +41,16 @@ const candidateSchema: Schema = new Schema({
     isVerified: {
         type: Boolean,
         default: false
+    },
+    OTP: {
+        type: Number,
+        required: true
+    },
+    expaireAt: {
+        type: Date,
+        default: () => new Date(Date.now() + 2 * 60 * 1000) // 2 minutes expiration
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 
 export default model<ICandidate>('Candidate', candidateSchema);

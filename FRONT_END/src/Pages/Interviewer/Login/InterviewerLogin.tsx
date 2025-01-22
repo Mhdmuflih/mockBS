@@ -1,19 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import Login from "../../../components/Login";
 import { FormEvent, useState } from "react";
-import { formDataLogin } from "../../../Interface/Interface";
-import axios from "axios";
+import { IFormDataLogin } from "../../../Interface/Interface";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../Store/Slice/InterviewerSlice";
 import { formValidation } from "../../../Validations/formValidation";
+import { loginInterviewer } from "../../../Services/authService";
 
 const CandidateLogin = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [formDataLogin, setFormDataLogin] = useState<formDataLogin>({
+    const [formDataLogin, setFormDataLogin] = useState<IFormDataLogin>({
         email: "",
         password: ""
     });
@@ -40,10 +40,10 @@ const CandidateLogin = () => {
         }
 
         try {
-            const response: any = await axios.post("http://localhost:8080/auth-service/interviewer/login", formDataLogin);
-            if (response.data.success) {
+            const response: any = await loginInterviewer(formDataLogin);
+            if (response.success) {
                 console.log(response.data, ' this ist response candidate');
-                if (response.data.interviewerData.isBlocked) {
+                if (response.interviewerData.isBlocked) {
                     Swal.fire({
                         title: 'Error!',
                         text: "Your account is blocked. Please contact support.",
@@ -53,19 +53,19 @@ const CandidateLogin = () => {
                     return;
                 } else {
                     dispatch(loginSuccess({
-                        token: response.data.token,
-                        storedData: response.data.interviewerData,
+                        token: response.token,
+                        storedData: response.interviewerData,
                         isLoggedIn: true
                     }));
 
                     Swal.fire({
                         title: "Success!",
-                        text: response.data.message,
+                        text: response.message,
                         icon: "success",
                         confirmButtonText: 'OK'
                     });
                 }
-                if (!response.data.interviewerData.isDetails) {
+                if (!response.interviewerData.isDetails) {
                     navigate("/interviewer/details");
                 } else {
                     navigate("/interviewer/profile");
@@ -74,7 +74,7 @@ const CandidateLogin = () => {
             } else {
                 Swal.fire({
                     title: "Error!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "error",
                     confirmButtonText: 'OK'
                 });
@@ -83,7 +83,7 @@ const CandidateLogin = () => {
             console.log(error.message);
             Swal.fire({
                 titleText: "Error!",
-                text: error.response?.data?.message || "An unexpected error occurred. Please try again later.",
+                text: error?.message || "An unexpected error occurred. Please try again later.",
                 icon: "error",
                 confirmButtonText: "OK"
             });

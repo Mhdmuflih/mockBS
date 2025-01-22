@@ -1,16 +1,16 @@
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import SignUp from "../../../components/SignUp";
 import React, { FormEvent, useState } from "react";
-import { FormData } from "../../../Interface/Interface";
+import { IFormData } from "../../../Interface/Interface";
 import Swal from "sweetalert2";
 import { formValidation } from "../../../Validations/formValidation";
+import { signUpCandidate } from "../../../Services/authService";
 
 const CandidateSignup = () => {
 
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<IFormData>({
         name: "",
         mobile: "",
         email: "",
@@ -39,21 +39,21 @@ const CandidateSignup = () => {
 
         try {
             console.log(formData, "This is formData");
-            const response: any = await axios.post("http://localhost:8080/auth-service/candidate/sign-up", formData);
+            const response: any = await signUpCandidate(formData);
             console.log(response, 'this is the response');
-            if (response.data.success) {
+            if (response.success) {
                 Swal.fire({
                     title: "Success!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "success",
                     confirmButtonText: 'OK'
                 });
-                console.log(response.data.candidateData.email, ' this data');
-                navigate('/candidate/otp', { state: { email: response.data.candidateData.email, context: "Registration" } })
+                console.log(response.candidateData.email, ' this data');
+                navigate('/candidate/otp', { state: { email: response.candidateData.email, context: "Registration" } })
             } else {
                 Swal.fire({
                     title: "Error!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "error",
                     confirmButtonText: 'OK'
                 });
@@ -62,7 +62,7 @@ const CandidateSignup = () => {
             console.log(error.message);
             Swal.fire({
                 titleText: "Error!",
-                text: error.response?.data?.message || "An unexpected error occurred. Please try again later.",
+                text: error?.message || "An unexpected error occurred. Please try again later.",
                 icon: "error",
                 confirmButtonText: "OK"
             });

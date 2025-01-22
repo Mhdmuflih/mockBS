@@ -1,16 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import SignUp from "../../../components/SignUp";
 import { FormEvent, useState } from "react";
-import { FormData } from "../../../Interface/Interface";
-import axios from "axios";
+import { IFormData } from "../../../Interface/Interface";
 import Swal from "sweetalert2";
 import { formValidation } from "../../../Validations/formValidation";
+import { signUpInterviewer } from "../../../Services/authService";
 
 const InterviewerSignup = () => {
 
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<IFormData>({
         name: "",
         mobile: "",
         email: "",
@@ -39,21 +39,21 @@ const InterviewerSignup = () => {
 
         try {
             console.log(formData, "This is formData");
-            const response: any = await axios.post("http://localhost:8080/auth-service/interviewer/sign-up", formData);
-            console.log(response.data, 'this is the response of the interviewer');
-            if (response.data.success) {
+            const response: any = await signUpInterviewer(formData)
+            console.log(response, 'this is the response of the interviewer');
+            if (response.success) {
                 Swal.fire({
                     title: "Success!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "success",
                     confirmButtonText: 'OK'
                 });
-                console.log(response.data.interviewerData.email, ' this data');
-                navigate('/interviewer/otp', { state: { email: response.data.interviewerData.email, context:"Registration" } })
+                console.log(response.interviewerData.email, ' this data');
+                navigate('/interviewer/otp', { state: { email: response.interviewerData.email, context:"Registration" } })
             } else {
                 Swal.fire({
                     title: "Error!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "error",
                     confirmButtonText: 'OK'
                 });
@@ -62,7 +62,7 @@ const InterviewerSignup = () => {
             console.log(error.message);
             Swal.fire({
                 titleText: "Error!",
-                text: error.response?.data?.message || "An unexpected error occurred. Please try again later.",
+                text: error?.message || "An unexpected error occurred. Please try again later.",
                 icon: "error",
                 confirmButtonText: "OK"
             });

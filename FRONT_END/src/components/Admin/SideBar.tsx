@@ -157,7 +157,7 @@ const SideBar = (props: sideBarProps) => {
                                         ${activePath === "/admin/profile" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/admin/profile");
-                                        navigate("/admin/prfile");
+                                        navigate("/admin/profile");
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">

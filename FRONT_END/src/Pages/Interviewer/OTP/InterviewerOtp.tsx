@@ -1,8 +1,8 @@
-import axios from "axios";
 import Otp from "../../../components/Otp";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { resendInterviewerOTP, verifyInterviewerOTP } from "../../../Services/authService";
 
 const InterviewerOtp = () => {
 
@@ -37,7 +37,7 @@ const InterviewerOtp = () => {
         try {
             const email = location.state.email;
             console.log(email, 'this is the email from location');
-            const response: any = await axios.post('http://localhost:8080/auth-service/interviewer/resend-otp', { email });
+            const response: any = await resendInterviewerOTP(email);
             if (response.data.success) {
                 console.log(email, 'okokoko');
             } else {
@@ -82,12 +82,12 @@ const InterviewerOtp = () => {
             const email = location.state.email;
             // console.log(email, 'what is this');
             // console.log(otp, ' this is the otp for the interviewer');
-            const response: any = await axios.post('http://localhost:8080/auth-service/interviewer/otp', { otp: Number(OtpData), email: email });
-            console.log(response.data, " otp response data");
-            if (response.data.success) {
+            const response: any = await verifyInterviewerOTP(Number(OtpData), email);
+            console.log(response, " otp response data");
+            if (response.success) {
                 Swal.fire({
                     titleText: "Success!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "success",
                     confirmButtonText: "OK"
                 });
@@ -95,7 +95,7 @@ const InterviewerOtp = () => {
             } else {
                 Swal.fire({
                     titleText: "Error!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "error",
                     confirmButtonText: "OK"
                 });
@@ -104,7 +104,7 @@ const InterviewerOtp = () => {
             console.log(error.message);
             Swal.fire({
                 titleText: "Error!",
-                text: error.response?.data?.message || "An unexpected error occurred. Please try again later.",
+                text: error?.message || "An unexpected error occurred. Please try again later.",
                 icon: "error",
                 confirmButtonText: "OK"
             });

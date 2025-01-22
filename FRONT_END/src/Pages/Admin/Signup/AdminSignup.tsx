@@ -1,16 +1,16 @@
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import SignUp from "../../../components/SignUp";
 import React, { FormEvent, useState } from "react";
-import { FormData } from "../../../Interface/Interface";
+import { IFormData } from "../../../Interface/Interface";
 import Swal from "sweetalert2";
 import { formValidation } from "../../../Validations/formValidation";
+import { signUpAdmin } from "../../../Services/authService";
 
 const AdminSignup = () => {
 
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<IFormData>({
         name: "",
         mobile: "",
         email: "",
@@ -37,12 +37,12 @@ const AdminSignup = () => {
 
         try {
             console.log(formData, "This is formData");
-            const response: any = await axios.post("http://localhost:8080/auth-service/admin/sign-up", formData);
+            const response: any = await signUpAdmin(formData);
             console.log(response.data, 'this is the response data');
-            if (response.data.response.success) {
+            if (response.response.success) {
                 Swal.fire({
                     title: "Success!",
-                    text: response.data.response.message,
+                    text: response.response.message,
                     icon: "success",
                     confirmButtonText: 'OK'
                 });
@@ -50,7 +50,7 @@ const AdminSignup = () => {
             } else {
                 Swal.fire({
                     title: "Error!",
-                    text: response.data.response.message,
+                    text: response.response.message,
                     icon: "error",
                     confirmButtonText: 'OK'
                 });
@@ -58,10 +58,10 @@ const AdminSignup = () => {
         } catch (error: any) {
             console.log(error.message);
             Swal.fire({
-                title: 'Error!',
-                text: 'Interner server error',
-                icon: 'error',
-                confirmButtonText: 'OK'
+                titleText: "Error!",
+                text: error?.message || "An unexpected error occurred. Please try again later.",
+                icon: "error",
+                confirmButtonText: "OK"
             });
         }
     }

@@ -1,0 +1,141 @@
+import axios from "axios";
+import { IFormData, IFormDataLogin } from "../Interface/Interface";
+
+const baseURL = "http://localhost:8080/auth-service";
+
+const UnProtectedAPI = axios.create({
+    baseURL: baseURL
+});
+
+const handleError = (error: any): never => {
+    // Log the error
+    console.error("API Error:", error);
+
+    // Check if the error has a response object from the server
+    const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+    
+    // Throw a structured error with the message
+    throw new Error(errorMessage);
+};
+
+
+
+// Candidate Routes
+
+export const signUpCandidate = async (formData: IFormData) => {
+    try {
+        const response = await UnProtectedAPI.post('/candidate/sign-up', formData)
+        return response.data;
+    } catch (error: any) {
+        handleError(error)
+    }
+}
+
+export const verifyCandidateOTP = async (otp: number, email: string) => {
+    try {
+        const response = await UnProtectedAPI.post('/candidate/otp', { otp: Number(otp), email: email });
+        return response.data;
+    } catch (error: any) {
+        handleError(error)
+
+    }
+}
+
+export const resendCandidateOTP = async (email: string) => {
+    try {
+        const response = await UnProtectedAPI.post('/candidate/resend-otp', {email});
+        return response.data;
+    } catch (error: any) {
+        handleError(error)
+    }
+}
+
+export const loginCandidate = async (formData: IFormDataLogin) => {
+    try {
+        const response = await UnProtectedAPI.post('/candidate/login', formData);
+        return response.data;
+    } catch (error: any) {
+        handleError(error);
+    }
+}
+
+
+
+// Interviewer Routes
+
+export const signUpInterviewer = async (formData: IFormData) => {
+    try {
+        const response = await UnProtectedAPI.post('/interviewer/sign-up', formData)
+        return response.data;
+    } catch (error: any) {
+        handleError(error)
+    }
+}
+
+export const verifyInterviewerOTP = async (otp: number, email: string) => {
+    try {
+        const response = await UnProtectedAPI.post('/interviewer/otp', { otp: Number(otp), email: email });
+        return response.data;
+    } catch (error: any) {
+        handleError(error)
+
+    }
+}
+
+export const resendInterviewerOTP = async (email: string) => {
+    try {
+        const response = await UnProtectedAPI.post('/interviewer/resend-otp', {email});
+        return response.data;
+    } catch (error: any) {
+        handleError(error)
+    }
+}
+
+export const loginInterviewer = async (formData: IFormDataLogin) => {
+    try {
+        const response = await UnProtectedAPI.post('/interviewer/login', formData);
+        return response.data;
+    } catch (error: any) {
+        handleError(error);
+    }
+}
+
+
+// Admin Routes
+
+export const signUpAdmin = async (formData: IFormData) => {
+    try {
+        const response = await UnProtectedAPI.post('/admin/sign-up', formData)
+        return response.data;
+    } catch (error: any) {
+        handleError(error)
+    }
+}
+
+export const verifyAdminOTP = async (otp: number, email: string) => {
+    try {
+        const response = await UnProtectedAPI.post('/admin/otp', { otp: Number(otp), email: email });
+        return response.data;
+    } catch (error: any) {
+        handleError(error)
+
+    }
+}
+
+export const resendAdminOTP = async (email: string) => {
+    try {
+        const response = await UnProtectedAPI.post('/admin/resend-otp', {email});
+        return response.data;
+    } catch (error: any) {
+        handleError(error)
+    }
+}
+
+export const loginAdmin = async (formData: IFormDataLogin) => {
+    try {
+        const response = await UnProtectedAPI.post('/admin/login', formData);
+        return response.data;
+    } catch (error: any) {
+        handleError(error);
+    }
+}

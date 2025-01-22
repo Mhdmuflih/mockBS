@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Otp from "../../../components/Otp";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { resendCandidateOTP, verifyCandidateOTP } from "../../../Services/authService";
 
 const CandidateOtp = () => {
 
@@ -34,10 +34,10 @@ const CandidateOtp = () => {
         setTimer(30);
         setCanResend(false);
         try {
-            const {email} = location.state.email;
+            const email = location.state.email;
             console.log(email, 'this is the email form location')
-            const response: any = await axios.post('http://localhost:8080/auth-service/candidate/resend-otp', { email });
-            if (response.data.success) {
+            const response: any = await resendCandidateOTP(email);
+            if (response.success) {
                 console.log(email, 'okokoko');
             } else {
                 console.log("failed guysss");
@@ -78,14 +78,14 @@ const CandidateOtp = () => {
         const OtpData = otp.join("");
 
         try {
-            const {email, context} = location.state.email
-            // console.log(location.state.email, 'what is this');
-            // console.log(otp, ' this is the otp for the candidate');
-            const response: any = await axios.post('http://localhost:8080/auth-service/candidate/otp', { otp: Number(OtpData), email: email });
-            if (response.data.success) {
+            const {email, context}: {email: string, context: string} = location.state;
+            console.log(location.state, 'what is this');
+            console.log(otp, ' this is the otp for the candidate');
+            const response: any = await verifyCandidateOTP(Number(OtpData), email);
+            if (response.success) {
                 Swal.fire({
                     titleText: "Success!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "success",
                     confirmButtonText: "OK"
                 });
@@ -99,16 +99,16 @@ const CandidateOtp = () => {
             } else {
                 Swal.fire({
                     titleText: "Error!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "error",
                     confirmButtonText: "OK"
                 });
             }
         } catch (error: any) {
-            console.log(error.message);
+            console.log(error.message,'this is error');
             Swal.fire({
                 titleText: "Error!",
-                text: error.response?.data?.message || "An unexpected error occurred. Please try again later.",
+                text: error.message || "An unexpected error occurred. Please try again later.",
                 icon: "error",
                 confirmButtonText: "OK"
             });

@@ -12,7 +12,7 @@ export interface SignupProps {
     errors: any;
 }
 
-export interface FormData {
+export interface IFormData {
     name: string;
     mobile: string;
     email: string;
@@ -31,7 +31,7 @@ export interface OtpProps {
     handleKeyDown: (event: React.KeyboardEvent<HTMLInputElement>, index: number) => void;
 }
 
-export interface formDataLogin {
+export interface IFormDataLogin {
     email: string;
     password: string;
 }

@@ -1,8 +1,9 @@
-import express,{ Application } from "express";
+import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import proxy from "express-http-proxy";
 import dotenv from "dotenv";
+import { verifyJWT } from "./middleware/jwtVerification";
 
 
 dotenv.config();
@@ -20,8 +21,14 @@ app.use(morgan("tiny"));
 
 app.use('/auth-service', proxy("http://localhost:1000"));
 
+app.use("/user-service", verifyJWT, proxy("http://localhost:2000"));
+
 
 const port: number = parseInt(process.env.PORT || "8000");
+
+app.use("*", (req: Request, res: Response) => {
+    res.status(404).json({ message: "Route not found" });
+});
 
 app.listen(port, () => {
     console.log(`Gateway server Running on Ports: http://localhost:${port}`)

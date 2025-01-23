@@ -90,26 +90,26 @@ class InterviewerRepository extends BaseRepository<any> implements IInterviewerR
         }
     }
 
-    async addInterviewerDetails(interviewerData: Partial<any>): Promise<IInterviewer | null> {
-        try {
-            return await interviewerModel.findOneAndUpdate(
-                { email: interviewerData.email }, // Filter by email
-                {
-                    $set: {
-                        yearOfExperience: interviewerData.experience,
-                        currentDesignation: interviewerData.designation,
-                        organization: interviewerData.organization,
-                        university: interviewerData.university,
-                        introduction: interviewerData.introduction,
-                        isDetails: true // Marking as details added
-                    }
-                },
-                { new: true } // Return the updated document
-            );
-        } catch (error: any) {
-            throw new Error(`Error while add Interviewer Details: ${error instanceof Error ? error.message : String(error)}`);
-        }
-    }
+    // async addInterviewerDetails(interviewerData: Partial<any>): Promise<IInterviewer | null> {
+    //     try {
+    //         return await interviewerModel.findOneAndUpdate(
+    //             { email: interviewerData.email }, // Filter by email
+    //             {
+    //                 $set: {
+    //                     yearOfExperience: interviewerData.experience,
+    //                     currentDesignation: interviewerData.designation,
+    //                     organization: interviewerData.organization,
+    //                     university: interviewerData.university,
+    //                     introduction: interviewerData.introduction,
+    //                     isDetails: true // Marking as details added
+    //                 }
+    //             },
+    //             { new: true } // Return the updated document
+    //         );
+    //     } catch (error: any) {
+    //         throw new Error(`Error while add Interviewer Details: ${error instanceof Error ? error.message : String(error)}`);
+    //     }
+    // }
 
     // async loginInterviewer(interviewerData: Partial<IInterviewer>): Promise<any> {
     //     try {

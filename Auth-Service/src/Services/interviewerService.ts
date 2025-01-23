@@ -192,18 +192,18 @@ export class InterviewerService implements IInterviewerService {
         }
     }
 
-    async addDetails(experience: number, designation: string, organization: string, university: string, introduction: string, email: string): Promise<IInterviewer | null> {
-        try {
-            const interviewer = await this.interviewerRepository.findInterviewerByEmail(email);
-            if (!interviewer) {
-                throw new Error(MESSAGES.INTERVIEWER_NOT_FOUND);
-            }
+    // async addDetails(experience: number, designation: string, organization: string, university: string, introduction: string, email: string): Promise<IInterviewer | null> {
+    //     try {
+    //         const interviewer = await this.interviewerRepository.findInterviewerByEmail(email);
+    //         if (!interviewer) {
+    //             throw new Error(MESSAGES.INTERVIEWER_NOT_FOUND);
+    //         }
 
-            const updateDetails = await this.interviewerRepository.addInterviewerDetails({ experience, designation, organization, university, introduction, email });
-            return updateDetails;
-        } catch (error: any) {
-            console.log(error.message);
-            throw error;
-        }
-    }
+    //         const updateDetails = await this.interviewerRepository.addInterviewerDetails({ experience, designation, organization, university, introduction, email });
+    //         return updateDetails;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw error;
+    //     }
+    // }
 }

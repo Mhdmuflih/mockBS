@@ -113,15 +113,14 @@ export class CandidateControllers implements ICandidateController {
         try {
             const { email, password, confirmPassword } = req.body;
             console.log(req.body, 'this is the change password body data in controller');
-            
+
             if (!email || !password || !confirmPassword) {
                 res.status(400).json({ success: false, message: "Please provide email, password, and confirm password." });
                 return;
             }
-    
-            // Call the service method to change the password
+            
             await this.candidateService.changePassword(email, password, confirmPassword);
-    
+
             res.status(HTTP_STATUS.OK).json({ success: true, message: "Your password changed successfully." });
         } catch (error: any) {
             if (error instanceof Error) {
@@ -132,7 +131,7 @@ export class CandidateControllers implements ICandidateController {
             }
         }
     }
-    
+
 
     async loginCandidate(req: Request, res: Response): Promise<void> {
         try {

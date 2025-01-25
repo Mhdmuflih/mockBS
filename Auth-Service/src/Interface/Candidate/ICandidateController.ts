@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 export interface ICandidateController {
+    googleAuth(req: Request, res: Response): Promise<void>;
     signUpCanidate(req: Request, res: Response): Promise<void>;
     otpVerification(req: Request, res: Response): Promise<void>;
     resendOtp(req: Request, res: Response): Promise<void>;

@@ -54,6 +54,15 @@ class CandidateRepository extends BaseRepository<ICandidate> implements ICandida
     }
     
 
+    // async createCandidateWithGoogle(candidateData: Partial<ICandidate>): Promise<ICandidate> {
+    //     try {
+    //         return await this.createCandidateWithGoogle(candidateData);
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new Error(`Error while creating Candidate : ${error instanceof Error ? error.message : String(error)}`);
+    //     }
+    // }
+
 
     async createCandidate(candidateData: Partial<ICandidate>): Promise<ICandidate> {
         try {

@@ -11,6 +11,7 @@ const candidateController = new CandidateControllers(candidateService);
 const Candidate_Route = Router();
 
 // define the route
+Candidate_Route.post('/google', candidateController.googleAuth.bind(candidateController));
 Candidate_Route.post('/sign-up', candidateController.signUpCanidate.bind(candidateController));
 Candidate_Route.post('/otp', candidateController.otpVerification.bind(candidateController));
 Candidate_Route.post('/resend-otp',candidateController.resendOtp.bind(candidateController));

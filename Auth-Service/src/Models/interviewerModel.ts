@@ -3,7 +3,7 @@ import { Document, model, Schema } from "mongoose";
 
 
 export interface IInterviewer extends Document {
-    OTP: number;
+    OTP?: number;
     name: string;
     mobile: string;
     email: string;
@@ -12,6 +12,7 @@ export interface IInterviewer extends Document {
     expaireAt: Date;
     isBlocked?: boolean;
     isVerified?: boolean;
+    isApproved?: boolean;
     isDetails?: boolean;
     currentDesignation?: string;
     yearOfExperience?: number;
@@ -42,7 +43,6 @@ const interviewerSchema: Schema = new Schema({
     },
     OTP:{
         type:Number,
-        required:true
     },
     createdAT:{
         type:Date,
@@ -58,6 +58,10 @@ const interviewerSchema: Schema = new Schema({
         required: true
     },
     isVerified: {
+        type: Boolean,
+        default: false
+    },
+    isApproved: {
         type: Boolean,
         default: false
     },

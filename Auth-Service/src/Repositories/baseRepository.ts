@@ -5,6 +5,16 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
 
     constructor(protected readonly model: Model<T>) { }
 
+    // async googleAuth(data: Partial<T>): Promise<T> {
+    //     try {
+    //         const googleAuthData = new this.model(data);
+    //         console.log(googleAuthData,'this is google authdata in base rep');
+    //         return await googleAuthData.save();
+    //     } catch (error: unknown) {
+    //         throw new Error(`Error while creating entity in google auth:${error instanceof Error ? error.message : String}`);
+    //     }
+    // }
+
     async create(data: Partial<T>): Promise<T> {
         try {
             const entity = new this.model(data);

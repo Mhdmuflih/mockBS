@@ -15,6 +15,38 @@ export class CandidateService implements ICandidateService {
         private candidateRepository: ICandidateRepository,
     ) { };
 
+    async googleAuth(googleData: any): Promise<{ accessToken: string; refreshToken: string; candidate: ICandidate }> {
+        try {
+          if (!googleData.email || !googleData.name) {
+            throw new Error("Google data is missing required fields.");
+          }
+      
+          const existingCandidate = await this.candidateRepository.findCandidateByEmail(googleData.email);
+          if (existingCandidate) {
+            const accessToken = generateAccessToken(existingCandidate._id as string);
+            const refreshToken = generateRefreshToken(existingCandidate._id as string);
+            return { accessToken, refreshToken, candidate: existingCandidate };
+          }
+      
+          const newCandidate: ICandidate = await this.candidateRepository.createCandidate({
+            name: googleData.name,
+            email: googleData.email,
+            password: "", // Social login users don't have passwords
+            mobile: "Not Provided",
+            isVerified: true,
+          });
+      
+          const accessToken = generateAccessToken(newCandidate._id as string);
+          const refreshToken = generateRefreshToken(newCandidate._id as string);
+      
+          return { accessToken, refreshToken, candidate: newCandidate };
+        } catch (error: any) {
+          console.error("Error in Google Auth Service:", error.message);
+          throw new Error("Failed to authenticate with Google.");
+        }
+      }
+      
+
     async createCandidate(name: string, mobile: string, email: string, password: string): Promise<any> {
         try {
 

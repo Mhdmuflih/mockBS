@@ -7,6 +7,37 @@ import { HTTP_STATUS } from "../Constants/httpStatus";
 export class CandidateControllers implements ICandidateController {
     constructor(private candidateService: ICandidateService) { }
 
+    async googleAuth(req: Request, res: Response): Promise<void> {
+        try {
+          const { email, name } = req.body;
+      
+          if (!email || !name) {
+            res.status(400).json({
+              success: false,
+              message: "Google data is missing required fields.",
+            });
+            return;
+          }
+      
+          const { accessToken, refreshToken, candidate } = await this.candidateService.googleAuth({
+            name: name,
+            email: email,
+          });
+      
+          res.status(200).json({
+            success: true,
+            message: "Verified",
+            token: accessToken,
+            refreshToken,
+            candidateData: candidate,
+          });
+        } catch (error: any) {
+          console.error("Error in Google Auth Controller:", error.message);
+          res.status(409).json({ success: false, message: error.message });
+        }
+      }
+      
+
     async signUpCanidate(req: Request, res: Response): Promise<void> {
         try {
             const { name, mobile, email, password } = req.body;
@@ -118,7 +149,7 @@ export class CandidateControllers implements ICandidateController {
                 res.status(400).json({ success: false, message: "Please provide email, password, and confirm password." });
                 return;
             }
-            
+
             await this.candidateService.changePassword(email, password, confirmPassword);
 
             res.status(HTTP_STATUS.OK).json({ success: true, message: "Your password changed successfully." });

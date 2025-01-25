@@ -11,7 +11,7 @@ dotenv.config();
 const app: Application = express();
 
 const corsOptions = {
-    origin: "http://localhost:5173", // Replace with the frontend URL
+    origin: process.env.FrontEnd, // Replace with the frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,  // Allow cookies or credentials to be sent with the request
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -21,12 +21,12 @@ app.use(cors(corsOptions));
 app.use(morgan("tiny"));
 
 
-app.use('/auth-service', proxy("http://localhost:1000"));
+app.use('/auth-service', proxy(process.env.Auth_Service as string || "http://localhost:1010"));
 
-app.use("/user-service", verifyJWT, proxy("http://localhost:2000"));
+app.use("/user-service", verifyJWT, proxy(process.env.User_Management_Service as string || "http://localhost:2020"));
 
-
-const port: number = parseInt(process.env.PORT || "8000");
+console.log(process.env.PORT)
+const port: number = parseInt(process.env.PORT || "8080");
 
 app.use("*", (req: Request, res: Response) => {
     res.status(404).json({ message: "Route not found" });

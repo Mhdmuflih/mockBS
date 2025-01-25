@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 
 export interface SignupProps {
-    chaild?:ReactNode;
+    icon: ReactNode;
+    chaild?: ReactNode;
     heading: string;
     onNavigate: () => void;
     formData: {
@@ -28,7 +29,7 @@ export interface OtpProps {
     timer: number;
     canResend: boolean;
     inputs: React.RefObject<HTMLInputElement[]>;
-    handleResendOTP: ()=> void;
+    handleResendOTP: () => void;
     handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
     handleChange: (event: React.ChangeEvent<HTMLInputElement>, index: number) => void;
     handleKeyDown: (event: React.KeyboardEvent<HTMLInputElement>, index: number) => void;
@@ -40,7 +41,8 @@ export interface IFormDataLogin {
 }
 
 export interface LoginProps {
-    chaild?:ReactNode;
+    icon: ReactNode;
+    chaild?: ReactNode;
     heading: string;
     formDataLogin: {
         email: string;
@@ -56,7 +58,7 @@ export interface LoginProps {
 export interface forgotProps {
     formData: {
         email: string;
-    } 
+    }
     onNavigate: () => void;
     handleTakeInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
     handleToSubmit: (event: React.FormEvent) => void;

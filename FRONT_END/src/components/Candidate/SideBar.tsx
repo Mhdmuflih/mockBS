@@ -6,6 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../Store/Slice/CandidateSlice";
 import Heading from "./Heading";
 
+import { CgProfile } from "react-icons/cg";
+import { SiGooglemeet } from "react-icons/si";
+import { IoMdAnalytics } from "react-icons/io";
+import { RiLogoutCircleFill, RiUserCommunityFill } from "react-icons/ri";
+import { GoShieldLock } from "react-icons/go";
+
+
+
 interface sideBarProps {
     heading: string;
     children?: ReactNode;
@@ -80,7 +88,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <CgProfile />
                                     </span>
                                     <span>Profile</span>
                                 </div>
@@ -96,7 +104,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <SiGooglemeet />
                                     </span>
                                     <span>Outsourced Interviews</span>
                                 </div>
@@ -112,7 +120,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <IoMdAnalytics />
                                     </span>
                                     <span>Analytics</span>
                                 </div>
@@ -128,7 +136,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <RiUserCommunityFill />
                                     </span>
                                     <span>Community</span>
                                 </div>
@@ -146,7 +154,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <GoShieldLock />
                                     </span>
                                     <span>Change Password</span>
                                 </div>
@@ -159,7 +167,7 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={handleToLogout}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <FaHome />
+                                        <RiLogoutCircleFill />
                                     </span>
                                     <span>Logout</span>
                                 </div>
@@ -168,7 +176,7 @@ const SideBar = (props: sideBarProps) => {
 
                     </div>
                 </div>
-                
+
 
                 <Heading heading={props.heading} children={props.children} />
 

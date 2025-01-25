@@ -1,7 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaHome } from "react-icons/fa";
 import TopBar from "../TopBar";
 import { ReactNode, useEffect, useState } from "react";
+import { CgProfile } from "react-icons/cg";
+import { FaCheckToSlot } from "react-icons/fa6";
+import { RiCalendarScheduleFill, RiLogoutCircleFill } from "react-icons/ri";
+import { FcMoneyTransfer } from "react-icons/fc";
+import { GoShieldLock } from "react-icons/go";
 
 interface sideBarProps {
     handleToLogout: () => void;
@@ -47,7 +51,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <CgProfile />
                                     </span>
                                     <span>Profile</span>
                                 </div>
@@ -63,7 +67,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <FaCheckToSlot />
                                     </span>
                                     <span>Slots</span>
                                 </div>
@@ -79,7 +83,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <RiCalendarScheduleFill />
                                     </span>
                                     <span>Scheduled</span>
                                 </div>
@@ -95,7 +99,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <FcMoneyTransfer />
                                     </span>
                                     <span>Payments</span>
                                 </div>
@@ -113,7 +117,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <GoShieldLock />
                                     </span>
                                     <span>Change Password</span>
                                 </div>
@@ -126,7 +130,7 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={props.handleToLogout}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
-                                        <FaHome />
+                                        <RiLogoutCircleFill />
                                     </span>
                                     <span>Logout</span>
                                 </div>

@@ -8,6 +8,8 @@ import { loginSuccess } from "../../../Store/Slice/CandidateSlice";
 import { formValidation } from "../../../Validations/formValidation";
 import { loginCandidate } from "../../../Services/authService";
 import GoogleAuth from "../../../components/GoogleAuth";
+import { FaUserGraduate } from "react-icons/fa6";
+
 
 const CandidateLogin = () => {
 
@@ -39,7 +41,7 @@ const CandidateLogin = () => {
         }
 
         try {
-            console.log(formDataLogin,'this is the login formData')
+            console.log(formDataLogin, 'this is the login formData')
             const response: any = await loginCandidate(formDataLogin);
             if (response.success) {
                 if (response.candidateData.isBlocked) {
@@ -50,7 +52,7 @@ const CandidateLogin = () => {
                         confirmButtonText: 'OK'
                     });
                     return;
-                }else if (!response.candidateData.isVerified){
+                } else if (!response.candidateData.isVerified) {
                     Swal.fire({
                         title: 'Error!',
                         text: "Your account is not verified. Please verify your accound.",
@@ -114,6 +116,7 @@ const CandidateLogin = () => {
                 handleToSubmit={handleToSubmit}
                 errors={errors}
                 chaild={<GoogleAuth />}
+                icon={<FaUserGraduate className='text-[50px]' />}
             />
         </div>
     )

@@ -1,6 +1,8 @@
+import { RiLockPasswordLine } from "react-icons/ri";
 import backgroundImage from '../assets/Free Vector _ Gradient black background with wavy lines.jpeg'
 import { LoginProps } from '../Interface/Interface';
 import TopBar from './TopBar';
+import { MdEmail } from 'react-icons/md';
 
 
 const Login = (props: LoginProps) => {
@@ -8,12 +10,11 @@ const Login = (props: LoginProps) => {
         <>
             <TopBar />
 
-            <div className="bg-white h-screen flex w-full items-center justify-center pb-10">
-                <div style={{ backgroundImage: `url(${backgroundImage})` }} className="bg-black bg-cover bg-center text-white p-6 w-[550px] rounded-xl shadow-[8px_8px_10px_rgba(0,0,0,1)]">
+            <div className={`h-screen flex w-full items-center justify-center pb-10 ${props.heading === "Admin Login" ? 'bg-black' : 'bg-white'}`}>
+            <div style={{ backgroundImage: `url(${backgroundImage})` }} className="bg-black bg-cover bg-center text-white p-6 w-[600px] rounded-xl shadow-[8px_8px_10px_rgba(0,0,0,1)]">
 
-                    <div>
-                        <img src="" alt="" className="" />
-                        image icon
+                    <div className='flex justify-center items-center '>
+                        {props.icon}
                     </div>
 
                     <h2 className="text-center text-2xl font-semibold mb-4 text-white"> {props.heading} </h2>
@@ -32,6 +33,7 @@ const Login = (props: LoginProps) => {
                                 onChange={props.handleTakeInput}
                                 className="rounded-xl p-2 w-[300px] focus:outline-none focus:ring-2 focus:ring-white bg-[#30323A]"
                             />
+                            <MdEmail className='absolute mt-3 ml-64' />
                             {props.errors.email && (
                                 <p className="text-red-500 text-sm absolute top-full mt-1">
                                     {props.errors.email}
@@ -49,6 +51,7 @@ const Login = (props: LoginProps) => {
                                 onChange={props.handleTakeInput}
                                 className="rounded-xl p-2 w-[300px] focus:outline-none focus:ring-2 focus:ring-white bg-[#30323A]"
                             />
+                            <RiLockPasswordLine className='absolute mt-3 ml-64' />
                             {props.errors.password && (
                                 <p className="text-red-500 text-sm absolute top-full mt-1">
                                     {props.errors.password}

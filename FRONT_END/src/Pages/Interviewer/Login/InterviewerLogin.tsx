@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../Store/Slice/InterviewerSlice";
 import { formValidation } from "../../../Validations/formValidation";
 import { loginInterviewer } from "../../../Services/authService";
+import { FaUserTie } from "react-icons/fa";
 
 const InterviewerLogin = () => {
 
@@ -117,6 +118,7 @@ const InterviewerLogin = () => {
                 handleTakeInput={handleTakeInput}
                 handleToSubmit={handleToSubmit}
                 errors={errors}
+                icon={<FaUserTie className="text-[50px]" />}
             />
         </div>
     )

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IFormData, IFormDataLogin } from "../Interface/Interface";
 
-const baseURL = "http://localhost:8080/auth-service";
+const baseURL = "http://localhost:8000/auth-service";
 
 const UnProtectedAPI = axios.create({
     baseURL: baseURL

@@ -5,6 +5,7 @@ import { IFormData } from "../../../Interface/Interface";
 import Swal from "sweetalert2";
 import { formValidation } from "../../../Validations/formValidation";
 import { signUpInterviewer } from "../../../Services/authService";
+import { FaUserTie } from "react-icons/fa";
 
 const InterviewerSignup = () => {
 
@@ -82,6 +83,7 @@ const InterviewerSignup = () => {
                 handleTakeInput={handleTakeInput}
                 handleToSubmit={handleToSubmit}
                 errors={errors}
+                icon={<FaUserTie className="text-[50px]" />}
             />
         </div>
     )

@@ -44,7 +44,7 @@ const GoogleAuth: React.FC = () => {
 
     return (
         <GoogleOAuthProvider clientId="976888538452-spislbvir2jpkc9uqjnvstbbqbsirc2h.apps.googleusercontent.com">
-            <div className="google-auth-container w-[300px] ml-24">
+            <div className="google-auth-container w-[300px] ml-[125px]">
                 <GoogleLogin
                     onSuccess={handleSuccess}
                     onError={handleError}

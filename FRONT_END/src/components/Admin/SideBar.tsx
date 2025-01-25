@@ -1,9 +1,23 @@
 import { ReactNode, useEffect, useState } from "react";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaUsers } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import Heading from "./Heading";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../Store/Slice/AdminSlice";
+import logo from "../../assets/Creative Logo Templates.jpeg"
+
+
+
+import { RxDashboard } from "react-icons/rx";
+import { FcApproval } from "react-icons/fc";
+import { FaUsersGear } from "react-icons/fa6";
+import { SiGooglemeet } from "react-icons/si";
+import { BsStack } from "react-icons/bs";
+import { RiLogoutCircleFill, RiUserCommunityFill } from "react-icons/ri";
+
+
+
+
 
 interface sideBarProps {
     heading: string;
@@ -37,13 +51,16 @@ const SideBar = (props: sideBarProps) => {
         setActivePath(location.pathname);
     }, [location]);
 
+    const handleToLogo = () => {
+        navigate('/admin/dashboard');
+    }
 
     return (
         <>
             <div className="bg-black h-screen flex">
                 <div className=" bg-[#30323A] h-[450px] w-52 p-4 ml-1 mt-2 rounded-xl">
-                    <div className="bg-white  w-12 h-12 ml-16 mt-2">
-                        <img src="" alt="" /> icon
+                    <div className=" w-14 ml-16 mt-2">
+                        <img onClick={handleToLogo} src={logo} alt="Company Logo" className="h-12 mr-4 hover:cursor-pointer" /> 
                     </div>
                     <h2 className="text-center font-bold mt-1 text-white">mock BS</h2>
 
@@ -61,7 +78,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <FaHome />
+                                        <RxDashboard />
                                     </span>
                                     <span >Dashboard</span>
                                 </div>
@@ -77,7 +94,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <FaHome />
+                                        <FcApproval />
                                     </span>
                                     <span >Approval</span>
                                 </div>
@@ -93,7 +110,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <FaHome />
+                                        <FaUsersGear />
                                     </span>
                                     <span >All Interviewers</span>
                                 </div>
@@ -109,7 +126,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <FaHome />
+                                        <FaUsers />
                                     </span>
                                     <span >Candidates</span>
                                 </div>
@@ -125,7 +142,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <FaHome />
+                                        <SiGooglemeet />
                                     </span>
                                     <span >Interviews</span>
                                 </div>
@@ -141,7 +158,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <FaHome />
+                                        <BsStack />
                                     </span>
                                     <span >Stack</span>
                                 </div>
@@ -157,7 +174,7 @@ const SideBar = (props: sideBarProps) => {
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <FaHome />
+                                        <RiUserCommunityFill />
                                     </span>
                                     <span >Communities</span>
                                 </div>
@@ -189,7 +206,7 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={handleToLogout}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <FaHome />
+                                        <RiLogoutCircleFill />
                                     </span>
                                     <span>Logout</span>
                                 </div>
@@ -201,7 +218,7 @@ const SideBar = (props: sideBarProps) => {
 
             <Heading heading={props.heading} children={props.children} />
 
-            
+
         </>
     )
 }

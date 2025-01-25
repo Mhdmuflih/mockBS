@@ -7,6 +7,7 @@ import { formValidation } from "../../../Validations/formValidation";
 import { IFormDataLogin } from "../../../Interface/Interface";
 import Swal from "sweetalert2";
 import { loginAdmin } from "../../../Services/authService";
+import { RiAdminFill } from "react-icons/ri";
 
 const AdminLogin = () => {
 
@@ -103,6 +104,7 @@ const AdminLogin = () => {
                 handleToSubmit={handleToSubmit}
                 errors={errors}
                 forgotPassword={handleToForgotPassword}
+                icon={<RiAdminFill className="text-[50px]" />}
             />
         </div>
     )

@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { formValidation } from "../../../Validations/formValidation";
 import { signUpCandidate } from "../../../Services/authService";
 import GoogleAuth from "../../../components/GoogleAuth";
+import { FaUserGraduate } from "react-icons/fa6";
+
 
 const CandidateSignup = () => {
 
@@ -84,6 +86,7 @@ const CandidateSignup = () => {
                 handleToSubmit={handleToSubmit}
                 errors={errors}
                 chaild={<GoogleAuth />}
+                icon={<FaUserGraduate className='text-[50px]' />}
             />
         </div>
     );

@@ -21,7 +21,7 @@ const Home = () => {
     }
 
     return (
-        <div>
+        <>
 
             {/* top bar */}
 
@@ -78,7 +78,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="flex justify-evenly mt-10">
-                    <div className="bg-[#30323A] py-10 px-4 rounded-3xl hover:cursor-pointer hover:bg-white shadow-[8px_8px_10px_rgba(255,255,255,0.17)] hover:shadow-lg transition duration-300 group">
+                        <div className="bg-[#30323A] py-10 px-4 rounded-3xl hover:cursor-pointer hover:bg-white shadow-[8px_8px_10px_rgba(255,255,255,0.17)] hover:shadow-lg transition duration-300 group">
                             <img src="" alt="" className="mb-4" />icon
                             <h1 className="text-white text-xs font-bold group-hover:text-black">Full Stack</h1>
                             <p className="text-white text-xs group-hover:text-black">End-to-end application development</p>
@@ -99,11 +99,96 @@ const Home = () => {
 
             {/* 3 part */}
 
-            <div>
-                <h1 className="text-[#999999] font-bold font-serif text-[100px] mt-9 text-center">How It Works?</h1>
+            <>
+                <h1 className="text-[#999999] font-bold font-serif text-[100px] mt-32 text-center">How It Works?</h1>
+
+
+                <div className="flex justify-evenly mt-32">
+                    <div className="flex  ">
+                        <div className="bg-[rgba(50,173,230,0.36)] w-20 h-20 rounded-3xl">
+                            <h1 className="text-2xl font-bold text-center mt-6">1</h1>
+                        </div>
+                        <div className="mt-5 ml-3 font-bold font-sans">
+                            <h2>Find your interviewer or </h2>
+                            <h2>mentor</h2>
+                        </div>
+                    </div>
+                    <div className="flex  ">
+                        <div className="bg-[rgba(50,173,230,0.36)] w-20 h-20 rounded-3xl">
+                            <h1 className="text-2xl font-bold text-center mt-6">2</h1>
+                        </div>
+                        <div className="mt-5 ml-3 font-bold font-sans">
+                            <h2>Participate in your</h2>
+                            <h2>session</h2>
+                        </div>
+                    </div>
+                    <div className="flex  ">
+                        <div className="bg-[rgba(50,173,230,0.36)] w-20 h-20 rounded-3xl">
+                            <h1 className="text-2xl font-bold text-center mt-6">3</h1>
+                        </div>
+                        <div className="mt-5 ml-3 font-bold font-sans">
+                            <h2>Get a top-notch reliable</h2>
+                            <h2>feedback</h2>
+                        </div>
+                    </div>
+                </div>
+            </>
+
+            {/* part 4 content part */}
+
+            <div className="flex justify-evenly mt-4">
+                <div className="ml-24 font-extralight">
+                    <p>Browse and find interviewers from top</p>
+                    <p>companies best matching your targeted</p>
+                    <p>position, and book a session with them.</p>
+                </div>
+                <div className="ml-20 font-extralight">
+                    <p>Join the call with your interviewers and mentors</p>
+                    <p>on the scheduled time. The style of the mock</p>
+                    <p>interviews are in the way that you expect in a</p>
+                    <p>job interview.</p>
+                </div>
+                <div className="mr-2 font-extralight">
+                    <p>Practice on the areas for improvement based on</p>
+                    <p>the provided feedback. Learn, strengthen your</p>
+                    <p>skills, and go on to get your dream job!</p>
+                </div>
             </div>
 
-        </div>
+
+            {/* footer */}
+
+            <div className="bg-[#30323A] h-full flex justify-normal space-x-64 mt-48">
+                <div className="flex ml-5">
+                    <div className="mt-10">
+                        <img onClick={navigateToHomePage} src={logo} alt="Company Logo" className="h-10 w-14 mr-4 ml-3 hover:cursor-pointer" />
+                    </div>
+                    <h1 className="font-bold text-white mt-12">mockBS</h1>
+                </div>
+                <div className="text-white mt-10 font-extralight">
+                    <h1 className="font-bold">Contact Information</h1>
+                    <div className="mt-5">
+                        <p>Email: mockbs@gmail.com</p>
+                        <p>Phone: +91 9495891255</p>
+                        <p>Address: 1232, Finland, Tech</p>
+                        <p>city</p>
+                    </div>
+                </div>
+                <div className="text-white mt-10 font-extralight">
+                    <h1 className="font-bold">Company</h1>
+                    <div className="mt-5">
+                        <p>About Us</p>
+                        <p>Careers</p>
+                        <p>Privacy Policy</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-[#30323A] p-12">
+                <h1 className="text-center text-white mt-10">@ 2025 mock BS, All rights reserved.</h1>
+            </div>
+
+        </>
     )
 }
 

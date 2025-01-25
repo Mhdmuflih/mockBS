@@ -10,12 +10,14 @@ dotenv.config();
 
 const app: Application = express();
 
-const corsOption = {
-    origin: "http://localhost:5173",
-    Credential: true
-}
+const corsOptions = {
+    origin: "http://localhost:5173", // Replace with the frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,  // Allow cookies or credentials to be sent with the request
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
 
-app.use(cors(corsOption));
+app.use(cors(corsOptions));
 app.use(morgan("tiny"));
 
 

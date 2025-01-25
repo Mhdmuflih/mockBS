@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Post()
-  create(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.create(createAdminDto);
+  // Get all interview approvals
+  @Get('approval')
+  getAllInterviewerApproval() {
+    return this.adminService.findAllApproval();
   }
 
-  @Get()
-  findAll() {
-    return this.adminService.findAll();
+  // Get approval details by ID
+  @Get('approval-details/:id')
+  getApprovalDetails(@Param('id') id: string) {
+    return this.adminService.findOne(id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adminService.findOne(+id);
+  // Approve details for a specific ID
+  @Post('approval-details/:id')
+  approveDetails(@Param('id') id: string) {
+    return this.adminService.approveDetails(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminService.update(+id, updateAdminDto);
+  // Get all candidates
+  @Get('candidates')
+  getAllCandidates() {
+    return this.adminService.getAllCandidate();
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminService.remove(+id);
+  // Get details of a specific candidate by ID
+  @Get('candidates/:id') // Changed from POST to GET as it's fetching data
+  getCandidateDetails(@Param('id') id: string) {
+    return this.adminService.getcandidateDetails(id);
   }
 }

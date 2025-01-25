@@ -13,7 +13,8 @@ export class InterviewerService {
   async updateDetails(bodyData: CreateInterviewerDto) {
     try {
       const { formData, email }: any = bodyData;
-      if (!formData || !email) {
+      console.log(bodyData, 'this is the body data');
+      if (!formData || !email ) {
         return { success: false, message: "All fields are required." }
       }
 
@@ -44,25 +45,17 @@ export class InterviewerService {
     }
   }
 
-
-  // create(createInterviewerDto: CreateInterviewerDto) {
-  //   console.log("koi kokii jndjfnsdjnfsdjnfsujjnj")
-  //   return 'This action adds a new interviewer';
-  // }
-
-  // findAll() {
-  //   return `This action returns all interviewer`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} interviewer`;
-  // }
-
-  // update(id: number, updateInterviewerDto: UpdateInterviewerDto) {
-  //   return `This action updates a #${id} interviewer`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} interviewer`;
-  // }
+  async findOneById(userId: string) {
+    try {
+      const interviewerData = await this.interviewerModel.findOne({ _id:userId });
+      if (!interviewerData) {
+        throw new Error('Interviewer not found.');
+      }
+      console.log(interviewerData,'this is interviewer fetching in profile')
+      return { success: true, message: "Candidate Data.", interviewerData: interviewerData };
+    } catch (error: any) {
+      console.error('Error sending OTP:', error);
+      return { success: false, message: 'Failed to fetch candidate details!' };
+    }
+  }
 }

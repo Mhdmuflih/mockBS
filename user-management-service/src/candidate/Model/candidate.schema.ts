@@ -3,7 +3,7 @@ import { Document, model, Schema } from "mongoose";
 
 
 export interface ICandidate extends Document {
-    OTP: number;
+    OTP?: number;
     name: string;
     mobile: string;
     email: string;
@@ -31,7 +31,7 @@ const candidateSchema: Schema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        default:""
     },
     isBlocked: {
         type: Boolean,
@@ -44,7 +44,6 @@ const candidateSchema: Schema = new Schema({
     },
     OTP: {
         type: Number,
-        required: true
     },
     expaireAt: {
         type: Date,
@@ -53,4 +52,7 @@ const candidateSchema: Schema = new Schema({
 }, { timestamps: true });
 
 
-export default model<ICandidate>('Candidate', candidateSchema);
+export default candidateSchema;
+
+// Optionally, export the model for manual use elsewhere
+export const InterviewerModel = model<ICandidate>("Candidate", candidateSchema);

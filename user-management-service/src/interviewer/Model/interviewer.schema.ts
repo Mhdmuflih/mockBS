@@ -12,6 +12,7 @@ export interface IInterviewer extends Document {
     expaireAt: Date;
     isBlocked?: boolean;
     isVerified?: boolean;
+    isApproved?:boolean;
     isDetails?: boolean;
     currentDesignation?: string;
     yearOfExperience?: number;
@@ -60,6 +61,10 @@ const interviewerSchema: Schema = new Schema({
     isVerified: {
         type: Boolean,
         default: false
+    },
+    isApproved: {
+        type: Boolean,
+        default:false
     },
     isDetails: {
         type: Boolean,

@@ -8,8 +8,9 @@ async function server() {
 
   app.enableCors({
     origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    credentials: true
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE','PATCH'],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   });
 
   const configService = app.get(ConfigService);  //   // Get ConfigService from AppModule

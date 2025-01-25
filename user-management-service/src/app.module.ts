@@ -4,6 +4,7 @@ import { InterviewerModule } from './interviewer/interviewer.module';
 import { AdminModule } from './admin/admin.module';
 import { CandidateModule } from './candidate/candidate.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CloudinaryService } from './Config/cloudinary.service';
 
 @Module({
   imports: [
@@ -19,5 +20,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     InterviewerModule,
     AdminModule,
   ],
+  providers: [CloudinaryService],
 })
 export class AppModule { }

@@ -1,34 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Headers, BadRequestException } from '@nestjs/common';
 import { InterviewerService } from './interviewer.service';
 import { CreateInterviewerDto } from './dto/create-interviewer.dto';
 import { UpdateInterviewerDto } from './dto/update-interviewer.dto';
+import { CloudinaryService } from 'src/Config/cloudinary.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @Controller('interviewer')
 export class InterviewerController {
-  constructor(private readonly interviewerService: InterviewerService) {}
+  constructor(
+    private readonly interviewerService: InterviewerService,
+    // private readonly cloudinaryService: CloudinaryService
+  ) {}
 
   @Patch("details") // Use PATCH for updates
-  async updateInterviewerDetails(@Body() bodyData: CreateInterviewerDto) {
-    return await this.interviewerService.updateDetails(bodyData);
+  async updateInterviewerDetails( @Body() bodyData: any )  {
+    console.log(bodyData,  'this is the controller body data and file data')
+    return await this.interviewerService.updateDetails(bodyData); // Pass the file URL if it exists
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.interviewerService.findAll();
-  // }
+  @Get('profile')
+  findOne(@Headers('x-user-id') userId: any) {
+    console.log(`User ID from header: ${userId}`);
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.interviewerService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateInterviewerDto: UpdateInterviewerDto) {
-  //   return this.interviewerService.update(+id, updateInterviewerDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.interviewerService.remove(+id);
-  // }
+    if (!userId) {
+      throw new BadRequestException('User ID is missing from the headers');
+    }
+    return this.interviewerService.findOneById(userId); // Call the service method with `userId`
+  }
 }

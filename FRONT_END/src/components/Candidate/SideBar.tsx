@@ -2,9 +2,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 import TopBar from "../TopBar";
 import { ReactNode, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../Store/Slice/CandidateSlice";
+import Heading from "./Heading";
 
 interface sideBarProps {
-    handleToLogout: () => void;
     heading: string;
     children?: ReactNode;
 }
@@ -12,8 +14,24 @@ interface sideBarProps {
 
 const SideBar = (props: sideBarProps) => {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+
+    const { isLoggedIn } = useSelector((state: any) => state.candidateAuth);
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate("/candidate/login");
+        }
+    }, [isLoggedIn, navigate]);
+
+    const handleToLogout = () => {
+        dispatch(logout());
+        navigate('/');
+    }
+
+
 
     const [activePath, setActivePath] = useState(location.pathname);
 
@@ -34,7 +52,7 @@ const SideBar = (props: sideBarProps) => {
                         <img src="" alt="" /> icon
                     </div>
 
-                    <div className="pt-2">
+                    <div className="pt-2 ">
                         <ul className="space-y-2">
                             <li>
                                 <div
@@ -55,7 +73,7 @@ const SideBar = (props: sideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/candidate/profile" ? "bg-white text-black" : ""}`}
+                                ${activePath === "/candidate/profile" ? " bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/candidate/profile");
                                         navigate("/candidate/profile");
@@ -71,7 +89,7 @@ const SideBar = (props: sideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/candidate/interviews" ? "bg-white text-black" : ""}`}
+                                ${activePath === "/candidate/interviews" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/candidate/intervierws");
                                         navigate("/candidate/interviews");
@@ -87,7 +105,7 @@ const SideBar = (props: sideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/candidate/analytics" ? "bg-white text-black" : ""}`}
+                                ${activePath === "/candidate/analytics" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/candidate/analytics");
                                         navigate("/candidate/analytics");
@@ -103,7 +121,7 @@ const SideBar = (props: sideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/candidate/community" ? "bg-white text-black" : ""}`}
+                                ${activePath === "/candidate/community" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/candidate/community");
                                         navigate("/candidate/community");
@@ -121,7 +139,7 @@ const SideBar = (props: sideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/candidate/password" ? "bg-white text-black" : ""}`}
+                                ${activePath === "/candidate/password" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/candidate/password");
                                         navigate("/candidate/password");
@@ -136,11 +154,11 @@ const SideBar = (props: sideBarProps) => {
 
                             <li>
                                 <div
-                                    className={`flex items-center space-x-3 text-white p-2 bg-[#FF3B30] rounded-lg cursor-pointer hover:bg-[#912626] transition-all duration-300 group 
-                                ${activePath === "/candidate/home" ? "bg-white text-black" : ""}`}
-                                    onClick={props.handleToLogout}
+                                    className={`flex items-center space-x-3 text-white p-1 bg-[#FF3B30] rounded-lg cursor-pointer hover:bg-[#912626] transition-all duration-300 group 
+                                ${activePath === "/candidate/home" ? "bg-[#999999]" : ""}`}
+                                    onClick={handleToLogout}
                                 >
-                                    <span className="group-hover:scale-110 transition-transform duration-200">
+                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <FaHome />
                                     </span>
                                     <span>Logout</span>
@@ -150,18 +168,11 @@ const SideBar = (props: sideBarProps) => {
 
                     </div>
                 </div>
-                {/* Main Content */}
-                <div className="flex-1 flex flex-col">
-                    {/* Heading Section */}
-                    <div className="bg-[#181A22] mt-3 ml-1 rounded-t-lg p-5">
-                        <h1 className="text-2xl font-bold text-white">{props.heading}</h1>
-                    </div>
+                
 
-                    {/* Content Section */}
-                    <div className="flex-1">
-                        {props.children}
-                    </div>
-                </div>
+                <Heading heading={props.heading} children={props.children} />
+
+
             </div>
         </>
     )

@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../Store/Slice/CandidateSlice";
 import { formValidation } from "../../../Validations/formValidation";
 import { loginCandidate } from "../../../Services/authService";
+import GoogleAuth from "../../../components/GoogleAuth";
 
 const CandidateLogin = () => {
 
@@ -112,6 +113,7 @@ const CandidateLogin = () => {
                 handleTakeInput={handleTakeInput}
                 handleToSubmit={handleToSubmit}
                 errors={errors}
+                chaild={<GoogleAuth />}
             />
         </div>
     )

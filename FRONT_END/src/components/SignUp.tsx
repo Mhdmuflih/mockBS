@@ -17,9 +17,9 @@ const SignUp = (props: SignupProps) => {
             image icon
           </div>
 
-          <h2 className="text-center text-2xl font-semibold mb-4 text-white">
-            {props.heading}
-          </h2>
+          <h2 className="text-center text-2xl font-semibold mb-4 text-white">{props.heading}</h2>
+
+          {props.chaild ? props.chaild : <></>}          
 
           <form className="space-y-2" onSubmit={props.handleToSubmit}>
             <div className="pt-4 flex relative justify-center">

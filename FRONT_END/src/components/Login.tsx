@@ -18,6 +18,8 @@ const Login = (props: LoginProps) => {
 
                     <h2 className="text-center text-2xl font-semibold mb-4 text-white"> {props.heading} </h2>
 
+                    {props.chaild ? props.chaild : <></>}
+
                     <form className="space-y-8" onSubmit={props.handleToSubmit}>
 
                         <div className="flex justify-center pt-4 relative">

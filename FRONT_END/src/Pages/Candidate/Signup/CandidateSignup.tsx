@@ -5,6 +5,7 @@ import { IFormData } from "../../../Interface/Interface";
 import Swal from "sweetalert2";
 import { formValidation } from "../../../Validations/formValidation";
 import { signUpCandidate } from "../../../Services/authService";
+import GoogleAuth from "../../../components/GoogleAuth";
 
 const CandidateSignup = () => {
 
@@ -82,6 +83,7 @@ const CandidateSignup = () => {
                 handleTakeInput={handleTakeInput}
                 handleToSubmit={handleToSubmit}
                 errors={errors}
+                chaild={<GoogleAuth />}
             />
         </div>
     );

@@ -22,6 +22,18 @@ const handleError = (error: any): never => {
 
 // Candidate Routes
 
+export const googleAuthenticationCandidate = async ({email, name}: {email:string, name: string}) => {
+    try {
+        const response = await UnProtectedAPI.post('/candidate/google',{ email,name },{ headers: { 'Content-Type': 'application/json' } } );
+        return response.data;
+    } catch (error: any) {
+        console.log("Error in Google Authentication:", error.message);
+        throw error;
+    }
+}
+
+
+
 export const signUpCandidate = async (formData: IFormData) => {
     try {
         const response = await UnProtectedAPI.post('/candidate/sign-up', formData)

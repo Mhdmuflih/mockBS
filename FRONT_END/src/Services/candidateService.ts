@@ -3,14 +3,14 @@ import axios from 'axios';
 
 const baseURL = "http://localhost:8080";
 
-const API = axios.create({
+const ProtectedAPI = axios.create({
     baseURL: baseURL,
 });
 
 // Add request interceptor
-API.interceptors.request.use(
+ProtectedAPI.interceptors.request.use(
     (config: any) => {
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem("candidateToken");
 
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`; // Attach the token to the headers
@@ -23,4 +23,15 @@ API.interceptors.request.use(
         return Promise.reject(error); // Handle request errors
     }
 );
+
+
+export const fetchCandidateProfileData = async () => {
+    try {
+        const response = await ProtectedAPI.get('/user-service/candidate/profile');
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the login process.");
+    }
+}
 

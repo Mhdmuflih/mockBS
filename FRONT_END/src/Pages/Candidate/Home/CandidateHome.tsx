@@ -1,30 +1,30 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../../../Store/Slice/CandidateSlice";
+// import { useEffect } from "react";
+// import { useDispatch, useSelector } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+// import { logout } from "../../../Store/Slice/CandidateSlice";
 import SideBar from "../../../components/Candidate/SideBar";
 
 const CandidateHome = () => {
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    // const dispatch = useDispatch();
+    // const navigate = useNavigate();
 
-    const { isLoggedIn } = useSelector((state: any) => state.candidateAuth);
+    // const { isLoggedIn } = useSelector((state: any) => state.candidateAuth);
 
-    useEffect(() => {
-        if (!isLoggedIn) {
-            navigate("/candidate/login");
-        }
-    }, [isLoggedIn, navigate]);
+    // useEffect(() => {
+    //     if (!isLoggedIn) {
+    //         navigate("/candidate/login");
+    //     }
+    // }, [isLoggedIn, navigate]);
 
-    const handleToLogout = () => {
-        dispatch(logout());
-        navigate('/');
-    }
+    // const handleToLogout = () => {
+    //     dispatch(logout());
+    //     navigate('/');
+    // }
 
     return (
         <div>
-            <SideBar handleToLogout={handleToLogout} heading="Request Interviews">
+            <SideBar heading="Request Interviews">
 
                 {/* Dynamic content below the heading */}
                 <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[426px]">
@@ -42,7 +42,7 @@ const CandidateHome = () => {
 
                     {/* choose stack part */}
 
-                    <div className="flex space-x-24 ml-7 mt-7">
+                    <div className="flex space-x-24 ml-7 mt-7 w-[980px]">
                         <div className="bg-white w-40 text-center p-3 rounded-md hover:cursor-pointer hover:bg-[#999999] hover:text-white">
                             <h1 className="font-bold">Frontend</h1>
                         </div>

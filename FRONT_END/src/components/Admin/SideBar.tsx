@@ -2,9 +2,10 @@ import { ReactNode, useEffect, useState } from "react";
 import { FaHome } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import Heading from "./Heading";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../Store/Slice/AdminSlice";
 
 interface sideBarProps {
-    handleToLogout: () => void;
     heading: string;
     children?: ReactNode;
 }
@@ -12,8 +13,23 @@ interface sideBarProps {
 
 const SideBar = (props: sideBarProps) => {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const { isLoggedIn } = useSelector((state: any) => state.adminAuth);
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('/admin/login');
+        }
+    }, [isLoggedIn, navigate]);
+
+    const handleToLogout = () => {
+        dispatch(logout());
+        navigate('/admin/login');
+    };
+
+
 
     const [activePath, setActivePath] = useState(location.pathname);
 
@@ -169,8 +185,8 @@ const SideBar = (props: sideBarProps) => {
 
                             <li>
                                 <div className={`flex items-center space-x-3 text-white p-1 bg-[#FF3B30] rounded-lg cursor-pointer hover:bg-[#912626] transition-all duration-300 group 
-                                ${activePath === "candidate/home" ? "bg-white text-black" : ""}`}
-                                    onClick={props.handleToLogout}
+                                ${activePath === "/admin/home" ? "bg-white text-black" : ""}`}
+                                    onClick={handleToLogout}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <FaHome />

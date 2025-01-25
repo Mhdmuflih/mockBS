@@ -7,6 +7,7 @@ import CandidateLoginProtector from "../RouterProtector/CandidateLoginProtector"
 import CandidateRouteProtector from "../RouterProtector/CandidateRouteProtector";
 import CandidateForgotPassword from "../Pages/Candidate/ForgotPassword/CandidateForgotPassword";
 import CandidateChangePassword from "../Pages/Candidate/ChangePassword/CandidateChangePassword";
+import CandidateProfile from "../Pages/Candidate/Profile/CandidateProfile";
 
 const CandidateRoutes = () => {
     return (
@@ -21,6 +22,7 @@ const CandidateRoutes = () => {
                 </Route>
                 <Route element={<CandidateRouteProtector />}>
                     <Route path="/home" element={<CandidateHome />}></Route>
+                    <Route path="/profile" element={<CandidateProfile />}></Route>
                 </Route>
             </Routes>
         </>

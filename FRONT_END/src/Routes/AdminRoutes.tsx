@@ -5,6 +5,11 @@ import AdminOtp from '../Pages/Admin/OTP/AdminOtp';
 import AdminDashboard from '../Pages/Admin/Dashboard/AdminDashboard';
 import AdminLoginProtector from '../RouterProtector/AdminLoginProtector';
 import AdminRouteProtector from '../RouterProtector/AdminRouteProtector';
+import AdminApproval from '../Pages/Admin/Approval/AdminApproval';
+import AdminInterviewersList from '../Pages/Admin/Interviewers/AdminInterviewersList';
+import AdminCandidatesList from '../Pages/Admin/Candidates/AdminCandidatesList';
+import AdminApprovalDetail from '../Pages/Admin/Approval/AdminApprovalDetail';
+import AdminCandidateDetails from '../Pages/Admin/Candidates/AdminCandidateDetails';
 
 const AdminRoutes = () => {
     return (
@@ -17,6 +22,11 @@ const AdminRoutes = () => {
                 </Route>
                 <Route element={<AdminRouteProtector />}>
                     <Route path='/dashboard' element={<AdminDashboard />}></Route>
+                    <Route path='/approval' element={<AdminApproval />}></Route>
+                    <Route path='/interviewers' element={<AdminInterviewersList />}></Route>
+                    <Route path='/candidates' element={<AdminCandidatesList />}></Route>
+                    <Route path='/approval-details/:id' element={<AdminApprovalDetail />}></Route>
+                    <Route path='/candidate/:id' element={<AdminCandidateDetails />}></Route>
                 </Route>
             </Routes>
         </>

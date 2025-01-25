@@ -2,10 +2,10 @@ import { FormEvent, useState } from "react";
 import TopBar from "../../../components/TopBar";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { updateDetails } from "../../../Store/Slice/InterviewerSlice";
 import { addDetailsFormValidation } from "../../../Validations/addDetailsValidation";
+import { addDetailsInterviewer } from "../../../Services/interviewerService";
 
 const InterviewerDetails = () => {
 
@@ -22,6 +22,12 @@ const InterviewerDetails = () => {
         introduction: ""
     });
 
+    // const [fileData, setFileData] = useState({
+    //     image: null as File | null,
+    //     salarySlip: null as File | null,
+    //     resume: null as File | null
+    // });
+
     const [errors, setErrors] = useState<any>({})
 
     const handleTakeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +37,14 @@ const InterviewerDetails = () => {
         const validation = addDetailsFormValidation({ ...formData, [name]: value }, name);
         setErrors((prevErrors: any) => ({ ...prevErrors, [name]: validation.errors[name] || "" }));
     };
+
+    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    //     if (event.target.files) {
+    //         const file = event.target.files[0];
+    //         setFileData((prev) => ({ ...prev, [field]: file }));
+    //         console.log(field, 'this is the field');
+    //     }
+    // };
 
 
     const handleToSubmit = async (event: FormEvent) => {
@@ -45,11 +59,25 @@ const InterviewerDetails = () => {
 
         const email: string = interviewerData.email;
         try {
-            console.log(formData, 'this is the form data in details');
-            const response: any = await axios.post("http://localhost:8080/auth-service/interviewer/details", { formData, email });
 
-            if (response.data.success) {
-                if (response.data.interviewerData.isBlocked) {
+            // const form = new FormData();
+            // form.append('formData', JSON.stringify(formData));
+            // form.append('email', email);
+
+            // Append files to FormData
+            // if (fileData.image) form.append('image', fileData.image);
+            // if (fileData.salarySlip) form.append('salarySlip', fileData.salarySlip);
+            // if (fileData.resume) form.append('resume', fileData.resume);
+            // console.log(formData, "this is the form Data");
+            // console.log(fileData,' this is the file data');
+            // console.log(form,'this is form ')
+
+            // console.log(formData, 'this is the form data in details');
+            // const response: any = await axios.post("http://localhost:8080/auth-service/interviewer/details", { formData, email });
+            const response: any = await addDetailsInterviewer(formData, email);
+            console.log(response.interviewer,'this is that');
+            if (response.success) {
+                if (response.interviewerData.isBlocked) {
                     Swal.fire({
                         title: 'Error!',
                         text: "Your account is blocked. Please contact support.",
@@ -59,16 +87,16 @@ const InterviewerDetails = () => {
                     return;
                 } else {
                     // Correctly dispatch the payload
-                    dispatch(updateDetails(response.data.interviewerData));
+                    dispatch(updateDetails(response.interviewerData));
 
                     Swal.fire({
                         title: "Success!",
-                        text: response.data.message,
+                        text: response.message,
                         icon: "success",
                         confirmButtonText: 'OK'
                     });
                 }
-                if (!response.data.interviewerData.isDetails) {
+                if (!response.interviewerData.isDetails) {
                     navigate("/interviewer/details");
                 } else {
                     navigate("/interviewer/profile");
@@ -76,7 +104,7 @@ const InterviewerDetails = () => {
             } else {
                 Swal.fire({
                     title: "Error!",
-                    text: response.data.message,
+                    text: response.message,
                     icon: "error",
                     confirmButtonText: 'OK'
                 });
@@ -85,7 +113,7 @@ const InterviewerDetails = () => {
             console.log(error.message);
             Swal.fire({
                 titleText: "Error!",
-                text: error.response?.data?.message || "An unexpected error occurred. Please try again later.",
+                text: error?.message || "An unexpected error occurred. Please try again later.",
                 icon: "error",
                 confirmButtonText: "OK"
             });
@@ -209,6 +237,7 @@ const InterviewerDetails = () => {
                             <input
                                 type="file"
                                 accept="image/*"
+                                // onChange={(e) => handleFileChange(e, 'image')}
                                 className="mt-2 p-1 text-white bg-gray-700"
                             />
 
@@ -216,6 +245,7 @@ const InterviewerDetails = () => {
                             <input
                                 type="file"
                                 accept="application/pdf,image/*"
+                                // onChange={(e) => handleFileChange(e, 'salarySlip')}
                                 className="mt-2 p-1 text-white bg-gray-700"
                             />
 
@@ -223,6 +253,7 @@ const InterviewerDetails = () => {
                             <input
                                 type="file"
                                 accept=".pdf, .docx, .doc"
+                                // onChange={(e) => handleFileChange(e, 'resume')}
                                 className="mt-2 p-1 text-white bg-gray-700"
                             />
                         </div>

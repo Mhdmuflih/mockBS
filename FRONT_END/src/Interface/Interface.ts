@@ -1,4 +1,7 @@
+import { ReactNode } from "react";
+
 export interface SignupProps {
+    chaild?:ReactNode;
     heading: string;
     onNavigate: () => void;
     formData: {
@@ -37,6 +40,7 @@ export interface IFormDataLogin {
 }
 
 export interface LoginProps {
+    chaild?:ReactNode;
     heading: string;
     formDataLogin: {
         email: string;

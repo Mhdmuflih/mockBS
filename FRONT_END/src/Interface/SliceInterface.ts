@@ -38,8 +38,8 @@ export interface IAdmin {
 
 export interface ReduxInitialStateManage {
     isLoggedIn: boolean;
-    storedData: IInterviewer | ICandidate | IAdmin | null;
-    change: boolean
+    storedData?: IInterviewer | ICandidate | IAdmin | null;
+    change?: boolean
 }
 
 export interface LoginPayload {

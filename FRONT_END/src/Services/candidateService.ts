@@ -1,4 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
+import store from "../Store/Store";
+import { logout } from "../Store/Slice/CandidateSlice";
 
 
 const baseURL = "http://localhost:8000";
@@ -23,6 +25,59 @@ ProtectedAPI.interceptors.request.use(
         return Promise.reject(error); // Handle request errors
     }
 );
+
+ProtectedAPI.interceptors.response.use(
+    (response: any) => response, // Success path
+    async (error: any) => {
+        const originalRequest = error.config as any & { _retry?: boolean };
+        console.log(originalRequest, 'this is the original request');
+        
+        // Check if the error is 401 (Unauthorized)
+        if (originalRequest && error.response?.status === 403) {
+            store.dispatch(logout());
+            
+            // window.location.replace('/');  // This will redirect to the '/' page
+            return Promise.reject(error);
+        }
+
+        // Return the original error if not a 401
+        return Promise.reject(error);
+    }
+);
+
+
+// ProtectedAPI.interceptors.response.use(
+//     (response: any) => response,
+//     async (error: any) => {
+//         const originalRequest = error.config as any & { _retry?: boolean };
+//         console.log(originalRequest, 'this is the original request');
+//         if (originalRequest && error.response?.status === 401 && !originalRequest._retry) {
+
+//             originalRequest._retry = true;
+
+//             try {
+//                 const response: any = await axios.post("http://localhost:8080/user-service/candidate/refresh-token",
+//                     {},
+//                     { withCredentials: true }
+//                 );
+
+//                 if(response.status === 200 ) {
+//                     console.log("response:", response)
+//                     store.dispatch(loginSuccess({token: response.data.token, isLoggedIn: true, storedData: response.data.candidateData}));
+//                     originalRequest.headers = originalRequest.headers || {};
+//                     originalRequest.headers["Authorization"] = `Bearer ${response.data.token}`;
+//                     return ProtectedAPI(originalRequest);
+//                 }
+//             } catch (refreshError: any) {
+//                 console.error("Refresh Token Error:", refreshError);
+//                 store.dispatch(logout());
+//                 return Promise.reject(refreshError);
+//             }
+//         }
+//     }
+
+// )
+
 
 
 export const fetchCandidateProfileData = async () => {

@@ -1,4 +1,7 @@
 import axios from 'axios';
+import store from '../Store/Store';
+import { logout } from '../Store/Slice/InterviewerSlice';
+
 
 
 const baseURL = "http://localhost:8000";
@@ -24,15 +27,25 @@ ProtectedAPI.interceptors.request.use(
     }
 );
 
-// export const addDetailsInterviewer = async (formData: any, email: string, ) => {
-//     try {
-//         const response = await ProtectedAPI.patch('/user-service/interviewer/details', { formData, email });
-//         return response.data;
-//     } catch (error: any) {
-//         console.error("add details interviewer Error in catch:", error.response?.data || error.message);
-//         throw new Error(error.response?.data?.message || "An error occurred during the login process.");
-//     }
-// }
+ProtectedAPI.interceptors.response.use(
+    (response: any) => response, // Success path
+    async (error: any) => {
+        const originalRequest = error.config as any & { _retry?: boolean };
+        console.log(originalRequest, 'this is the original request');
+        
+        // Check if the error is 401 (Unauthorized)
+        if (originalRequest && error.response?.status === 401) {
+            store.dispatch(logout());
+            
+            // window.location.replace('/');  // This will redirect to the '/' page
+            return Promise.reject(error);
+        }
+
+        // Return the original error if not a 401
+        return Promise.reject(error);
+    }
+);
+
 
 // cloudinary file update issue
 export const addDetailsInterviewer = async (formData: any) => {

@@ -1,5 +1,7 @@
 // import axios from "axios";
 
+import axios from "axios";
+
 // import axios from "axios";
 
 // const baseURL = "http://localhost:8080";
@@ -73,3 +75,13 @@
 // });
 
 // export { UnProtectedAPI };
+
+
+const baseURL = "http://localhost:8000";
+
+const UnProtectedAPI = axios.create({
+    baseURL: `${baseURL}/auth-service`
+});
+
+export { UnProtectedAPI };
+

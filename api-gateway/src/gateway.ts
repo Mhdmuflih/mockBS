@@ -11,9 +11,9 @@ dotenv.config();
 const app: Application = express();
 
 const corsOptions = {
-    origin: process.env.FrontEnd, // Replace with the frontend URL
+    origin: process.env.FrontEnd, 
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    credentials: true,  // Allow cookies or credentials to be sent with the request
+    credentials: true, 
     allowedHeaders: ['Content-Type', 'Authorization']
 };
 
@@ -22,7 +22,6 @@ app.use(morgan("tiny"));
 
 
 app.use('/auth-service', proxy(process.env.Auth_Service as string || "http://localhost:1010"));
-
 app.use("/user-service", verifyJWT, proxy(process.env.User_Management_Service as string || "http://localhost:2020"));
 
 console.log(process.env.PORT)

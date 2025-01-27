@@ -24,34 +24,36 @@ ProtectedAPI.interceptors.request.use(
     }
 );
 
-export const addDetailsInterviewer = async (formData: any, email: string, ) => {
-    try {
-        const response = await ProtectedAPI.patch('/user-service/interviewer/details', { formData, email });
-        return response.data;
-    } catch (error: any) {
-        console.error("add details interviewer Error in catch:", error.response?.data || error.message);
-        throw new Error(error.response?.data?.message || "An error occurred during the login process.");
-    }
-}
-
-// cloudinary file update issue
-// export const addDetailsInterviewer = async (form: any) => {
+// export const addDetailsInterviewer = async (formData: any, email: string, ) => {
 //     try {
-//         const response = await ProtectedAPI.patch(
-//             '/user-service/interviewer/details',
-//             form,
-//             {
-//                 headers: {
-//                     'Content-Type': 'multipart/form-data',
-//                 },
-//             }
-//         );
+//         const response = await ProtectedAPI.patch('/user-service/interviewer/details', { formData, email });
 //         return response.data;
 //     } catch (error: any) {
-//         console.error('Error in addDetailsInterviewer:', error.response?.data || error.message);
-//         throw new Error(error.response?.data?.message || 'An error occurred while updating details.');
+//         console.error("add details interviewer Error in catch:", error.response?.data || error.message);
+//         throw new Error(error.response?.data?.message || "An error occurred during the login process.");
 //     }
-// };
+// }
+
+// cloudinary file update issue
+export const addDetailsInterviewer = async (formData: any) => {
+    try {
+
+        const response = await ProtectedAPI.patch('/user-service/interviewer/details', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Accept: 'application/json',
+            },
+        });
+
+
+        return response.data;
+    } catch (error: any) {
+        console.error('Full Error:', error);
+        console.error('Error Response:', error.response?.data);
+        throw new Error(error.response?.data?.message || 'An error occurred while updating details.');
+    }
+};
+
 
 
 export const fetchInterviewerProfileData = async () => {
@@ -64,3 +66,13 @@ export const fetchInterviewerProfileData = async () => {
     }
 }
 
+
+export const changePassword = async (formData: { currentPassword: string, password: string, confirmPassword: string }) => {
+    try {
+        const response = await ProtectedAPI.patch('/user-service/interviewer/password', formData);
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the login process.");
+    }
+}

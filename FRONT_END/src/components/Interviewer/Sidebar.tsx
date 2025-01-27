@@ -6,24 +6,32 @@ import { FaCheckToSlot } from "react-icons/fa6";
 import { RiCalendarScheduleFill, RiLogoutCircleFill } from "react-icons/ri";
 import { FcMoneyTransfer } from "react-icons/fc";
 import { GoShieldLock } from "react-icons/go";
+import { useDispatch } from "react-redux";
+import { logout } from "../../Store/Slice/InterviewerSlice";
 
-interface sideBarProps {
-    handleToLogout: () => void;
+interface IsideBarProps {
     heading: string;
     children?: ReactNode;
 }
 
 
-const SideBar = (props: sideBarProps) => {
+
+const SideBar = (props: IsideBarProps) => {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
 
     const [activePath, setActivePath] = useState(location.pathname);
 
     useEffect(() => {
         setActivePath(location.pathname);
     }, [location]);
+
+    const handleToLogout = () => {
+        dispatch(logout());
+        navigate('/');
+    }
 
     return (
         <>
@@ -35,7 +43,7 @@ const SideBar = (props: sideBarProps) => {
                 {/* Side Bar */}
                 <div className="sidebar bg-[#30323A] h-[500px] w-52 p-4 ml-3 mt-3 rounded-2xl">
                     <div className="bg-white  w-24 h-24 ml-10 mt-5">
-                        <img src="" alt="" /> icon
+                        <img src="" alt="" /> 
                     </div>
 
                     <div className="pt-2">
@@ -110,7 +118,7 @@ const SideBar = (props: sideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/interviewer/password" ? "bg-white text-black" : ""}`}
+                                ${activePath === "/interviewer/password" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/interviewer/password");
                                         navigate("/interviewer/password");
@@ -126,8 +134,8 @@ const SideBar = (props: sideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#FF3B30] rounded-lg cursor-pointer hover:bg-[#912626] transition-all duration-300 group 
-                                ${activePath === "candidate/home" ? "bg-white text-black" : ""}`}
-                                    onClick={props.handleToLogout}
+                                ${activePath === "candidate/home" ? "bg-[#999999]" : ""}`}
+                                    onClick={handleToLogout}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
                                         <RiLogoutCircleFill />

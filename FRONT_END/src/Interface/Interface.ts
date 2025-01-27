@@ -74,3 +74,14 @@ export interface changePassword {
     handleToSubmit: (event: React.FormEvent) => void;
     errors: any
 }
+
+export interface IPassword {
+    formData: {
+        currentPassword: string;
+        password: string;
+        confirmPassword: string;
+    }
+    handleTakeInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleToSubmit: (event: React.FormEvent) => void;
+    errors: any
+}

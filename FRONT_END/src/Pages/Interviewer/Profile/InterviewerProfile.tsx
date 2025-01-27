@@ -1,13 +1,8 @@
-import { useDispatch } from "react-redux";
 import SideBar from "../../../components/Interviewer/Sidebar";
-import { logout } from "../../../Store/Slice/InterviewerSlice";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchInterviewerProfileData } from "../../../Services/interviewerService";
 
 const InterviewerProfile = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const [interviewer, setInterviewer] = useState<any>(null);
 
@@ -27,10 +22,7 @@ const InterviewerProfile = () => {
         takeProfileData();
     }, []);
 
-    const handleToLogout = () => {
-        dispatch(logout());
-        navigate('/');
-    }
+
 
     // Ensure interviewer data is not null before accessing properties
     if (!interviewer) {
@@ -39,7 +31,7 @@ const InterviewerProfile = () => {
 
     return (
         <>
-            <SideBar handleToLogout={handleToLogout} heading="Profile">
+            <SideBar heading="Profile">
                 <div className="bg-[#30323A] ml-1 p-3 rounded-b-lg shadow-md max-h-[73vh] overflow-y-auto">
                     {!interviewer.isApproved ? (
                         <div>
@@ -54,7 +46,7 @@ const InterviewerProfile = () => {
                                 {/* Profile Picture */}
                                 <div className="flex-shrink-0">
                                     <img
-                                        src={interviewer?.profilePicture || "/default-profile.jpg"}
+                                        src={interviewer?.profileURL || "/default-profile.jpg"}
                                         alt="Profile"
                                         className="rounded-full w-20 h-20 object-cover"
                                     />

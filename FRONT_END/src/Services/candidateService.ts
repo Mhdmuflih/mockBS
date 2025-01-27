@@ -35,3 +35,13 @@ export const fetchCandidateProfileData = async () => {
     }
 }
 
+export const changePassword = async (formData: { currentPassword: string, password: string, confirmPassword: string }) => {
+    try {
+        const response = await ProtectedAPI.patch('/user-service/candidate/password', formData);
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the login process.");
+    }
+}
+

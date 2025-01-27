@@ -19,14 +19,16 @@ const InterviewerDetails = () => {
         designation: "",
         organization: "",
         university: "",
-        introduction: ""
+        introduction: "",
     });
 
-    // const [fileData, setFileData] = useState({
-    //     image: null as File | null,
-    //     salarySlip: null as File | null,
-    //     resume: null as File | null
-    // });
+
+
+    const [fileData, setFileData] = useState({
+        image: null as File | null,
+        salarySlip: null as File | null,
+        resume: null as File | null
+    });
 
     const [errors, setErrors] = useState<any>({})
 
@@ -38,13 +40,12 @@ const InterviewerDetails = () => {
         setErrors((prevErrors: any) => ({ ...prevErrors, [name]: validation.errors[name] || "" }));
     };
 
-    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
-    //     if (event.target.files) {
-    //         const file = event.target.files[0];
-    //         setFileData((prev) => ({ ...prev, [field]: file }));
-    //         console.log(field, 'this is the field');
-    //     }
-    // };
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
+        if (event.target.files) {
+            const file = event.target.files[0];
+            setFileData((prev) => ({ ...prev, [field]: file }));
+        }
+    };
 
 
     const handleToSubmit = async (event: FormEvent) => {
@@ -59,66 +60,64 @@ const InterviewerDetails = () => {
 
         const email: string = interviewerData.email;
         try {
+            const form = new FormData();
+            form.append("email", email);
+            form.append("experience", formData.experience);
+            form.append("designation", formData.designation);
+            form.append("organization", formData.organization);
+            form.append("university", formData.university);
+            form.append("introduction", formData.introduction);
 
-            // const form = new FormData();
-            // form.append('formData', JSON.stringify(formData));
-            // form.append('email', email);
+            if (fileData.image) {
+                form.append('image', fileData.image);
+            }
+            if (fileData.salarySlip) {
+                form.append('salary', fileData.salarySlip);
+            }
+            if (fileData.resume) {
+                form.append('resume', fileData.resume);
+            }
 
-            // Append files to FormData
-            // if (fileData.image) form.append('image', fileData.image);
-            // if (fileData.salarySlip) form.append('salarySlip', fileData.salarySlip);
-            // if (fileData.resume) form.append('resume', fileData.resume);
-            // console.log(formData, "this is the form Data");
-            // console.log(fileData,' this is the file data');
-            // console.log(form,'this is form ')
+            // form.forEach((value, key) => {
+            //     console.log(key, value);
+            // });
 
-            // console.log(formData, 'this is the form data in details');
-            // const response: any = await axios.post("http://localhost:8080/auth-service/interviewer/details", { formData, email });
-            const response: any = await addDetailsInterviewer(formData, email);
-            console.log(response.interviewer,'this is that');
+            const response: any = await addDetailsInterviewer(form);
             if (response.success) {
-                if (response.interviewerData.isBlocked) {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: "Your account is blocked. Please contact support.",
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                } else {
-                    // Correctly dispatch the payload
-                    dispatch(updateDetails(response.interviewerData));
+                dispatch(updateDetails(response.interviewerData));
 
-                    Swal.fire({
-                        title: "Success!",
-                        text: response.message,
-                        icon: "success",
-                        confirmButtonText: 'OK'
-                    });
+                Swal.fire({
+                    title: "Success!",
+                    text: response.message,
+                    icon: "success",
+                    confirmButtonText: "OK"
+                });
+                if(response.interviewerData.isDetails){
+                    navigate('/interviewer/profile');
+                }else {
+                    navigate('/interviewer/details')
                 }
-                if (!response.interviewerData.isDetails) {
-                    navigate("/interviewer/details");
-                } else {
-                    navigate("/interviewer/profile");
-                }
+
+                // navigate(response.interviewerData.isDetails ? "/interviewer/profile" : "/interviewer/details");
             } else {
                 Swal.fire({
                     title: "Error!",
                     text: response.message,
                     icon: "error",
-                    confirmButtonText: 'OK'
+                    confirmButtonText: "OK"
                 });
             }
         } catch (error: any) {
-            console.log(error.message);
+            console.error("Submission Error:", error);
             Swal.fire({
-                titleText: "Error!",
-                text: error?.message || "An unexpected error occurred. Please try again later.",
+                title: "Error!",
+                text: error?.message || "An unexpected error occurred. Please try again.",
                 icon: "error",
                 confirmButtonText: "OK"
             });
         }
     };
+
 
 
     return (
@@ -237,7 +236,8 @@ const InterviewerDetails = () => {
                             <input
                                 type="file"
                                 accept="image/*"
-                                // onChange={(e) => handleFileChange(e, 'image')}
+                                name="image"
+                                onChange={(event) => handleFileChange(event, 'image')}
                                 className="mt-2 p-1 text-white bg-gray-700"
                             />
 
@@ -245,7 +245,8 @@ const InterviewerDetails = () => {
                             <input
                                 type="file"
                                 accept="application/pdf,image/*"
-                                // onChange={(e) => handleFileChange(e, 'salarySlip')}
+                                name="salary"
+                                onChange={(event) => handleFileChange(event, 'salarySlip')}
                                 className="mt-2 p-1 text-white bg-gray-700"
                             />
 
@@ -253,7 +254,8 @@ const InterviewerDetails = () => {
                             <input
                                 type="file"
                                 accept=".pdf, .docx, .doc"
-                                // onChange={(e) => handleFileChange(e, 'resume')}
+                                name="resume"
+                                onChange={(event) => handleFileChange(event, 'resume')}
                                 className="mt-2 p-1 text-white bg-gray-700"
                             />
                         </div>
@@ -261,7 +263,7 @@ const InterviewerDetails = () => {
                 </div>
 
                 <div className="flex justify-end mr-14">
-                    <button type="submit" className="bg-[#4B4F60] p-2 rounded-lg hover:bg-black hover:text-white duration-300 font-extralight ">Save & Continue</button>
+                    <button type="submit" onClick={handleToSubmit} className="bg-[#4B4F60] p-2 rounded-lg hover:bg-black hover:text-white duration-300 font-extralight ">Save & Continue</button>
                 </div>
             </form >
         </>

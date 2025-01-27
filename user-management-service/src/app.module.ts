@@ -9,6 +9,7 @@ import { CloudinaryService } from './Config/cloudinary.service';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true,}),
+    ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

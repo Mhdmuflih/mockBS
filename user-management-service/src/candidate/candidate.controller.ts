@@ -5,7 +5,7 @@ import { UpdateCandidateDto } from './dto/update-candidate.dto';
 
 @Controller('candidate')
 export class CandidateController {
-  constructor(private readonly candidateService: CandidateService) {}
+  constructor(private readonly candidateService: CandidateService) { }
 
   // @Post()
   // create(@Body() createCandidateDto: CreateCandidateDto) {
@@ -13,27 +13,36 @@ export class CandidateController {
   // }
 
   @Get('profile')
-  findOne(@Headers('x-user-id') userId: any) {
-    console.log(`User ID from header: ${userId}`);
+  async findOne(@Headers('x-user-id') userId: any) {
+    try {
+      console.log(`User ID from header: ${userId}`);
 
-    if (!userId) {
-      throw new BadRequestException('User ID is missing from the headers');
+      if (!userId) {
+        throw new BadRequestException('User ID is missing from the headers');
+      }
+      return this.candidateService.findOneById(userId); // Call the service method with `userId` 
+    } catch (error: any) {
+      console.log(error.message);
+      throw new BadRequestException(error.message || 'An error occurred');
     }
-    return this.candidateService.findOneById(userId); // Call the service method with `userId`
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.candidateService.findOne(+id);
-  // }
+  @Patch('/password')
+  async changePassword(@Headers('x-user-id') userId: string, @Body() formData: { currentPassword: string, password: string, confirmPassword: string }) {
+    try {
+      console.log(userId, formData, 'this is the userID and formData');
+      if (!userId || !formData) {
+        throw new BadRequestException('User ID or form data is missing');
+      }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateCandidateDto: UpdateCandidateDto) {
-  //   return this.candidateService.update(+id, updateCandidateDto);
-  // }
+      if (formData.password !== formData.confirmPassword) {
+        throw new BadRequestException('Passwords do not match');
+      }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.candidateService.remove(+id);
-  // }
+      return await this.candidateService.changePassword(userId, formData);
+    } catch (error: any) {
+      console.error('Error:', error.message);
+      throw new BadRequestException(error.message || 'An error occurred');
+    }
+  }
 }

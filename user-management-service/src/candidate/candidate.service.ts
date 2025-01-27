@@ -4,6 +4,8 @@ import { UpdateCandidateDto } from './dto/update-candidate.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ICandidate } from './Model/candidate.schema';
+import * as bcrypt from 'bcryptjs';
+
 
 @Injectable()
 export class CandidateService {
@@ -14,11 +16,11 @@ export class CandidateService {
 
   async findOneById(userId: string) {
     try {
-      const candidateData = await this.candidateModel.findOne({ _id:userId });
+      const candidateData = await this.candidateModel.findOne({ _id: userId });
       if (!candidateData) {
         throw new Error('Candidate not found.');
       }
-      console.log(candidateData,'this is candidateData fetching in profile')
+      console.log(candidateData, 'this is candidateData fetching in profile')
       return { success: true, message: "Candidate Data.", candidateData: candidateData };
     } catch (error: any) {
       console.error('Error sending OTP:', error);
@@ -26,23 +28,38 @@ export class CandidateService {
     }
   }
 
-  // create(createCandidateDto: CreateCandidateDto) {
-  //   return 'This action adds a new candidate';
-  // }
+  async changePassword(userId: string, formData: { currentPassword: string, password: string, confirmPassword: string }) {
+    try {
+      // Find the candidate by userId
+      const candidate = await this.candidateModel.findOne({ _id: userId });
+      if (!candidate) {
+        throw new Error('Candidate not found.');
+      }
 
-  // findAll() {
-  //   return `This action returns all candidate`;
-  // }
+      // Compare the current password with the stored one
+      const isMatch = await bcrypt.compare(formData.currentPassword, candidate.password);
+      if (!isMatch) {
+        throw new Error('Current password is incorrect');
+      }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} candidate`;
-  // }
+      // If passwords match, hash the new password
+      const hashedPassword = await bcrypt.hash(formData.password, 10); // 10 is the salt rounds
 
-  // update(id: number, updateCandidateDto: UpdateCandidateDto) {
-  //   return `This action updates a #${id} candidate`;
-  // }
+      // Update password in the database without saving the whole object
+      const updatedCandidate = await this.candidateModel.findOneAndUpdate(
+        { _id: userId },
+        { $set: { password: hashedPassword } },
+        { new: true }  // Return the updated document
+      );
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} candidate`;
-  // }
+      if (!updatedCandidate) {
+        throw new Error('Failed to update the password');
+      }
+
+      return { success: true, message: 'Password updated successfully' };
+    } catch (error: any) {
+      console.error('Error updating password:', error.message);
+      return { success: false, message: error.message || 'Failed to update password' };
+    }
+  }
 }

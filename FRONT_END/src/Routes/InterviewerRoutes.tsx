@@ -10,6 +10,8 @@ import InterviewerDetails from '../Pages/Interviewer/InterviewerDetails/Intervie
 import InterviewerForgotPassword from '../Pages/Interviewer/ForgotPassword/InterviewerForgotPassword';
 import InterviewerChangePassword from '../Pages/Interviewer/ChangePassword/InterviewerChangePassword';
 import InterviewerProfileChangePassword from '../Pages/Interviewer/ProfileChangePassword/InterviewerProfileChangePassword';
+import InterviewerSlots from '../Pages/Interviewer/Slots/InterviewerSlots';
+import InterviewerAddSlot from '../Pages/Interviewer/Slots/InterviewerAddSlot';
 
 const InterviewerRoutes = () => {
     return (
@@ -26,6 +28,9 @@ const InterviewerRoutes = () => {
                     <Route path="/details" element={<InterviewerDetails />}></Route>
                     <Route path='/profile' element={<InterviewerProfile />}></Route>
                     <Route path='/password' element={<InterviewerProfileChangePassword />}></Route>
+
+                    <Route path='/slot' element={<InterviewerSlots />}></Route>
+                    <Route path='/add-slot' element={<InterviewerAddSlot />}></Route>
                 </Route>
             </Routes>
         </>

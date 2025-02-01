@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { changeCandidatePassword } from "../../../Services/authService";
 import Swal from "sweetalert2";
 
+
+
 const CandidateChangePassword = () => {
 
     const navigate = useNavigate();

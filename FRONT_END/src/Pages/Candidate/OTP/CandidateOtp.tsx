@@ -8,6 +8,9 @@ import {
     verifyCandidateOTP,
 } from "../../../Services/authService";
 
+import toast from "react-hot-toast"
+import { Toaster } from "react-hot-toast";
+
 const CandidateOtp = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -42,23 +45,14 @@ const CandidateOtp = () => {
             const response: any = await resendCandidateOTP(email, context);
 
             if (response && response.success) {
+                toast.success(response.message);
                 console.log("OTP resent successfully:", response.message);
             } else {
-                Swal.fire({
-                    titleText: "Error!",
-                    text: response?.message || "Failed to resend OTP. Please try again later.",
-                    icon: "error",
-                    confirmButtonText: "OK",
-                });
+                toast.error(response.message)
             }
         } catch (error: any) {
             console.error("Error while resending OTP:", error.message);
-            Swal.fire({
-                titleText: "Error!",
-                text: error.message || "An unexpected error occurred while resending the OTP.",
-                icon: "error",
-                confirmButtonText: "OK",
-            });
+            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
         }
     };
 
@@ -91,15 +85,12 @@ const CandidateOtp = () => {
         const OtpData = otp.join("");
         try {
             const { email, context }: { email: string; context: string } = location.state;
-            console.log(location.state, "Location state details");
-            console.log(otp, "OTP entered by the candidate");
+
             let response: any;
 
             if (context === "Registration") {
-                console.log("Verifying OTP for Registration");
                 response = await verifyCandidateOTP(Number(OtpData), email);
             } else if (context === "CandidateForgotPassword") {
-                console.log("Verifying OTP for Candidate Forgot Password");
                 response = await verifyCandidateForgotPasswordOTP(Number(OtpData), email);
             }
 
@@ -147,6 +138,9 @@ const CandidateOtp = () => {
 
     return (
         <div>
+
+            <Toaster position="top-right" reverseOrder={false} />
+
             <Otp
                 otp={otp}
                 inputs={inputs}

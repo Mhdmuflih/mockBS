@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SideBar from "../../../components/Admin/SideBar";
 import { fetchApprovalData } from "../../../Services/adminService";
 import { useNavigate } from "react-router-dom";
+import profileImage from "../../../assets/profile image.jpg";
 
 const AdminApproval = () => {
 
@@ -75,7 +76,7 @@ const AdminApproval = () => {
                                     <div className="text-sm">
                                         <div className="flex items-center">
                                             <img
-                                                src={data.profilePicture || ""}
+                                                src={data.profileURL || profileImage}
                                                 alt="Profile"
                                                 className="rounded-full w-10 h-10 object-cover"
                                             />

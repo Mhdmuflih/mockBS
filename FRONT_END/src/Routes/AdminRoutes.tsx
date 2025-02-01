@@ -10,6 +10,9 @@ import AdminInterviewersList from '../Pages/Admin/Interviewers/AdminInterviewers
 import AdminCandidatesList from '../Pages/Admin/Candidates/AdminCandidatesList';
 import AdminApprovalDetail from '../Pages/Admin/Approval/AdminApprovalDetail';
 import AdminCandidateDetails from '../Pages/Admin/Candidates/AdminCandidateDetails';
+import AdminStackList from '../Pages/Admin/Stack/AdminStackList';
+import AdminAddStack from '../Pages/Admin/Stack/AdminAddStack';
+import AdminInterviewerDetails from '../Pages/Admin/Interviewers/AdminInterviewerDetails';
 
 const AdminRoutes = () => {
     return (
@@ -23,10 +26,16 @@ const AdminRoutes = () => {
                 <Route element={<AdminRouteProtector />}>
                     <Route path='/dashboard' element={<AdminDashboard />}></Route>
                     <Route path='/approval' element={<AdminApproval />}></Route>
-                    <Route path='/interviewers' element={<AdminInterviewersList />}></Route>
-                    <Route path='/candidates' element={<AdminCandidatesList />}></Route>
                     <Route path='/approval-details/:id' element={<AdminApprovalDetail />}></Route>
+
+                    <Route path='/interviewers' element={<AdminInterviewersList />}></Route>
+                    <Route path='/interviewer/:id' element={<AdminInterviewerDetails />}></Route>
+
+                    <Route path='/candidates' element={<AdminCandidatesList />}></Route>
                     <Route path='/candidate/:id' element={<AdminCandidateDetails />}></Route>
+
+                    <Route path='/stack' element={<AdminStackList />}></Route>
+                    <Route path='/add-stack' element={<AdminAddStack />}></Route>
                 </Route>
             </Routes>
         </>

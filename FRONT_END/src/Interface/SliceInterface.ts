@@ -8,6 +8,7 @@ export interface ICandidate {
     password: string;
     is_Block: boolean;
     is_Verfied: boolean
+    profileURL?: string
 }
 
 export interface IInterviewer {

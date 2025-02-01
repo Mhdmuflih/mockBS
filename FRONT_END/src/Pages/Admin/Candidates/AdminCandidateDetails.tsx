@@ -54,7 +54,7 @@ const AdminCandidateDetails = () => {
                     <div className="bg-black text-white p-4 rounded-md">
                     <div className="flex items-center mb-4">
                         <img
-                            src={candidateDetails.profilePicture || "/default-profile.jpg"} // Set a fallback image in case profilePicture is missing
+                            src={candidateDetails.profileURL || "/default-profile.jpg"} // Set a fallback image in case profilePicture is missing
                             alt="Profile"
                             className="rounded-full w-16 h-16 object-cover"
                         />

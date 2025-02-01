@@ -3,6 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../../components/Admin/SideBar";
 import { approveInterviewerData, fetchInterviewerDetails } from "../../../Services/adminService"; // Assuming you have a service to fetch details
 import Swal from "sweetalert2";
+import profileImage from "../../../assets/profile image.jpg";
+
+import toast from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const AdminApprovalDetail = () => {
 
@@ -60,21 +66,11 @@ const AdminApprovalDetail = () => {
                 });
                 navigate('/admin/approval')
             } else {
-                Swal.fire({
-                    title: "Error!",
-                    text: response.message,
-                    icon: "error",
-                    confirmButtonText: 'OK'
-                });
+                toast.error(response.message);
             }
         } catch (error: any) {
             console.log(error.message);
-            Swal.fire({
-                titleText: "Error!",
-                text: error?.message || "An unexpected error occurred. Please try again later.",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
+            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
         }
     };
 
@@ -90,6 +86,9 @@ const AdminApprovalDetail = () => {
 
     return (
         <div className="flex">
+
+            <Toaster position="top-right" reverseOrder={false} />
+
             {/* Sidebar */}
             <SideBar heading="Details">
                 <div className="bg-[#30323A] ml-1 p-4 shadow-md mt-2 h-[476px]">
@@ -99,7 +98,7 @@ const AdminApprovalDetail = () => {
                     <div className="bg-black text-white p-4 rounded-md">
                         <div className="flex items-center mb-4">
                             <img
-                                src={interviewerDetails.profilePicture || "/default-profile.jpg"} // Set a fallback image in case profilePicture is missing
+                                src={interviewerDetails.profileURL || profileImage} // Set a fallback image in case profilePicture is missing
                                 alt="Profile"
                                 className="rounded-full w-16 h-16 object-cover"
                             />
@@ -124,6 +123,9 @@ const AdminApprovalDetail = () => {
                             <h4 className="text-sm font-medium mt-7">Year of Experience:</h4>
                             <p className="text-gray-300">{interviewerDetails.yearOfExperience || "No details available"}</p>
                         </div>
+                        {/* <div>
+                            <button className="bg-white text-black py-2 px-4 rounded-md hover:bg-red-600" > View </button>
+                        </div> */}
 
                         <div className="mt-2 flex justify-end space-x-4">
                             <button

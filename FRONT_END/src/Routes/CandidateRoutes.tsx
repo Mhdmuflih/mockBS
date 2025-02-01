@@ -23,7 +23,9 @@ const CandidateRoutes = () => {
                 </Route>
                 <Route element={<CandidateRouteProtector />}>
                     <Route path="/home" element={<CandidateHome />}></Route>
+
                     <Route path="/profile" element={<CandidateProfile />}></Route>
+                    
                     <Route path="/password" element={<CandidateProfileChangePassword />}></Route>
                 </Route>
             </Routes>

@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { updateDetails } from "../../../Store/Slice/InterviewerSlice";
-import { addDetailsFormValidation } from "../../../Validations/addDetailsValidation";
 import { addDetailsInterviewer } from "../../../Services/interviewerService";
+import { addDetailsFormValidation } from "../../../Validations/addDetailsValidation";
 
 const InterviewerDetails = () => {
 

@@ -32,11 +32,11 @@ ProtectedAPI.interceptors.response.use(
     async (error: any) => {
         const originalRequest = error.config as any & { _retry?: boolean };
         console.log(originalRequest, 'this is the original request');
-        
+
         // Check if the error is 401 (Unauthorized)
-        if (originalRequest && error.response?.status === 401) {
+        if (originalRequest && error.response?.status === 403) {
             store.dispatch(logout());
-            
+
             // window.location.replace('/');  // This will redirect to the '/' page
             return Promise.reject(error);
         }
@@ -80,6 +80,25 @@ export const fetchInterviewerProfileData = async () => {
 }
 
 
+export const editProfileInterviewer = async (formData: any) => {
+    try {
+
+        const response = await ProtectedAPI.patch('/user-service/interviewer/profile', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Accept: 'application/json',
+            },
+        });
+
+
+        return response.data;
+    } catch (error: any) {
+        console.error('Full Error:', error);
+        console.error('Error Response:', error.response?.data);
+        throw new Error(error.response?.data?.message || 'An error occurred while updating details.');
+    }
+}
+
 export const changePassword = async (formData: { currentPassword: string, password: string, confirmPassword: string }) => {
     try {
         const response = await ProtectedAPI.patch('/user-service/interviewer/password', formData);
@@ -87,5 +106,15 @@ export const changePassword = async (formData: { currentPassword: string, passwo
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);
         throw new Error(error.response?.data?.message || "An error occurred during the login process.");
+    }
+}
+
+export const fetchStackData = async () => {
+    try {
+        const response = await ProtectedAPI.post('/user-service/interviewer/slot');
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch stackData process.");
     }
 }

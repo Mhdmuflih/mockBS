@@ -5,6 +5,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../Store/Slice/CandidateSlice";
 import Heading from "./Heading";
+import profileImage from "../../assets/profile image.jpg"
 
 import { CgProfile } from "react-icons/cg";
 import { SiGooglemeet } from "react-icons/si";
@@ -57,7 +58,7 @@ const SideBar = (props: sideBarProps) => {
                 {/* Side Bar */}
                 <div className="sidebar bg-[#30323A] h-[500px] w-52 p-4 ml-3 mt-3 rounded-2xl">
                     <div className="bg-white  w-24 h-24 ml-10 mt-5">
-                        <img src="" alt="" /> icon
+                        <img src={profileImage} alt="" />
                     </div>
 
                     <div className="pt-2 ">

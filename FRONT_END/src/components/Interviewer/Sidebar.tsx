@@ -8,10 +8,12 @@ import { FcMoneyTransfer } from "react-icons/fc";
 import { GoShieldLock } from "react-icons/go";
 import { useDispatch } from "react-redux";
 import { logout } from "../../Store/Slice/InterviewerSlice";
+import Heading from "./Heading";
 
 interface IsideBarProps {
     heading: string;
     children?: ReactNode;
+    addButton?: string;
 }
 
 
@@ -68,7 +70,7 @@ const SideBar = (props: IsideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/interviewer/slot" ? "bg-white text-black" : ""}`}
+                                ${activePath === "/interviewer/slot" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/interviewer/slot");
                                         navigate("/interviewer/slot");
@@ -84,7 +86,7 @@ const SideBar = (props: IsideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/interviewer/scheduled" ? "bg-white text-black" : ""}`}
+                                ${activePath === "/interviewer/scheduled" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/interviewer/scheduled");
                                         navigate("/interviewer/scheduled");
@@ -100,7 +102,7 @@ const SideBar = (props: IsideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/interviewer/payment" ? "bg-white text-black" : ""}`}
+                                ${activePath === "/interviewer/payment" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/interviewer/payment");
                                         navigate("/interviewer/payment");
@@ -147,18 +149,9 @@ const SideBar = (props: IsideBarProps) => {
 
                     </div>
                 </div>
-                {/* Main Content */}
-                <div className="flex-1 flex flex-col">
-                    {/* Heading Section */}
-                    <div className="bg-[#181A22] mt-3 ml-1 rounded-t-lg p-5">
-                        <h1 className="text-2xl font-bold text-white">{props.heading}</h1>
-                    </div>
 
-                    {/* Content Section */}
-                    <div className="flex-1">
-                        {props.children}
-                    </div>
-                </div>
+                <Heading heading={props.heading} children={props.children} addButton={props.addButton} />
+
             </div>
         </>
     )

@@ -2,8 +2,11 @@ import { FormEvent, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
 import Password from "../../../components/Password";
 import { formValidation } from "../../../Validations/formValidation";
-import Swal from "sweetalert2";
 import { changePassword } from "../../../Services/candidateService";
+
+import toast from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
+import "react-toastify/dist/ReactToastify.css";
 
 const CandidateProfileChangePassword = () => {
 
@@ -16,7 +19,7 @@ const CandidateProfileChangePassword = () => {
 
     const handleTakeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({...prevState,[name]: value}));
+        setFormData(prevState => ({ ...prevState, [name]: value }));
 
         const validation = formValidation({ ...formData, [name]: value }, "changePassword", name);
         setErrors((prevErrors) => ({ ...prevErrors, [name]: validation.errors[name] || "" }));
@@ -37,39 +40,27 @@ const CandidateProfileChangePassword = () => {
             const response: any = await changePassword({ currentPassword: formData.currentPassword, password: formData.password, confirmPassword: formData.confirmPassword });
 
             if (response.success) {
-                Swal.fire({
-                    title: "Success!",
-                    text: response.message,
-                    icon: "success",
-                    confirmButtonText: 'OK'
-                });
+                toast.success(response.message);
+
                 setFormData({
-                    currentPassword:"",
-                    password:"",
-                    confirmPassword:""
+                    currentPassword: "",
+                    password: "",
+                    confirmPassword: ""
                 });
             } else {
-                console.log("Password change failed!");
-                Swal.fire({
-                    title: "Error!",
-                    text: response.message,
-                    icon: "error",
-                    confirmButtonText: 'OK'
-                });
+                toast.error(response.message);
             }
         } catch (error: any) {
             console.error("Error changing password:", error.message);
-            Swal.fire({
-                titleText: "Error!",
-                text: error?.message || "An unexpected error occurred. Please try again later.",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
+            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
         }
     };
 
     return (
         <>
+
+            <Toaster position="top-right" reverseOrder={false} />
+
             <SideBar heading="Change Password">
                 <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[426px]">
                     <div className="flex space-x-28 ml-7 mt- w-[980px]">

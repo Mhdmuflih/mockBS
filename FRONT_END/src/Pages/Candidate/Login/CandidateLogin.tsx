@@ -2,13 +2,17 @@ import { useNavigate } from "react-router-dom";
 import Login from "../../../components/Login";
 import { FormEvent, useState } from "react";
 import { IFormDataLogin } from "../../../Interface/Interface";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../Store/Slice/CandidateSlice";
 import { formValidation } from "../../../Validations/formValidation";
 import { loginCandidate } from "../../../Services/authService";
 import GoogleAuth from "../../../components/GoogleAuth";
 import { FaUserGraduate } from "react-icons/fa6";
+import toast from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 const CandidateLogin = () => {
@@ -45,20 +49,10 @@ const CandidateLogin = () => {
             const response: any = await loginCandidate(formDataLogin);
             if (response.success) {
                 if (response.candidateData.isBlocked) {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: "Your account is blocked. Please contact support.",
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    toast.error("Your account is blocked. Please contact support.")
                     return;
                 } else if (!response.candidateData.isVerified) {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: "Your account is not verified. Please verify your accound.",
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    toast.error("Your account is not verified. Please verify your accound.")
                     navigate('/candidate/otp', { state: { email: response.candidateData.email, context: "Registration" } })
                     return;
                 } else {
@@ -69,31 +63,16 @@ const CandidateLogin = () => {
                         isLoggedIn: true
                     }))
 
-                    Swal.fire({
-                        title: "Success!",
-                        text: response.message,
-                        icon: "success",
-                        confirmButtonText: 'OK'
-                    });
+                    toast.success(response.message);
 
                     navigate("/candidate/home");
                 }
             } else {
-                Swal.fire({
-                    title: "Error!",
-                    text: response.message,
-                    icon: "error",
-                    confirmButtonText: 'OK'
-                });
+                toast.error(response.message)
             }
         } catch (error: any) {
             console.log(error.message);
-            Swal.fire({
-                titleText: "Error!",
-                text: error?.message || "An unexpected error occurred. Please try again later.",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
+            toast.error( error?.message || "An unexpected error occurred. Please try again later.")
         }
     }
 
@@ -107,7 +86,8 @@ const CandidateLogin = () => {
 
     return (
         <div>
-            <Login
+                <Toaster position="top-right" reverseOrder={false} />
+                <Login
                 heading="Candidate Login"
                 onNavigate={handleNavigate}
                 forgotPassword={handleToForgotPassword}

@@ -2,12 +2,15 @@ import { useNavigate } from "react-router-dom";
 import Login from "../../../components/Login";
 import { FormEvent, useState } from "react";
 import { IFormDataLogin } from "../../../Interface/Interface";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../Store/Slice/InterviewerSlice";
 import { formValidation } from "../../../Validations/formValidation";
 import { loginInterviewer } from "../../../Services/authService";
 import { FaUserTie } from "react-icons/fa";
+import toast from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
+import "react-toastify/dist/ReactToastify.css";
 
 const InterviewerLogin = () => {
 
@@ -45,20 +48,12 @@ const InterviewerLogin = () => {
             if (response.success) {
                 // console.log(response.data, ' this ist response candidate');
                 if (response.interviewerData.isBlocked) {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: "Your account is blocked. Please contact support.",
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    toast.error("Your account is blocked. Please contact support.");
+
                     return;
                 } else if (!response.interviewerData.isVerified) {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: "Your account is not verified. Please verify your accound.",
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    toast.error("Your account is not verified. Please verify your accound.");
+
                     navigate('/interviewer/otp', { state: { email: response.interviewerData.email, context: "Registration" } })
                     return;
                 } else {
@@ -68,12 +63,8 @@ const InterviewerLogin = () => {
                         isLoggedIn: true
                     }));
 
-                    Swal.fire({
-                        title: "Success!",
-                        text: response.message,
-                        icon: "success",
-                        confirmButtonText: 'OK'
-                    });
+                    toast.success(response.message);
+
                 }
                 if (!response.interviewerData.isDetails) {
                     navigate("/interviewer/details");
@@ -82,21 +73,11 @@ const InterviewerLogin = () => {
                 }
 
             } else {
-                Swal.fire({
-                    title: "Error!",
-                    text: response.message,
-                    icon: "error",
-                    confirmButtonText: 'OK'
-                });
+                toast.error( response?.message)
             }
         } catch (error: any) {
             console.log(error.message);
-            Swal.fire({
-                titleText: "Error!",
-                text: error?.message || "An unexpected error occurred. Please try again later.",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
+            toast.error(error?.message || "An unexpected error occurred. Please try again later.")
         }
     }
 
@@ -110,6 +91,7 @@ const InterviewerLogin = () => {
 
     return (
         <div>
+            <Toaster position="top-right" reverseOrder={false} />
             <Login
                 heading="Interviewer Login"
                 onNavigate={handleNavigate}

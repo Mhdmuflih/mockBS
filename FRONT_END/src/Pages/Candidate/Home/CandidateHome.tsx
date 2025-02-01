@@ -1,26 +1,8 @@
-// import { useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { logout } from "../../../Store/Slice/CandidateSlice";
 import SideBar from "../../../components/Candidate/SideBar";
 
 const CandidateHome = () => {
 
-    // const dispatch = useDispatch();
-    // const navigate = useNavigate();
 
-    // const { isLoggedIn } = useSelector((state: any) => state.candidateAuth);
-
-    // useEffect(() => {
-    //     if (!isLoggedIn) {
-    //         navigate("/candidate/login");
-    //     }
-    // }, [isLoggedIn, navigate]);
-
-    // const handleToLogout = () => {
-    //     dispatch(logout());
-    //     navigate('/');
-    // }
 
     return (
         <div>

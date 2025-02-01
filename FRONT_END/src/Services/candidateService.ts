@@ -90,6 +90,25 @@ export const fetchCandidateProfileData = async () => {
     }
 }
 
+export const editProfileCandidate = async (formData: any) => {
+    try {
+
+        const response = await ProtectedAPI.patch('/user-service/candidate/profile', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Accept: 'application/json',
+            },
+        });
+
+
+        return response.data;
+    } catch (error: any) {
+        console.error('Full Error:', error);
+        console.error('Error Response:', error.response?.data);
+        throw new Error(error.response?.data?.message || 'An error occurred while updating details.');
+    }
+}
+
 export const changePassword = async (formData: { currentPassword: string, password: string, confirmPassword: string }) => {
     try {
         const response = await ProtectedAPI.patch('/user-service/candidate/password', formData);

@@ -1,48 +1,8 @@
-// import { Injectable } from '@nestjs/common';
-// import { v2 as cloudinary } from 'cloudinary';
-// import { Readable } from 'stream';
-;
-
-// @Injectable()
-// export class CloudinaryService {
-//   constructor() {
-//     cloudinary.config({
-//       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//       api_key: process.env.CLOUDINARY_API_KEY,
-//       api_secret: process.env.CLOUDINARY_API_SECRET,
-//     });
-//   }
-
-//   async uploadImage(file: Express.Multer.File): Promise<any> {
-//     return new Promise((resolve, reject) => {
-//       const imageFile = file.buffer;
-//       console.log(imageFile, 'this is the image file of the ')
-//       const uploadStream = cloudinary.uploader.upload_stream(
-//         { folder: 'interviewer_files' },
-//         (error, result) => {
-//           if (error) return reject(error);
-//           resolve(result?.secure_url);
-//         },
-//       );
-
-//       uploadStream.end(imageFile);
-//       // const stream = Readable.from(file.buffer);
-//       // stream.pipe(uploadStream);
-//     });
-//   }
-// }
-
-
-
-
 import { Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
-
-// import * as cloudinary from 'cloudinary';
-// import { v2 as cloudinaryV2 } from 'cloudinary';
 
 @Injectable()
 export class CloudinaryService {

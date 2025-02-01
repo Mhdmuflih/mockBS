@@ -1,102 +1,67 @@
-import { Document, model, Schema } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
+export type InterviewerDocument = Interviewer & Document;
 
+@Schema({ timestamps: true, collection: 'interviewers' }) // Corrected spelling for collection
+export class Interviewer {
+  
+  @Prop({ required: true })
+  name: string;
 
-export interface IInterviewer extends Document {
-    OTP: number;
-    name: string;
-    mobile: string;
-    email: string;
-    password: string;
-    createdAt: Date;
-    expaireAt: Date;
-    isBlocked?: boolean;
-    isVerified?: boolean;
-    isApproved?:boolean;
-    isDetails?: boolean;
-    currentDesignation?: string;
-    yearOfExperience?: number;
-    university?: string;
-    organization?: string;
-    introduction?: string;
+  @Prop({ required: true })
+  mobile: string;
+
+  @Prop({ required: true, unique: true })
+  email: string;
+
+  @Prop({ required: true })
+  password: string;
+
+  @Prop()
+  OTP?: number;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: () => new Date(Date.now() + 2 * 60 * 1000) }) // 2 minutes expiration
+  expireAt: Date;
+
+  @Prop({ default: false })
+  isBlocked: boolean;
+
+  @Prop({ default: false })
+  isVerified?: boolean;
+
+  @Prop({ default: false })
+  isApproved?: boolean;
+
+  @Prop({ default: false })
+  isDetails?: boolean;
+
+  @Prop()
+  currentDesignation?: string;
+
+  @Prop()
+  yearOfExperience?: number;
+
+  @Prop()
+  university?: string;
+
+  @Prop()
+  organization?: string;
+
+  @Prop()
+  introduction?: string;
+
+  @Prop()
+  profileURL?: string;
+
+  @Prop()
+  resumeURL?: string;
+
+  @Prop()
+  salarySlipURL?: string;
 }
 
-
-
-const interviewerSchema: Schema = new Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    mobile: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        unique: true,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    OTP:{
-        type:Number,
-        required:true
-    },
-    createdAT:{
-        type:Date,
-        default:Date.now
-    },
-    expaireAt:{
-        type:Date,
-        default: () => new Date(Date.now() + 2 * 60 * 1000) // 2 minutes expiration
-    },
-    isBlocked: {
-        type: Boolean,
-        default: false,
-        required: true
-    },
-    isVerified: {
-        type: Boolean,
-        default: false
-    },
-    isApproved: {
-        type: Boolean,
-        default:false
-    },
-    isDetails: {
-        type: Boolean,
-        default: false
-    },
-    currentDesignation: {
-        type: String
-    },
-    yearOfExperience: {
-        type: Number
-    },
-    university: {
-        type: String
-    },
-    organization: {
-        type: String
-    },
-    introduction: {
-        type: String
-    },
-    profileURL: {
-        type: String
-    },
-    resumeURL: {
-        type: String
-    },
-    salarySlipURL: {
-        type: String
-    }
-})
-
-export default interviewerSchema;
-
-// Optionally, export the model for manual use elsewhere
-export const InterviewerModel = model<IInterviewer>("Interviewer", interviewerSchema);
+export const InterviewerSchema = SchemaFactory.createForClass(Interviewer);

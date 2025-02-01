@@ -170,6 +170,10 @@ export class InterviewerService implements IInterviewerService {
                 throw new Error(MESSAGES.INTERVIEWER_NOT_FOUND);
             }
 
+            if(interviewer.isBlocked) {
+                throw new Error("Interviewer is Blocked. please contact Admin!");
+            }
+
             if (!interviewer.isVerified) {
                 const otp: number = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, specialChars: false, upperCaseAlphabets: false }));
                 await sendEmail({ to: email, subject: "OTP Verification", otp: otp });

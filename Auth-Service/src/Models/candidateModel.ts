@@ -11,6 +11,7 @@ export interface ICandidate extends Document {
     expaireAt: Date;
     isBlocked?: boolean;
     isVerified?: boolean;
+    profileURL?: string
 }
 
 
@@ -44,6 +45,9 @@ const candidateSchema: Schema = new Schema({
     },
     OTP: {
         type: Number,
+    },
+    profileURL: {
+        type: String
     },
     expaireAt: {
         type: Date,

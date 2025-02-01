@@ -212,6 +212,10 @@ export class CandidateService implements ICandidateService {
             if (!candidate) {
                 throw new Error(MESSAGES.CANDIDATE_NOT_FOUND);
             }
+            
+            if(candidate.isBlocked) {
+                throw new Error("Candidate is Blocked. please contact Admin!");
+            }
 
             if (!candidate.isVerified) {
                 const otp: number = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, specialChars: false, upperCaseAlphabets: false }));

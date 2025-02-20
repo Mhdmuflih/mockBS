@@ -1,0 +1,83 @@
+import { ICandidateRepository } from '../interface/ICandidateRepository';
+import { ICandidate } from '../interface/interface';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Candidate } from '../Model/candidate.schemas';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Stack } from 'src/admin/Model/stack.schema';
+
+@Injectable()
+export class CandidateRepository implements ICandidateRepository {
+    constructor(
+        @InjectModel(Candidate.name) private readonly candidateModel: Model<Candidate>,
+        @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
+    ) { }
+
+    async findOne(userId: string): Promise<ICandidate | null> {
+        try {
+            const candidate = await this.candidateModel.findOne({ _id: userId }).exec();
+            return candidate; 
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async findCandidateByEmail(email: string): Promise<ICandidate> {
+        try {
+            const candidate = await this.candidateModel.findOne({email: email});
+            return candidate;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async updateCandidateData(userId: string, formData: ICandidate, fileName: string): Promise<ICandidate | null> {
+        try {
+            const updateData: Partial<ICandidate> = {
+                name: formData.name,
+                mobile: formData.mobile
+            };
+            
+            if (fileName) {
+                updateData.profileURL = fileName;
+            }
+
+            const candidate = await this.candidateModel.findOneAndUpdate(
+                { _id: userId  }, 
+                { $set: updateData },
+                { new: true, upsert:true }
+            );
+
+            return candidate;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async updatePassword(userId: string, securePassword: string): Promise<ICandidate> {
+        try {
+            const updatedCandidate = await this.candidateModel.findOneAndUpdate(
+                { _id: userId },
+                { $set: { password: securePassword } },
+                { new: true }
+            ).exec();
+            return updatedCandidate;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async getStack(): Promise<any> {
+        try {
+            const getStack = await this.stackModel.find();
+            return getStack;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+}

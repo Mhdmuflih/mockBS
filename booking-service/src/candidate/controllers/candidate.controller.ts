@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Query, Headers } from '@nestjs/common';
 import { CandidateService } from '../services/candidate.service';
+import { ICandidateController } from '../interface/ICandidateController';
 
 
 @Controller('candidate')
-export class CandidateController {
+export class CandidateController implements ICandidateController {
   constructor(private readonly candidateService: CandidateService) { }
 
   @Get('match-interviewer/:tech')
@@ -18,7 +19,7 @@ export class CandidateController {
   }
 
   @Get('/interviewer-slot-details/:interviewerId')
-  async getinterviewerSlotDetails(@Param('interviewerId') interviewerId: string, @Query('selectedTech') tech: string) {
+  async getinterviewerSlotDetails(@Param('interviewerId') interviewerId: string, @Query('selectedTech') tech: string): Promise<any> {
     try {
       const interviewerSlotData: any = await this.candidateService.getinterviewerSlotDetails(interviewerId, tech);
       // console.log(interviewerSlotData,' thjis is slot interviewerData');
@@ -33,7 +34,7 @@ export class CandidateController {
   }
 
   @Post('schedule')
-  async scheduleInterview(@Headers('x-user-id') candidateId: string, @Body() scheduleData:any  ) {
+  async scheduleInterview(@Headers('x-user-id') candidateId: string, @Body() scheduleData:any  ): Promise<any> {
     try {
       if (!candidateId || !scheduleData) {
         throw new BadRequestException('Candidate ID and Slot ID are required');

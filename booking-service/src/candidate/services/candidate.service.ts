@@ -2,16 +2,17 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SlotRepository } from '../repository/slot.repository';
 import { sendInterviewer } from 'src/gRPC/interviewer.client';
 import { ScheduleRepository } from '../repository/schedule.repositor';
+import { ICandidateService } from '../interface/ICandidateService';
 
 @Injectable()
-export class CandidateService {
+export class CandidateService implements ICandidateService {
   constructor(
     private readonly slotRepository: SlotRepository,
     private readonly schedulRepository: ScheduleRepository
   ) { }
 
   // grpc data send
-  async getMatchedSlot(tech: string) {
+  async getMatchedSlot(tech: string): Promise<any> {
     try {
       const getMatchedSlot = await this.slotRepository.getMatchSlot(tech);
       const interviewerIds = getMatchedSlot.map(slot => slot.interviewerId.toString());
@@ -25,7 +26,7 @@ export class CandidateService {
     }
   }
 
-  async getinterviewerSlotDetails(interviewerId: string, tech: string) {
+  async getinterviewerSlotDetails(interviewerId: string, tech: string): Promise<any> {
     try {
       const slotData = await this.slotRepository.getSlotInterviewerDetails(interviewerId, tech);
       const interviewerDataResponse = await sendInterviewer([interviewerId]);

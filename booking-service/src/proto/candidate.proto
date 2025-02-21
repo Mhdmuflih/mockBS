@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package candidate;
+
+service CandidateService {
+  rpc SendCandidate (CandidateRequest) returns (CandidateResponseList);
+}
+
+message CandidateRequest {
+  repeated string ids = 1; // Array of candidate IDs
+}
+
+message CandidateResponse {
+  string id = 1;
+  string name = 2;
+  string mobile = 3;
+  string email = 4;
+  string password = 5;
+  bool isBlocked = 6;
+  bool isVerified = 7;
+  string updatedAt = 8;
+  string createdAt = 9
+  string profileURL = 10;
+}
+
+message CandidateResponseList {
+  repeated CandidateResponse candidates = 1; // Array of CandidateResponse
+}

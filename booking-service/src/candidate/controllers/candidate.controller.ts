@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Query, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Query, Headers, HttpException, HttpStatus } from '@nestjs/common';
 import { CandidateService } from '../services/candidate.service';
 import { ICandidateController } from '../interface/ICandidateController';
 
@@ -14,7 +14,7 @@ export class CandidateController implements ICandidateController {
       return { success: true, message: "matched Slot data", matchedData: matchedData };
     } catch (error: any) {
       console.log(error.message);
-      throw new BadRequestException(error.message || 'An error occurred');
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -29,7 +29,7 @@ export class CandidateController implements ICandidateController {
       return { success: true, message: "slot interviewer Data", slotData: interviewerSlotData[0] , interviewerData: interviewerSlotData[1].interviewers[0] };
     } catch (error: any) {
       console.log(error.message);
-      throw new BadRequestException(error.message || 'An error occurred');
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -43,7 +43,7 @@ export class CandidateController implements ICandidateController {
       return { success: true, message: "Booking successful!" };
     } catch (error: any) {
       console.log(error.message);
-      throw new BadRequestException(error.message || 'An error occurred');
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

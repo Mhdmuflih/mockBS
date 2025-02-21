@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Headers, HttpException, HttpStatus } from '@nestjs/common';
 import { InterviewerService } from '../services/interviewer.service';
 import { IInterviewerSlotController } from '../interface/IInterviewerSlotController';
 
@@ -13,7 +13,7 @@ export class InterviewerSlotController implements IInterviewerSlotController {
       return { success: true, message: "slot added successfully." };
     } catch (error: any) {
       console.log(error.message);
-      throw new BadRequestException(error.message || 'An error occurred');
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -24,7 +24,7 @@ export class InterviewerSlotController implements IInterviewerSlotController {
       return {success: true, message: "get Slot Data", slotData: getSlotData};
     } catch (error: any) {
       console.log(error.message);
-      throw new BadRequestException(error.message || 'An error occurred');
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

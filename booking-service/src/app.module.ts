@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { InterviewerModule } from './interviewer/interviewer.module';
 import { CandidateModule } from './candidate/candidate.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [ConfigModule.forRoot({isGlobal: true,}),
@@ -16,6 +17,7 @@ import { CandidateModule } from './candidate/candidate.module';
     }),
     InterviewerModule,
     CandidateModule,
+    AdminModule
   ],
   controllers: [],
   providers: [],

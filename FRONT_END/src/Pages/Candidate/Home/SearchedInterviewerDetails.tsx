@@ -157,7 +157,7 @@ const SearchedInterviewerDetails = () => {
                                                 <>
                                                     <td className="px-4 py-2 font-semibold text-red-600">Unavailable</td>
                                                     <td>
-                                                        <button disabled className="bg-gray-400 text-white px-2 py-1 rounded cursor-not-allowed"> Booked </button>
+                                                        <button disabled className="bg-gray-400 text-white pl-3 pr-4 py-1 rounded cursor-not-allowed"> Booked </button>
                                                     </td>
                                                 </>
                                             )}

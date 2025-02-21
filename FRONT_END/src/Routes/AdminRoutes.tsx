@@ -13,6 +13,8 @@ import AdminCandidateDetails from '../Pages/Admin/Candidates/AdminCandidateDetai
 import AdminStackList from '../Pages/Admin/Stack/AdminStackList';
 import AdminAddStack from '../Pages/Admin/Stack/AdminAddStack';
 import AdminInterviewerDetails from '../Pages/Admin/Interviewers/AdminInterviewerDetails';
+import AdminInterviewList from '../Pages/Admin/Interviews/AdminInterviewList';
+import AdminCommunityList from '../Pages/Admin/Communities/AdminCommunityList';
 
 const AdminRoutes = () => {
     return (
@@ -33,9 +35,13 @@ const AdminRoutes = () => {
 
                     <Route path='/candidates' element={<AdminCandidatesList />}></Route>
                     <Route path='/candidate/:id' element={<AdminCandidateDetails />}></Route>
+                    
+                    <Route path='/interviews' element={<AdminInterviewList />}></Route>
 
                     <Route path='/stack' element={<AdminStackList />}></Route>
                     <Route path='/add-stack' element={<AdminAddStack />}></Route>
+
+                    <Route path='/communities' element={<AdminCommunityList />}></Route>
                 </Route>
             </Routes>
         </>

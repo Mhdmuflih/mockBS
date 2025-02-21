@@ -149,3 +149,14 @@ export const fetchStackList = async () => {
         throw new Error(error.response?.data?.message || "An error occurred during the add Stack process.");
     }
 }
+
+
+export const fetchInterviewList = async () => {
+    try {
+        const response = await ProtectedAPI.get('/booking-service/admin/interviews');
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the add Stack process.");
+    }
+}

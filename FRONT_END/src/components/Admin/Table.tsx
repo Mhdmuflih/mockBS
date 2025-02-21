@@ -10,7 +10,7 @@ const Table: React.FC<TableProps> = ({ columns, data, actions }) => {
     return (
         <div className="bg-[#30323A] ml-1 p-4 shadow-md mt-2 max-h-[80vh] overflow-auto">
             {/* Table Header */}
-            <div className="grid grid-cols-5 gap-4 bg-black text-white p-4 rounded-md">
+            <div className={`grid grid-cols-${columns.length} gap-4 bg-black text-white p-4 rounded-md`}>
                 {columns.map((col) => (
                     <div key={col.key} className="text-sm font-medium">
                         {col.label}
@@ -24,7 +24,7 @@ const Table: React.FC<TableProps> = ({ columns, data, actions }) => {
                     data.map((row, index) => (
                         <div
                             key={index}
-                            className="grid grid-cols-5 gap-4 bg-black text-gray-300 p-3 rounded-md hover:bg-[#60646F]"
+                            className="grid grid-cols-5 gap-4 bg-black text-gray-300 p-3 rounded-md hover:bg-[#60646F] duration-500"
                         >
                             {columns.map((col) => (
                                 <div key={col.key} className="text-sm">

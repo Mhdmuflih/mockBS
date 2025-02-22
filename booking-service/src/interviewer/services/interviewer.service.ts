@@ -10,6 +10,10 @@ export class InterviewerService implements IInterviewerSlotService {
   async addSlot(interviewerId: string, formData: any): Promise<any> {
     try {
 
+      if(new Date(formData.date) < new Date()) {
+        throw new Error("Selected date in Incorrect. please choose correct date");
+      }
+      
       const slotData = {
         stack: formData.stack,
         slots: [{

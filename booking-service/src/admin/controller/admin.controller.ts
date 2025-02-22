@@ -10,7 +10,7 @@ export class AdminController implements IAdminController {
     async getInterviews(): Promise<any> {
         try {
             const interviewData = await this.adminService.getInterview();
-            console.log(interviewData, 'this is for interviewData');
+            // console.log(interviewData, 'this is for interviewData');
             return { success: true, message: "interview's Data", interviewData: interviewData }
         } catch (error: any) {
             console.log(error.message);

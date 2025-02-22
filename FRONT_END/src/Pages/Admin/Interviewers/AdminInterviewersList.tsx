@@ -60,7 +60,7 @@ const AdminInterviewersList = () => {
 
             const actionText = isBlocked ? "Unblock" : "Block"; // Dynamic text for action
             const confirmText = isBlocked ? "Yes, Unblock!" : "Yes, Block!";
-            const successMessage = isBlocked ? "Candidate Unblocked Successfully!" : "Candidate Blocked Successfully!";
+            const successMessage = isBlocked ? "Interviewer Unblocked Successfully!" : "Interviewer Blocked Successfully!";
 
             // First, ask for confirmation before proceeding
             const result = await Swal.fire({

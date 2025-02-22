@@ -14,8 +14,8 @@ const AdminInterviewList = () => {
             try {
                 const response: any = await fetchInterviewList();
                 if (response.success) {
-                    console.log("interview's data fetched successfully");
-                    console.log(response.interviewData, 'tbis is for the interviewData');
+                    // console.log("interview's data fetched successfully");
+                    // console.log(response.interviewData, 'tbis is for the interviewData');
 
                     const formattedData = response.interviewData.map((item: any, index: number) => ({
                         serial: index + 1,

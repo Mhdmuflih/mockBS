@@ -103,7 +103,7 @@ export class InterviewerController implements IInterviewerController {
     @Patch('password')
     async changePassword(@Headers('x-user-id') userId: string, @Body() formData: { currentPassword: string, password: string, confirmPassword: string }) {
         try {
-            console.log(userId, formData, 'this is the userID and formData');
+            // console.log(userId, formData, 'this is the userID and formData');
             if (!userId || !formData) {
                 throw new BadRequestException('User ID or form data is missing');
             }

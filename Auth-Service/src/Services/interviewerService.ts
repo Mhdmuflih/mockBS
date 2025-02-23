@@ -14,6 +14,11 @@ export class InterviewerService implements IInterviewerService {
     async createInterviewer(name: string, mobile: string, email: string, password: string): Promise<any> {
         try {
 
+            const interviewer = await this.interviewerRepository.findInterviewerByEmail(email);
+            if(interviewer) {
+                throw new Error("interviewer is alreday registered");
+            }
+
             const OTP = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false }));
             if (!OTP) {
                 throw new Error("OTP is required and must be a valid number.");

@@ -103,7 +103,7 @@ export class InterviewerService implements IInterviewerService {
             }
 
             if (formData.password === formData.currentPassword) {
-                throw new Error('same Password change is not allowed')
+                throw new Error('same Password change is not allowed');
             }
 
             const hashedPassword = await bcrypt.hash(formData.password, 10); // 10 is the salt rounds

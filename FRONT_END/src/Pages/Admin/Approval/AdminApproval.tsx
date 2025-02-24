@@ -4,30 +4,50 @@ import { fetchApprovalData } from "../../../Services/adminService";
 import { useNavigate } from "react-router-dom";
 import profileImage from "../../../assets/profile image.jpg";
 
+// import Typography from '@mui/material/Typography';
+import Pagination from '@mui/material/Pagination';
+// import Stack from '@mui/material/Stack';
+
 const AdminApproval = () => {
 
+    const [searchQuery, setSearchQuery] = useState("");
     const navigate = useNavigate();
     const [approvalData, setApprovalData] = useState<any[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4;
+    const [totalPages, setTotalPages] = useState(1);
+    const itemsPerPage = 5;
 
     useEffect(() => {
         const takeApprovalDetails = async () => {
             try {
-                const response: any = await fetchApprovalData();
+                const response: any = await fetchApprovalData(currentPage, itemsPerPage);
+                console.log("API Response:", response); // Debugging: Check if data comes as expected
+
                 if (response.success) {
                     console.log("Approval data fetched successfully");
-                    console.log(response.approvalData, "This is the approval data");
-                    setApprovalData(response.approvalData);
+                    console.log(response.approvalData.approvalData, "This is the approval data");
+                    console.log(response.approvalData.totalPages, 'this is total pages')
+                    setApprovalData(response.approvalData.approvalData);
+                    setTotalPages(response.approvalData.totalPages || 1);
                 } else {
                     console.log("Failed to fetch approval data");
                 }
+
+                console.log(approvalData, 'this is that')
             } catch (error: any) {
                 console.log("Error fetching data:", error.message);
             }
         };
         takeApprovalDetails();
-    }, []);
+    }, [currentPage]);  // Now, it will re-run when currentPage changes
+
+    const handleSearch = (e: any) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        fetchApprovalData(1, query);  // Fetch results from backend
+    };
+
+
 
     const handleToDetails = (id: string) => {
         try {
@@ -37,91 +57,110 @@ const AdminApproval = () => {
         }
     }
 
-    // Pagination logic
-    const totalPages = Math.ceil(approvalData.length / itemsPerPage);
-    const paginatedData = approvalData.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
+    const filteredData = approvalData.filter((data) =>
+        data.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        data.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        data.mobile.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-    };
 
-    const handlePreviousPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    // Pagination logic
+    // const totalPages = Math.ceil(approvalData.length / itemsPerPage);
+    // const paginatedData = approvalData.slice(
+    //     (currentPage - 1) * itemsPerPage,
+    //     currentPage * itemsPerPage
+    // );
+
+
+    // const handleNextPage = () => {
+    //     if (currentPage < totalPages) {
+    //         setCurrentPage(currentPage + 1);
+    //     }
+    // };
+
+    // const handlePrevPage = () => {
+    //     if (currentPage > 1) {
+    //         setCurrentPage(currentPage - 1);
+    //     }
+    // };
+
+    const handleChange = (_: unknown, value: number) => {
+        setCurrentPage(value);
     };
 
     return (
         <div className="flex">
             {/* Sidebar */}
             <SideBar heading="Approval">
-                <div className="bg-[#30323A] ml-1 p-4 shadow-md mt-2 h-[476px]">
-                    {/* Table Headings */}
-                    <div className="grid grid-cols-4 gap-4 bg-black text-white p-4 rounded-md">
-                        <div className="text-sm font-medium">Name</div>
-                        <div className="text-sm font-medium">Email</div>
-                        <div className="text-sm font-medium">Mobile</div>
-                        <div className="text-sm font-medium ml-3">Details</div>
-                    </div>
+                <div className="bg-[#30323A] ml-1 p-2 shadow-md mt-2 h-[476px] flex flex-col justify-between">
+                    {/* Search and Data List */}
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            className="px-3 py-2 rounded-md w-full bg-black text-white"
+                            value={searchQuery}
+                            onChange={(e) => handleSearch(e)}
+                        />
 
-                    {/* Table Rows */}
-                    <div className="mt-4 space-y-4">
-                        {paginatedData.length > 0 ? (
-                            paginatedData.map((data, index) => (
-                                <div
-                                    key={index}
-                                    className="grid grid-cols-4 gap-4 bg-black text-gray-300 p-3 rounded-md hover:bg-[#60646F]"
-                                >
-                                    <div className="text-sm">
-                                        <div className="flex items-center">
-                                            <img
-                                                src={data.profileURL || profileImage}
-                                                alt="Profile"
-                                                className="rounded-full w-10 h-10 object-cover"
-                                            />
-                                            <h1 className="ml-4">{data.name || "N/A"}</h1>
+                        <div className="mt-2 grid grid-cols-[1fr_2fr_2fr_1fr] gap-x-6 bg-black text-white p-4 rounded-md">
+                            <div className="text-sm font-thin ml-2">Name</div>
+                            <div className="text-sm font-thin text-center">Email</div>
+                            <div className="text-sm font-thin text-center">Mobile</div>
+                            <div className="text-sm font-thin text-right">Details</div>
+                        </div>
+
+                        {/* Table Rows */}
+                        <div className="mt-1 space-y-2 flex-grow ">
+                            {approvalData.length > 0 ? (
+                                filteredData.map((data) => (
+                                    <div key={data._id} className="grid grid-cols-[1fr_2fr_2fr_1fr] gap-x-6 bg-black text-gray-300 p-2 rounded-md">
+                                        <div className="text-sm text-left flex items-center">
+                                            <img src={data.profileURL || profileImage} alt="Profile" className="rounded-full ml-3 w-8 h-8 object-cover" />
+                                            <h1 className="ml-4 font-semibold">{data.name || "N/A"}</h1>
+                                        </div>
+                                        <div className="text-sm text-center mt-2">{data.email || "N/A"}</div>
+                                        <div className="text-sm text-center mt-2">{data.mobile || "N/A"}</div>
+                                        <div className="flex justify-end items-center">
+                                            <button
+                                                onClick={() => handleToDetails(data._id)}
+                                                className="bg-[#32ADE6] text-white px-3 py-1 rounded-full hover:text-white hover:bg-[#999999]"
+                                            >
+                                                Details
+                                            </button>
                                         </div>
                                     </div>
-                                    <div className="text-sm">{data.email || "N/A"}</div>
-                                    <div className="text-sm">{data.mobile || "N/A"}</div>
-                                    <div>
-                                        <button
-                                            onClick={() => handleToDetails(data._id)}
-                                            className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600">
-                                            Details
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="text-white text-center">No data available</div>
-                        )}
+                                ))
+                            ) : (
+                                <div className="text-white text-center">No data available</div>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Pagination Controls */}
-                    <div className="flex justify-center items-center mt-4">
-                        <button
-                            className="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600 mr-2 disabled:opacity-50"
-                            onClick={handlePreviousPage}
-                            disabled={currentPage === 1}
-                        >
-                            Previous
-                        </button>
-                        <span className="text-black">
-                            Page {currentPage} of {totalPages}
-                        </span>
-                        <button
-                            className="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600 ml-2 disabled:opacity-50"
-                            onClick={handleNextPage}
-                            disabled={currentPage === totalPages}
-                        >
-                            Next
-                        </button>
+                    {/* Fixed Pagination */}
+                    <div className="flex justify-center items-center mt-4 pb-2">
+                        <Pagination
+                            count={totalPages}
+                            page={currentPage}
+                            onChange={handleChange}
+                            sx={{
+                                "& .MuiPaginationItem-root": {
+                                    color: "#FFCC00",  // Text color
+                                },
+                                "& .MuiPaginationItem-root.Mui-selected": {
+                                    backgroundColor: "#FFCC00", // Selected page background color
+                                    color: "#000",  // Selected page text color
+                                },
+                                "& .MuiPaginationItem-root:hover": {
+                                    backgroundColor: "#FFD633", // Lighter yellow on hover
+                                    color:"#000"
+                                }
+                            }}
+                        />
                     </div>
                 </div>
-            </SideBar>
-        </div>
+            </SideBar >
+        </div >
     );
 };
 

@@ -307,13 +307,17 @@ const AdminCandidatesList = () => {
                                 <h1 className="ml-4">{data.name || "N/A"}</h1>
                             </div>
                         ),
-                        email: data.email || "N/A",
+                        email: (
+                            <div className="mt-2">
+                                {data.email || "N/A"}
+                            </div>
+                        ),
                         action: (
                             <button
                                 onClick={() => handleToAction(data._id, data.isBlocked)}
-                                className={`px-4 py-1 rounded ${data.isBlocked
-                                    ? "bg-[#999999] text-[#FF3B30] hover:bg-[#FF3B30] hover:text-white"
-                                    : "bg-[#999999] text-[#34C759] hover:bg-[#34C759] hover:text-white"
+                                className={`px-4 py-1 mt-1 rounded-full ${data.isBlocked
+                                    ? "bg-[#999999] bg-opacity-50 text-[#FF3B30] hover:bg-[#FF3B30] hover:text-white duration-500"
+                                    : "bg-[#999999] bg-opacity-50 text-[#34C759] hover:bg-[#34C759] hover:text-white duration-500"
                                     }`}
                             >
                                 {data.isBlocked ? "UnBlock" : "Block"}
@@ -323,8 +327,7 @@ const AdminCandidatesList = () => {
                         details: (
                             <button
                                 onClick={() => handleToDetails(data._id)}
-                                className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
-                            >
+                                className="bg-[#32ADE6] text-white px-3 mt-1 py-1 rounded-full hover:text-white hover:bg-[#999999] duration-500"                            >
                                 Details
                             </button>
                         ),

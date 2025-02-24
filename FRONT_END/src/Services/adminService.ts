@@ -46,15 +46,18 @@ ProtectedAPI.interceptors.response.use(
 );
 
 
-export const fetchApprovalData = async () => {
+export const fetchApprovalData = async (page: number = 1, limit: number = 4, search?: string) => {
     try {
-        const response = await ProtectedAPI.get('/user-service/admin/approval');
-        return response.data;
+        const response = await ProtectedAPI.get(`/user-service/admin/approval`, {
+            params: { page, limit, search }, // Sending pagination parameters
+        });
+        return response.data; // Ensure response contains { success, approvalData, totalPages }
     } catch (error: any) {
-        console.error("Login Error:", error.response?.data || error.message);
-        throw new Error(error.response?.data?.message || "An error occurred during the approval data process.");
+        console.error("Error fetching approval data:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "Failed to fetch approval data.");
     }
-}
+};
+
 
 
 export const fetchInterviewerDetails = async (id: string) => {

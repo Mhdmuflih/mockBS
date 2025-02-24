@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, BadRequestException, Query } from '@nestjs/common';
 import { AdminService } from '../service/admin.service';
 import { IAdminController } from '../interface/IAdminController';
 
@@ -7,9 +7,32 @@ export class AdminController implements IAdminController {
   constructor(private readonly adminService: AdminService) { }
 
   @Get('approval')
-  async getAllInterviewerApproval(): Promise<any> {
+  async getAllInterviewerApproval(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('search') search?: string
+  ): Promise<any> {
     try {
-      const approvalData = await this.adminService.findAllApproval();
+
+      // if (search) {
+      //   const approvalData = await this.adminService.findAllApproval(0, 0, search);
+      //   return {
+      //     success: true,
+      //     message: "Search Results",
+      //     approvalData,
+      //     totalRecords: approvalData.length,
+      //     searchMode: true,
+      //   };
+      // }
+      // const approvalData = await this.adminService.findAllApproval(page, limit, search);
+      // return {
+      //   success: true,
+      //   message: "Interviewer Data",
+      //   approvalData: approvalData,
+      // };
+      // console.log(search, page, limit, 'this is forntend to send in backend')
+      const approvalData = await this.adminService.findAllApproval(page, limit, search);
+      // console.log(approvalData, 'this is approval data for the pagination ')
       return { success: true, message: "interviewer Data.", approvalData: approvalData };
     } catch (error: any) {
       console.log(error.message);

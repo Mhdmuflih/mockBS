@@ -1,5 +1,5 @@
 export interface IAdminService {
-    findAllApproval(): Promise<any>;
+    findAllApproval(page: number, limit: number, search: string): Promise<any>;
     findOne(id: string): Promise<any>;
     approveDetails(id: string): Promise<any>;
     getAllCandidate(): Promise<any>;

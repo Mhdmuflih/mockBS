@@ -1,5 +1,5 @@
 export interface IAdminController {
-    getAllInterviewerApproval(): Promise<any>;
+    getAllInterviewerApproval(page: number, limit: number, search?: string): Promise<any>;
     getApprovalDetails(id: string): Promise<any>;
     approveDetails(id: string): Promise<any>;
     getAllCandidates(): Promise<any>;

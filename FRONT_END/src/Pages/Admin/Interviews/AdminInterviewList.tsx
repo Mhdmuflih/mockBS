@@ -66,8 +66,7 @@ const AdminInterviewList = () => {
                                 details: (
                                     <button
                                     onClick={() => handleToDetails()}
-                                        className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
-                                    >
+                                    className="bg-[#32ADE6] text-white px-3 py-1 rounded-full hover:text-white hover:bg-[#999999] duration-500"                                    >
                                         Details
                                     </button>
                                 ),

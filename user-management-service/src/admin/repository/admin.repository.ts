@@ -14,12 +14,50 @@ export class AdminRepository implements IAdminRepository {
         @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
     ) { }
 
-    async findAllApproval(): Promise<any> {
+    async findAllApproval(skip: number, limit: number, search?: string): Promise<any> {
         try {
-            const approvalData = await this.interviewerModel.find({ isApproved: false, isDetails: true }).exec();
+            let filter: any = { isApproved: false, isDetails: true };
+
+            // Apply search filter if search term is provided
+            if (search) {
+                filter.$or = [
+                    { name: { $regex:   search , $options: "i" } },
+                    { email: { $regex:   search ,  $options: "i" } },
+                    { mobile: { $regex:   search ,  $options: "i" } },
+                ];
+            }
+
+            // if (search) {
+            //     return await this.interviewerModel.find(filter).exec();
+            // }
+
+            const approvalData = await this.interviewerModel.find(filter)
+                .skip(skip)
+                .limit(limit)
+                .exec();
+
             return approvalData;
         } catch (error: any) {
             console.log(error.message)
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async countApproval(search?: string): Promise<number> {
+        try {
+            let filter: any = { isApproved: false, isDetails: true };
+
+            if (search) {
+                filter.$or = [
+                    { name: { $regex:  search , $options: "i" } },
+                    { email: { $regex: search , $options: "i" } },
+                    { mobile: { $regex:  search , $options: "i" } },
+                ];
+            }
+
+            return await this.interviewerModel.countDocuments(filter).exec();
+        } catch (error: any) {
+            console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

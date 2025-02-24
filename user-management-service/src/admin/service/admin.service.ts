@@ -8,10 +8,25 @@ export class AdminService implements IAdminService {
     private readonly adminRepository: AdminRepository
   ) { }
 
-  async findAllApproval(): Promise<any> {
+  async findAllApproval(page: number, limit: number, search?: string): Promise<any> {
     try {
-      const approvalData = await this.adminRepository.findAllApproval();
-      return approvalData;
+      console.log(search, 'this is the search')
+
+      // if (search) {
+      //   const approvalData = await this.adminRepository.findAllApproval(0, 0, search);
+      //   return approvalData;
+      // }
+
+      const skip = (page - 1) * limit;
+      const approvalData = await this.adminRepository.findAllApproval(skip, limit, search);
+      const totalRecords = await this.adminRepository.countApproval(search);
+
+      return {
+        approvalData,
+        totalRecords,
+        totalPages: Math.ceil(totalRecords / limit),
+        currentPage: page,
+      };
     } catch (error: any) {
       console.log(error.message);
       return { success: false, message: 'Failed to fetch candidate details!' };

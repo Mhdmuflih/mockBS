@@ -1,5 +1,6 @@
 export interface IAdminRepository {
-    findAllApproval(): Promise<any>;
+    findAllApproval(skip: number , limit: number, search?: string): Promise<any>;
+    countApproval(search?: string): Promise<number>;
     findOne(id: string): Promise<any>;
     approveDetails(id: string): Promise<any>;
     getAllCandidate(): Promise<any>;

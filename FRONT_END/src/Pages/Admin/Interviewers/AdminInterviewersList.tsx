@@ -11,12 +11,18 @@ import toast from "react-hot-toast"
 import { Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
 
+// import Pagination from '@mui/material/Pagination';
+
+
 
 const AdminInterviewersList = () => {
+
+    const [searchQuery, setSearchQuery] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [approvalData, setApprovalData] = useState<any[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    // const [totalPages, setTotalPages] = useState(1);
     const itemsPerPage = 4;
 
     useEffect(() => {
@@ -98,6 +104,16 @@ const AdminInterviewersList = () => {
         }
     };
 
+    // const handleSearch = (e: any) => {
+    //     const query = e.target.value;
+    //     setSearchQuery(query);
+    // };
+
+    const handleChange = (_: unknown, value: number) => {
+        setCurrentPage(value);
+    };
+
+
     // Define Columns for Candidates
     const candidateColumns = [
         { key: "serial", label: "SlNo" },
@@ -113,42 +129,67 @@ const AdminInterviewersList = () => {
 
                 <Toaster position="top-right" reverseOrder={false} />
 
-                <Table
-                    columns={candidateColumns}
-                    data={paginatedData.map((data, index) => ({
-                        serial: (currentPage - 1) * itemsPerPage + index + 1,
-                        name: (
-                            <div className="flex items-center">
-                                <img
-                                    src={data.profileURL || profileImage}
-                                    alt="Profile"
-                                    className="rounded-full w-10 h-10 object-cover"
-                                />
-                                <h1 className="ml-4">{data.name || "N/A"}</h1>
-                            </div>
-                        ),
-                        email: data.email || "N/A",
-                        action: (
-                            <button
-                                onClick={() => handleToAction(data._id, data.isBlocked)}
-                                className={`px-4 py-1 rounded ${data.isBlocked
-                                    ? "bg-[#999999] text-[#FF3B30] hover:bg-[#FF3B30] hover:text-white"
-                                    : "bg-[#999999] text-[#34C759] hover:bg-[#34C759] hover:text-white"
-                                    }`}
-                            >
-                                {data.isBlocked ? "UnBlock" : "Block"}
-                            </button>
-                        ),
-                        details: (
-                            <button
-                                onClick={() => handleToDetails(data._id)}
-                                className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
-                            >
-                                Details
-                            </button>
-                        ),
-                    }))}
-                />
+
+                {/* <input
+                    type="text"
+                    placeholder="Search..."
+                    className="px-3 py-2 rounded-md w-full bg-black text-white"
+                    value={searchQuery}
+                    onChange={(e) => handleSearch(e)}
+                /> */}
+                <div>
+
+                    <Table
+                        columns={candidateColumns}
+                        handleChange={handleChange}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        data={approvalData.map((data, index) => ({
+                            serial: (
+                                <h2 className="mr-3">{index + 1}</h2>
+                            ),
+                            name: (
+
+                                <div className="flex items-center">
+                                    <img
+                                        src={data.profileURL || profileImage}
+                                        alt="Profile"
+                                        className="rounded-full w-10 h-10 object-cover"
+                                    />
+                                    <h1 className="ml-4">{data.name || "N/A"}</h1>
+                                </div>
+                            ),
+                            email: (
+
+                                <div className="mt-2">
+                                    {data.email || "N/A"}
+                                </div>
+                            ),
+                            action: (
+                                <button
+                                    onClick={() => handleToAction(data._id, data.isBlocked)}
+                                    className={`px-4 py-1 rounded-full mt-1 ${data.isBlocked
+                                        ? "bg-[#999999] bg-opacity-50 text-[#FF3B30] hover:bg-[#FF3B30] hover:text-white duration-500"
+                                        : "bg-[#999999] bg-opacity-50 text-[#34C759] hover:bg-[#34C759] hover:text-white duration-500"
+                                        }`}
+                                >
+                                    {data.isBlocked ? "UnBlock" : "Block"}
+                                </button>
+                            ),
+                            details: (
+                                <button
+                                    onClick={() => handleToDetails(data._id)}
+                                    className="bg-[#32ADE6] text-white px-3 py-1 mt-1 rounded-full hover:text-white hover:bg-[#999999] duration-500"
+                                >
+                                    Details
+                                </button>
+                            ),
+                        }))}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                    />
+
+                </div>
 
                 {/* Pagination Controls */}
                 <div className="flex justify-center items-center mt-4">

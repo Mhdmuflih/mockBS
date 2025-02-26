@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 // import { CandidateService } from './candidate.service';
 // import { CandidateController } from './candidate.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,6 +9,7 @@ import { CandidateRepository } from './repository/candidate.repository';
 import { MulterModule } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/Config/cloudinary.service';
 import { Stack, StackSchema } from 'src/admin/Model/stack.schema';
+import { InterviewerModule } from 'src/interviewer/interviewer.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { Stack, StackSchema } from 'src/admin/Model/stack.schema';
       name: Stack.name,
       schema: StackSchema
     }]),
+    forwardRef(() => InterviewerModule)
   ],
   controllers: [CandidateController],
   providers: [

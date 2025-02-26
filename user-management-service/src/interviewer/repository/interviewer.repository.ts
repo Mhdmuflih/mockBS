@@ -5,11 +5,13 @@ import { Interviewer } from "../Model/interviewer.schema";
 import { Model } from "mongoose";
 import { IInterviewer } from "../interface/interface";
 import { Stack } from "src/admin/Model/stack.schema";
+import { Candidate } from "src/candidate/Model/candidate.schemas";
 
 @Injectable()
 export class InterviewerRepository implements IInterviewerRepository {
     constructor(
         @InjectModel(Interviewer.name) private readonly interviewerModel: Model<Interviewer>,
+        @InjectModel(Candidate.name) private readonly candidateModel: Model<Candidate>,
         @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
     ) { }
 
@@ -105,6 +107,15 @@ export class InterviewerRepository implements IInterviewerRepository {
             const stack = await this.stackModel.find();
             // console.log(stack, 'this is stack')
             return stack;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async getCandidate(candidateId: string): Promise<any> {
+        try {
+            return await this.candidateModel.findOne({_id: candidateId});
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

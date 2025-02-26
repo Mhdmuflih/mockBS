@@ -29,7 +29,7 @@ export class AdminService implements IAdminService {
       };
     } catch (error: any) {
       console.log(error.message);
-      return { success: false, message: 'Failed to fetch candidate details!' };
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -39,7 +39,7 @@ export class AdminService implements IAdminService {
       return getApprovalDetails
     } catch (error: any) {
       console.log(error.message);
-      return { success: false, message: 'Failed to fetch candidate details!' };
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -48,7 +48,7 @@ export class AdminService implements IAdminService {
       return await this.adminRepository.approveDetails(id);
     } catch (error: any) {
       console.log(error.message);
-      return { success: false, message: 'Failed to fetch candidate details!' };
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -58,7 +58,7 @@ export class AdminService implements IAdminService {
       return candidatesData;
     } catch (error: any) {
       console.log(error.message);
-      return { success: false, message: 'Failed to fetch candidate details!' };
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -68,7 +68,7 @@ export class AdminService implements IAdminService {
       return candidateDetails;
     } catch (error: any) {
       console.log(error.message);
-      return { success: false, message: 'Failed to fetch candidate details!' };
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -81,7 +81,7 @@ export class AdminService implements IAdminService {
 
     } catch (error: any) {
       console.log(error.message);
-      return { success: false, message: 'Failed to fetch candidate action!' };
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -91,7 +91,7 @@ export class AdminService implements IAdminService {
       return interviewersData;
     } catch (error: any) {
       console.log(error.message);
-      return { success: false, message: 'Failed to fetch Interviewer details!' };
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -104,7 +104,7 @@ export class AdminService implements IAdminService {
 
     } catch (error: any) {
       console.log(error.message);
-      return { success: false, message: 'Failed to fetch Interviewer action!' };
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -120,6 +120,7 @@ export class AdminService implements IAdminService {
       // const saveStack = await stack.save();
       return saveStack;
     } catch (error: any) {
+      console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -129,7 +130,22 @@ export class AdminService implements IAdminService {
       const stack = await this.adminRepository.getAllStack();
       return stack;
     } catch (error: any) {
-      return { success: false, message: 'Failed to add stack!' };
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getInterviewsDetailsData(ids: {candidateId: string, interviewerId: string}): Promise<any> {
+    try {
+      // console.log(ids, "this is for the service in admin")
+      const interviewerDetails = await this.adminRepository.findOne(ids.interviewerId);
+      const candidateDetails = await this.adminRepository.getcandidateDetails(ids.candidateId);
+      
+      // console.log(interviewerDetails, candidateDetails, 'this is for the interviewer and candidate data');
+      return [interviewerDetails, candidateDetails]
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

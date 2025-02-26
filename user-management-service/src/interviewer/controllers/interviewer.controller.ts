@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Headers, HttpException, HttpStatus, Patch, Post, UploadedFile, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Patch, Post, UploadedFile, UploadedFiles, UseInterceptors } from "@nestjs/common";
 import { IInterviewerController } from "../interface/IInterviewerController";
 import { CloudinaryService } from "src/Config/cloudinary.service";
 import { AnyFilesInterceptor, FileInterceptor } from "@nestjs/platform-express";
@@ -130,6 +130,17 @@ export class InterviewerController implements IInterviewerController {
         try {
             const stack = await this.interviewerService.fetchStack();
             return {success: true, message: "stack Data", stackData: stack}
+        } catch (error: any) {
+            console.error('Error:', error.message);
+            throw new BadRequestException(error.message || 'An error occurred');
+        }
+    }
+
+    @Get('/candidate-details/:candidateId')
+    async getCandidateData(@Param('candidateId') candidateId: string) {
+        try {
+            const candidateData = await this.interviewerService.getCandidate(candidateId);
+            return {success: true, message: "get candidate data", candidateData: candidateData};
         } catch (error: any) {
             console.error('Error:', error.message);
             throw new BadRequestException(error.message || 'An error occurred');

@@ -1,3 +1,4 @@
+import { IInterviewer } from "src/interviewer/interface/interface";
 import { ICandidate } from "./interface";
 
 export interface ICandidateRepository {
@@ -6,4 +7,5 @@ export interface ICandidateRepository {
     updateCandidateData(userId: string, formData: ICandidate, fileName: string): Promise<ICandidate | null>;
     updatePassword(userId: string, securePassword: string): Promise<ICandidate>
     getStack(): Promise<any>;
+    findInterviewer(interviewerId: string): Promise<IInterviewer>;
 }

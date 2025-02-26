@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type CandidateDocument = Candidate & Document;
 
-@Schema({ timestamps: true, collection: 'candidates' }) // Collection name should be plural by convention
+@Schema({ timestamps: true, collection: 'candidates' })
 export class Candidate extends Document {
 
     @Prop({ type: String, required: true })
@@ -12,13 +12,13 @@ export class Candidate extends Document {
     @Prop({ type: String, required: true })
     mobile: string;
 
-    @Prop({ type: String, required: true, unique: true }) // Added unique for email to avoid duplicates
+    @Prop({ type: String, required: true, unique: true })
     email: string;
 
     @Prop({ type: String, required: true, default: '' })
     password: string;
 
-    @Prop({ type: Boolean, required: true, default: false }) // Corrected "require" to "required"
+    @Prop({ type: Boolean, required: true, default: false })
     isBlocked: boolean;
 
     @Prop({ type: Boolean, default: false })

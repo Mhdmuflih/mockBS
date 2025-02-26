@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 // import { InterviewerService } from './interviewer.service';
 // import { InterviewerController } from './interviewer.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,6 +9,7 @@ import { InterviewerRepository } from './repository/interviewer.repository';
 import { InterviewerController } from './controllers/interviewer.controller';
 import { InterviewerService } from './services/interviewer.service';
 import { Stack, StackSchema } from 'src/admin/Model/stack.schema';
+import { CandidateModule } from 'src/candidate/candidate.module';
 
 @Module({
   imports: [
@@ -16,11 +17,14 @@ import { Stack, StackSchema } from 'src/admin/Model/stack.schema';
       name: Interviewer.name,
       schema: InterviewerSchema
     }]),
+
     MongooseModule.forFeature([{
       name: Stack.name,
       schema: StackSchema
     }]),
+
     MulterModule.register({ dest: './uploads' }),
+    forwardRef(() => CandidateModule)
   ],
   controllers: [InterviewerController],
   providers: [

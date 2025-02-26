@@ -7,5 +7,6 @@ export interface IInterviewerController {
     editProfileInterviewer(userId: string, formData: IInterviewer, file?: Express.Multer.File): Promise<{ success: boolean; message: string; profileURL:string }>
     changePassword(userId: string, formData: { currentPassword: string, password: string, confirmPassword: string }): Promise<any>;
     fetchStackData(): Promise<{success: boolean, message: string, stackData: any}>;
+    getCandidateData(candidateId: string):Promise<any>
     getInterviewerData(interviewerId: string): Promise<any>;
 }

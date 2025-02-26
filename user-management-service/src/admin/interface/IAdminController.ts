@@ -9,4 +9,5 @@ export interface IAdminController {
     interviewerAction(id: string): Promise<any>;
     addStack(formData: any): Promise<any>;
     stackList(): Promise<any>;
+    getInterviewDetails(ids: {candidateId:string, interviewerId: string})
 }

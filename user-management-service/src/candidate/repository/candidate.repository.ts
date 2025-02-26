@@ -5,11 +5,14 @@ import { Model } from 'mongoose';
 import { Candidate } from '../Model/candidate.schemas';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Stack } from 'src/admin/Model/stack.schema';
+import { Interviewer } from 'src/interviewer/Model/interviewer.schema';
+import { IInterviewer } from 'src/interviewer/interface/interface';
 
 @Injectable()
 export class CandidateRepository implements ICandidateRepository {
     constructor(
         @InjectModel(Candidate.name) private readonly candidateModel: Model<Candidate>,
+        @InjectModel(Interviewer.name) private readonly interviewerModel: Model<Interviewer>,
         @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
     ) { }
 
@@ -75,6 +78,16 @@ export class CandidateRepository implements ICandidateRepository {
         try {
             const getStack = await this.stackModel.find();
             return getStack;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async findInterviewer(interviewerId: string): Promise<IInterviewer> {
+        try {
+            const interviewer = await this.interviewerModel.findOne({_id: interviewerId});
+            return interviewer;
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,6 +1,6 @@
-import { BadRequestException, Body, Controller, Get, Headers, HttpException, HttpStatus, Patch, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Patch, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ICandidateController } from '../interface/ICandidateController';
-import { ICandidateService } from '../interface/ICandidateService';
+// import { ICandidateService } from '../interface/ICandidateService';
 import { ICandidate } from '../interface/interface';
 import { CandidateService } from '../services/candidate.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -87,6 +87,17 @@ export class CandidateController implements ICandidateController {
         try {
             const stackData = await this.candidateService.getStack();
             return { success: true, message: "Candidate password changed successfully.", stackData: stackData}
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Get('/interviewer-details/:interviewerId')
+    async getInterviewerDetails(@Param('interviewerId') interviewerId: string) {
+        try {
+            const interviewerData = await this.candidateService.getInterviewer(interviewerId);
+            return {success: true, message: "fetch interviewer Data", interviewerData: interviewerData}
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

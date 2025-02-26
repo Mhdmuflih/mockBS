@@ -101,4 +101,13 @@ export class CandidateService implements ICandidateService {
         }
     }
 
+    async getInterviewer(interviewerId: string): Promise<any> {
+        try {
+            return await this.candidateRepository.findInterviewer(interviewerId);
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

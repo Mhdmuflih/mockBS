@@ -5,4 +5,5 @@ export interface ICandidateService {
     editProfileCandidate(userId:string, formData: ICandidate, file?: Express.Multer.File): Promise<ICandidate>;
     changePassword(userId: string, formData:  { currentPassword: string; password: string; confirmPassword: string; }): Promise<void>;
     getStack(): Promise<any>;
+    getInterviewer(interviewerId: string): Promise<any>;
 }

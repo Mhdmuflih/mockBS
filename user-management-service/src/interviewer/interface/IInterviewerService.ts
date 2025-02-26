@@ -9,4 +9,5 @@ export interface IInterviewerService {
     fetchStack(): Promise<void>;
     // getInterviewerData(interviewerId: string): Promise<any>;
     sendInterviewer(data: any): Promise<any>
+    getCandidate(candidateId: string): Promise<any>
 }

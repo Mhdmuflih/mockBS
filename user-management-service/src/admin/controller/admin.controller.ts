@@ -141,4 +141,17 @@ export class AdminController implements IAdminController {
     }
   }
 
+  @Get('interview-details')
+  async getInterviewDetails(@Query() ids: { candidateId: string; interviewerId: string }) {
+    try {
+      // console.log(ids, 'this is ids of interviews');
+      const interviewDetailsData = await this.adminService.getInterviewsDetailsData(ids)
+      // console.log(interviewDetailsData, 'this is interview data');
+      return {success: true, message: "interview Details data", interviewDetailsData: interviewDetailsData}
+    } catch (error: any) {
+      console.log(error.message);
+      throw new BadRequestException(error.message || 'An error occurred');
+    }
+  }
+
 }

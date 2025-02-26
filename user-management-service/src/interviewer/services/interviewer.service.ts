@@ -143,6 +143,15 @@ export class InterviewerService implements IInterviewerService {
     //     }
     // }
 
+    async getCandidate(candidateId: string): Promise<any> {
+        try {
+            return await this.interviewerRepository.getCandidate(candidateId);
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     async sendInterviewer(data: any): Promise<any> {
         try {
             const interviewers = await this.interviewerRepository.sendInterviewer(data);

@@ -30,6 +30,7 @@ app.use("*", (req: Request, res: Response) => {
 
 const port: number = parseInt(process.env.PORT || "8080");
 
+
 app.listen(port, () => {
     console.log(`Gateway server Running on Ports: http://localhost:${port}`)
 })

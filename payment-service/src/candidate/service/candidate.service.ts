@@ -11,22 +11,15 @@ export class CandidateService implements ICandidateService {
 
   constructor(
     private readonly candidateRepository: CandidateRepository,
-    // @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy
-
-    // @Inject('PAYMENT_SERVICE') private readonly kafkaClient: ClientKafka
-    // @Inject('PAYMENT_SERVICE') private readonly kafkaClient: ClientKafka
   ) {
     this.stripe = new Stripe("sk_test_51QvsEdGUzdkKqzcdinByZpi9wyrb6JfwF0AVaNBOGGBLernXeTVszLCIFd19AFzPBMMqtkjLhnflACczbZtowhfW00AhK9XPQ0");
   }
 
-  // onModuleInit() {
-  //   this.kafkaClient.subscribeToResponseOf("booking.update"); // Subscribe to response
-  // }
-
   async paymentForBooking(candidateId: string, data: any): Promise<any> {
     try {
 
-      console.log(data, 'this is data');
+      const existingPayment = await this.candidateRepository.findPayment(candidateId, data);
+
 
       const session = await this.stripe.checkout.sessions.create({
         payment_method_types: ["card"],

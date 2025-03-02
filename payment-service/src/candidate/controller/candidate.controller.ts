@@ -11,10 +11,7 @@ export class CandidateController implements ICandidateController {
   @Post('payment')
   async paymentForBooking(@Headers('x-user-id') candidateId: string, @Body() data: any): Promise<any> {
     try {
-      // console.log(candidateId, data, 'this is for the candidate id and solt data');
-
       const paymentData = await this.candidateService.paymentForBooking(candidateId , data);
-      // console.log(paymentData,' this is for the payemet data');
       return {success:true, message: "payment for booking slot", session: paymentData}
     } catch (error: any) {
       console.log(error.message);

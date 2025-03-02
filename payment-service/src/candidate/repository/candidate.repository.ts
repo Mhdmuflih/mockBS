@@ -9,8 +9,8 @@ export class CandidateRepository implements ICandidateRepository {
     constructor(
         @InjectModel(Payment.name) private readonly paymentModel: Model<Payment>
     ) { }
-    
-    async savePayment(candidateId: string ,data: any): Promise<any> {
+
+    async savePayment(candidateId: string, data: any): Promise<any> {
         try {
 
             const paymentData = {
@@ -26,7 +26,7 @@ export class CandidateRepository implements ICandidateRepository {
                     date: data.scheduleData.date,
                     from: data.scheduleData.from,
                     to: data.scheduleData.to,
-                    title:data.scheduleData.title,
+                    title: data.scheduleData.title,
                     price: data.scheduleData.price
                 },
                 status: 'pending',
@@ -42,21 +42,35 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async verifyPayment(sessionId: string): Promise<any> {
+    async findPayment(candidateId: string, data: any) {
         try {
-            return await this.paymentModel.findOneAndUpdate({sessionId: sessionId}, {$set:{scheduleData:null, paymentMethod:"completed"}})
+            return await this.paymentModel.findOneAndDelete({
+                candidateId: candidateId,
+                interviewerId: data.interviewerId,
+                scheduleId: data.scheduleId, // Ensure this matches correctly
+                status: "pending"
+            });
         } catch (error: any) {
             console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR); 
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    async findPaymentData(sessionId: string): Promise<any> {
+
+    async verifyPayment(sessionId: string): Promise<any> {
         try {
-           return await this.paymentModel.findOne({sessionId: sessionId});
+            return await this.paymentModel.findOneAndUpdate({ sessionId: sessionId }, { $set: { status: "completed" } })
         } catch (error: any) {
             console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR); 
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async findPaymentData(sessionId: string): Promise<any> {
+        try {
+            return await this.paymentModel.findOne({ sessionId: sessionId });
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -9,6 +9,8 @@ dotenv.config();
 async function server() {
   const app = await NestFactory.create(AppModule);
 
+  const configService = app.get(ConfigService);
+
   app.enableCors({
     origin: process.env.FRONTEND, // Ensure the variable is correctly named
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -16,7 +18,6 @@ async function server() {
     allowedHeaders: ["Content-Type", "Authorization"],
   });
 
-  const configService = app.get(ConfigService);
 
   const grpcOptions = AppModule.grpcOptions();
 

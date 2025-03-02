@@ -1,17 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { SlotRepository } from '../repository/slot.repository';
 import { sendInterviewer } from 'src/gRPC/interviewer.client';
 import { ScheduleRepository } from '../repository/schedule.repositor';
 import { ICandidateService } from '../interface/ICandidateService';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class CandidateService implements ICandidateService {
   constructor(
     private readonly slotRepository: SlotRepository,
-    private readonly schedulRepository: ScheduleRepository
+    private readonly scheduleRepository: ScheduleRepository,
   ) { }
 
+
   // grpc data send
+  // =============================
   async getMatchedSlot(tech: string): Promise<any> {
     try {
       const getMatchedSlot = await this.slotRepository.getMatchSlot(tech);
@@ -25,6 +28,7 @@ export class CandidateService implements ICandidateService {
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  // ====================================================
 
   async getinterviewerSlotDetails(interviewerId: string, tech: string): Promise<any> {
     try {
@@ -38,11 +42,24 @@ export class CandidateService implements ICandidateService {
     }
   }
 
-  async scheduleInterview(candidateId: string, scheduleData: any): Promise<void> {
+  async scheduleInterview(scheduleData: any): Promise<void> {
     try {
-      await this.schedulRepository.scheduleInterview(candidateId, scheduleData);
+      const existingScheudledData = await this.scheduleRepository.findScheduleInterview(scheduleData.scheduledId);
+      if(existingScheudledData) {
+        throw new Error("already booked interview ");
+      }
+      await this.scheduleRepository.scheduleInterview(scheduleData.candidateId, scheduleData);
       await this.slotRepository.updateScheduleDataStatus(scheduleData);
       return;
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async scheduledInterviews(candidateId: string): Promise<any> {
+    try {
+      return await this.scheduleRepository.candidateSceduledInterviews(candidateId);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

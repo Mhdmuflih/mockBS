@@ -38,13 +38,13 @@ export class SlotRepository implements ICandidateSlotRepository {
             const updateData = await this.slotModel.updateOne(
                 {
                     interviewerId: scheduleData.interviewerId,  // Match interviewerId
-                    "slots.schedules._id": scheduleData.scheduledSlot.scheduleId // Find the specific schedule
+                    "slots.schedules._id": scheduleData.scheduledId // Find the specific schedule
                 },
                 {
                     $set: { "slots.$[].schedules.$[sched].status": "booked" } // Update status to "booked"
                 },
                 {
-                    arrayFilters: [{ "sched._id": scheduleData.scheduledSlot.scheduleId }] // Apply filter to target correct schedule
+                    arrayFilters: [{ "sched._id": scheduleData.scheduledId }] // Apply filter to target correct schedule
                 }
             );
 
@@ -52,9 +52,9 @@ export class SlotRepository implements ICandidateSlotRepository {
                 throw new HttpException("Schedule not found", HttpStatus.NOT_FOUND);
             }
 
-            return updateData;
+            return { success: true, message: "Schedule status updated", updateData };
         } catch (error: any) {
-            console.log(error.message);
+            console.error("Error updating schedule status:", error.message);
             throw new HttpException(error.message || "An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

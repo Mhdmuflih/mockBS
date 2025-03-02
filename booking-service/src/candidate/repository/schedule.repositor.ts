@@ -16,22 +16,40 @@ export class ScheduleRepository implements ICandidateScheduleRepository {
             const schedule = new this.scheduledModel({
                 candidateId,
                 interviewerId: scheduleData.interviewerId,
-                scheduleId: scheduleData.scheduledSlot.scheduleId,  // Make sure the field name matches the schema
+                scheduleId: scheduleData.scheduledId,  // Ensure this matches schema
                 scheduledSlot: {
-                    stack: scheduleData.scheduledSlot.stack,
-                    technology: scheduleData.scheduledSlot.technology,
-                    date: scheduleData.scheduledSlot.date,
-                    from: scheduleData.scheduledSlot.from,
-                    to: scheduleData.scheduledSlot.to,
-                    title: scheduleData.scheduledSlot.title,
-                    price: scheduleData.scheduledSlot.price,
-                    description: scheduleData.scheduledSlot.description
+                    stack: scheduleData.scheduledData.stack,
+                    technology: scheduleData.scheduledData.technology,
+                    date: scheduleData.scheduledData.date,
+                    from: scheduleData.scheduledData.from,
+                    to: scheduleData.scheduledData.to,
+                    title: scheduleData.scheduledData.title,
+                    price: scheduleData.scheduledData.price,
                 },
                 status: "pending"
             });
 
             await schedule.save();
             return schedule;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async findScheduleInterview(scheduledId: string): Promise<any> {
+        try {
+            return await this.scheduledModel.findOne({scheduleId: scheduledId});
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async candidateSceduledInterviews(candidateId: string): Promise<any> {
+        try {
+            const candidateScheduledData = await this.scheduledModel.find({ candidateId: candidateId });
+            return candidateScheduledData;
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

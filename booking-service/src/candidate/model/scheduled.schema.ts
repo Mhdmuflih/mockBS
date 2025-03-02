@@ -14,7 +14,7 @@ export class Scheduled {
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'schedule', required: true })
     scheduleId: Types.ObjectId;
 
-    @Prop({ type: {stack: String,technology: String,date: String,from: String,to: String,title: String,price: Number,description: String}, required: true })
+    @Prop({ type: {stack: String,technology: String,date: String,from: String,to: String,title: String,price: Number}, required: true })
     scheduledSlot: {
         stack: string;
         technology: string;
@@ -23,7 +23,6 @@ export class Scheduled {
         to: string;
         title: string;
         price: number;
-        description: string;
     };
 
     @Prop({ type: String, required: true, default: "pending" })

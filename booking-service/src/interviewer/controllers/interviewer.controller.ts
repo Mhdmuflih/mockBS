@@ -27,4 +27,18 @@ export class InterviewerSlotController implements IInterviewerSlotController {
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @Get('scheduled-interviews')
+  async getScheduledInterviews(@Headers('x-user-id') interviewerId: string): Promise<any> {
+    try {
+      // console.log(interviewerId, 'this is interviewerId');
+      const data = await this.interviewerService.getSheduledInterviews(interviewerId);
+      // console.log(data,' this is the scheduled interviews for tthe interviewer');
+      return {success: true, message: "interviewer scheduled interivews", sheduledData: data}
+      
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

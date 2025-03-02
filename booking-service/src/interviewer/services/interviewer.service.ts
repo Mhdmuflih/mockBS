@@ -1,11 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IInterviewerSlotService } from '../interface/IInterviewerSlotService';
 import { interviewerSlotRepository } from '../repository/interviewer.slot.repository';
+import { ScheduleRepository } from '../repository/scheduled.repository';
 
 
 @Injectable()
 export class InterviewerService implements IInterviewerSlotService {
-  constructor(private readonly interviewerSlotRepository: interviewerSlotRepository) { }
+  constructor(
+    private readonly interviewerSlotRepository: interviewerSlotRepository,
+    private readonly interviewerScheduledRepository: ScheduleRepository
+  ) { }
 
   async addSlot(interviewerId: string, formData: any): Promise<any> {
     try {
@@ -85,6 +89,15 @@ export class InterviewerService implements IInterviewerSlotService {
       const getSlotData = await this.interviewerSlotRepository.getSlot(interviewerId);
       // console.log(getSlotData[0].slots, 'this is get slot data')
       return getSlotData;
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getSheduledInterviews(interviewerId: string): Promise<any> {
+    try {
+      return await this.interviewerScheduledRepository.scheduledInterviews(interviewerId);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

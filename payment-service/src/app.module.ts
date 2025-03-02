@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CandidateModule } from './candidate/candidate.module';
+import { ClientsModule, GrpcOptions, Transport } from '@nestjs/microservices';
+import { url } from 'inspector';
+import { join } from 'path';
 
 
 @Module({
@@ -15,9 +18,10 @@ import { CandidateModule } from './candidate/candidate.module';
         dbName: 'Payment',
       }),
     }),
+
     CandidateModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

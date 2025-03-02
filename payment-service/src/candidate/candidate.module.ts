@@ -4,14 +4,15 @@ import { CandidateService } from './service/candidate.service';
 import { CandidateRepository } from './repository/candidate.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Payment, PaymentSchema } from './model/payment.schema';
-import { StripeService } from './service/stripe.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 
 @Module({
-  imports:[
+  imports: [
     MongooseModule.forFeature([{ name: Payment.name, schema: PaymentSchema }]),
   ],
   controllers: [CandidateController],
-  providers: [CandidateService, CandidateRepository, StripeService],
+  providers: [CandidateService, CandidateRepository],
+  exports:[CandidateService]
 })
-export class CandidateModule {}
+export class CandidateModule { }

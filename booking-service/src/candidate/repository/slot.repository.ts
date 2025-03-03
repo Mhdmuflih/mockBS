@@ -20,6 +20,37 @@ export class SlotRepository implements ICandidateSlotRepository {
         }
     }
 
+    async updateSlotInterviewerExpire(interviewerId: string, tech: string): Promise<any> {
+        try {
+            const now = new Date();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const updateData = await this.slotModel.updateMany(
+                {
+                    interviewerId: interviewerId,
+                    "stack.technologies": tech,
+                    "slots.date": { $lt: today }
+                },
+                { $set: { "slots.$[slot].schedules.$[sched].status": "expired" } },
+                {
+                    arrayFilters: [
+                        { "slot.date": { $lt: today } },
+                        {
+                            "sched.status": { $nin: ["expired", "booked"] },
+                            "sched.fromTime": { $lt: now.toTimeString().slice(0, 5) }
+                        }
+                    ]
+                }
+            );
+
+            return updateData;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     async getSlotInterviewerDetails(interviewerId: string, tech: string): Promise<any> {
         try {
             const slotInterviewerDetails = await this.slotModel.find({ interviewerId: interviewerId, "stack.technologies": tech });
@@ -32,6 +63,7 @@ export class SlotRepository implements ICandidateSlotRepository {
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     async updateScheduleDataStatus(scheduleData: any): Promise<any> {
         try {

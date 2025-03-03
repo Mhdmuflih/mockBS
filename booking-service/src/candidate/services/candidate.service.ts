@@ -32,6 +32,7 @@ export class CandidateService implements ICandidateService {
 
   async getinterviewerSlotDetails(interviewerId: string, tech: string): Promise<any> {
     try {
+      await this.slotRepository.updateSlotInterviewerExpire(interviewerId, tech)
       const slotData = await this.slotRepository.getSlotInterviewerDetails(interviewerId, tech);
       const interviewerDataResponse = await sendInterviewer([interviewerId]);
 

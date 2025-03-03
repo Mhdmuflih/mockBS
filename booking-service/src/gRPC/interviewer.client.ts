@@ -24,14 +24,14 @@ const client: any = new interviewerProto.InterviewerService('0.0.0.0:50051', grp
 export const sendInterviewer = (ids: string[]): Promise<any> => {
     return new Promise((resolve, reject) => {
         const request = { ids };
-        console.log(request, 'this is requested data in client');
+        // console.log(request, 'this is requested data in client');
 
         client.sendInterviewer(request, (error: any, response: any) => {
             if(error) {
                 console.log("Error in gRPC interviewer in client side: ");
                 reject(error);
             }else {
-                console.log("Interviewer Data send success fully.", response);
+                // console.log("Interviewer Data send success fully.", response);
                 resolve(response);
             }
         })

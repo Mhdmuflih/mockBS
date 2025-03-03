@@ -20,4 +20,5 @@ export class InterviewerController implements IInterviewerController {
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  
 }

@@ -47,7 +47,7 @@ export class CandidateController implements ICandidateController {
 
   // Grpc for the booking schedule data comes in payment service
   // ==============================================================
-  
+
   @GrpcMethod('BookingService', 'CreateBooking')
   async getBookingData(bookingData: any): Promise<any> {
     try {

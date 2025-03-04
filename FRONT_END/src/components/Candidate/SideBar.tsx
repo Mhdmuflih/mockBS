@@ -17,6 +17,7 @@ import { GoShieldLock } from "react-icons/go";
 
 interface sideBarProps {
     heading: string;
+    subHeading?: string;
     children?: ReactNode;
 }
 
@@ -182,7 +183,7 @@ const SideBar = (props: sideBarProps) => {
                 </div>
 
 
-                <Heading heading={props.heading} children={props.children} />
+                <Heading heading={props.heading} subHeading={props.subHeading} children={props.children} />
 
 
             </div>

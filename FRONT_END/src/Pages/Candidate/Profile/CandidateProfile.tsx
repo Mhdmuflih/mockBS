@@ -113,7 +113,7 @@ const CandidateProfile = () => {
         <div>
             <Toaster position="top-right" reverseOrder={false} />
             <SideBar heading="Profile">
-                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[426px] relative">
+                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[439px] relative">
                     <form onSubmit={handleToSubmit}>
                         <div className="flex space-x-28 ml-7 w-[990px] relative">
                             <div

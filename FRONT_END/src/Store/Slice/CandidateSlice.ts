@@ -12,6 +12,7 @@ const initialState: ReduxInitialStateManage = {
     isLoggedIn: storedToken,
     storedData: storedCandidate,
     profileURL: "",
+    paymentSessionId: null,
     change: false
 }
 
@@ -39,8 +40,7 @@ const candidateAuthSlice = createSlice({
             if(state){
                 state.profileURL = action.payload.profileURL;
             }
-        }
-        
+        },
     }
 });
 

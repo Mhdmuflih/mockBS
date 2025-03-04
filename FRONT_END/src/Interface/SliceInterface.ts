@@ -40,7 +40,8 @@ export interface IAdmin {
 export interface ReduxInitialStateManage {
     isLoggedIn: boolean;
     storedData?: IInterviewer | ICandidate | IAdmin | null;
-    profileURL?:string
+    profileURL?:string;
+    paymentSessionId?: string | null;
     change?: boolean
 }
 

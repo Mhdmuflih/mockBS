@@ -4,7 +4,7 @@ const CandidateAnalytics = () => {
     return (
         <>
             <SideBar heading="Analytics">
-                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[426px]">
+                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[439px]">
                     <div className="ml-7 w-[990px]">
 
                     </div>

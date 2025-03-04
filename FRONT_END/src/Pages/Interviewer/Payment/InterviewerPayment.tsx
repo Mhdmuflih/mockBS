@@ -1,12 +1,42 @@
 import SideBar from "../../../components/Interviewer/Sidebar";
 import PaymentBackgroundImage from '../../../assets/payment baground image.jpeg';
 import Table from "../../../components/Interviewer/Table";
+import { useEffect, useState } from "react";
+import { getPaymentData } from "../../../Services/interviewerService";
 
 const InterviewerPayment = () => {
 
+    const [paymentData, setPaymentData] = useState([]);
+
+    useEffect(() => {
+        const fetchPaymentData = async () => {
+            const response: any = await getPaymentData();
+            if(response.success) {
+                const formattedData: any = response.paymentData.map((paymentData: any) => ({
+                    date: new Date(paymentData.updatedAt).toISOString().split('T')[0], // Extracts only date part
+                    candidate: paymentData.candidateId?.toString(), // Convert ObjectId to string if needed
+                    technology: paymentData.scheduleData?.technology || "N/A", // Default value if missing
+                    slot: `${paymentData.scheduleData?.from || "N/A"} - ${paymentData.scheduleData?.to || "N/A"}`,
+                    amount: paymentData.scheduleData?.price || 0, // Default to 0 if missing
+                }));
+                
+                console.log(response.paymentData[0].scheduleData.from, "this is payment data");
+                
+                setPaymentData(formattedData);
+                
+                console.log(response.paymentData, 'this is payment data');
+                setPaymentData(formattedData);
+            } else {
+                console.log("not ok not ok not ok");
+            }
+        }
+        fetchPaymentData()
+    }, [])
+
     const paymentTable = [
         { key: "date", label: "Date" },
-        { key: "candidate", label: "Candidate" },
+        // { key: "candidate", label: "Candidate" },
+        { key: "technology", label: "Technology" },
         { key: "slot", label: "slot" },
         { key: "amount", label: "Amount" },
     ];
@@ -40,7 +70,7 @@ const InterviewerPayment = () => {
 
                     {/* tabke part */}
                     
-                    <Table columns={paymentTable} data={[]} />
+                    <Table columns={paymentTable} data={paymentData} />
 
                 </div>
             </SideBar>

@@ -44,10 +44,10 @@ const AdminInterviewersList = () => {
 
     // Pagination logic
     const totalPages = Math.ceil(approvalData.length / itemsPerPage);
-    const paginatedData = approvalData.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
+    // const paginatedData = approvalData.slice(
+    //     (currentPage - 1) * itemsPerPage,
+    //     currentPage * itemsPerPage
+    // );
 
     const handleNextPage = () => {
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);

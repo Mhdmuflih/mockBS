@@ -15,6 +15,7 @@ import AdminAddStack from '../Pages/Admin/Stack/AdminAddStack';
 import AdminInterviewerDetails from '../Pages/Admin/Interviewers/AdminInterviewerDetails';
 import AdminInterviewList from '../Pages/Admin/Interviews/AdminInterviewList';
 import AdminCommunityList from '../Pages/Admin/Communities/AdminCommunityList';
+import AdminInterviewDetails from '../Pages/Admin/Interviews/AdminInterviewDetails';
 
 const AdminRoutes = () => {
     return (
@@ -37,6 +38,7 @@ const AdminRoutes = () => {
                     <Route path='/candidate/:id' element={<AdminCandidateDetails />}></Route>
                     
                     <Route path='/interviews' element={<AdminInterviewList />}></Route>
+                    <Route path='/interviews/:id' element={<AdminInterviewDetails />}></Route>
 
                     <Route path='/stack' element={<AdminStackList />}></Route>
                     <Route path='/add-stack' element={<AdminAddStack />}></Route>

@@ -14,6 +14,8 @@ import InterviewerSlots from '../Pages/Interviewer/Slots/InterviewerSlots';
 import InterviewerAddSlot from '../Pages/Interviewer/Slots/InterviewerAddSlot';
 import InterviewerScheduled from '../Pages/Interviewer/ScheduleInterviews/InterviewerScheduled';
 import InterviewerPayment from '../Pages/Interviewer/Payment/InterviewerPayment';
+import InterviewerInterviewDetails from '../Pages/Interviewer/ScheduleInterviews/InterviewerInterviewDetails';
+import InterviewerVideoCall from '../Pages/Interviewer/VideoCall/InterviewerVideoCall';
 
 const InterviewerRoutes = () => {
     return (
@@ -35,6 +37,9 @@ const InterviewerRoutes = () => {
                     <Route path='/add-slot' element={<InterviewerAddSlot />}></Route>
 
                     <Route path='/scheduled' element={<InterviewerScheduled />}></Route>
+                    <Route path='/scheduled/:id' element={<InterviewerInterviewDetails />}></Route>
+
+                    <Route path='/video-call' element={<InterviewerVideoCall />}></Route>
 
                     <Route path='/payment' element={<InterviewerPayment />}></Route>
                 </Route>

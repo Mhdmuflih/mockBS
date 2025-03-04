@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
 import { getExpertInterviewerList, GetStack } from "../../../Services/candidateService";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const CandidateHome = () => {
 
@@ -14,6 +15,14 @@ const CandidateHome = () => {
     const [interviewers, setInterviewers] = useState<any>([]);
 
     useEffect(() => {
+
+        const paymentStatus = localStorage.getItem("paymentStatus");
+
+        if (paymentStatus === "failed") {
+            toast.error("Payment Failed! Please try again.");
+            localStorage.removeItem("paymentStatus"); // Clear after showing toast
+        }
+
         const fetchStack = async () => {
             try {
                 const response: any = await GetStack();
@@ -71,8 +80,12 @@ const CandidateHome = () => {
 
     return (
         <div>
+
+            <Toaster position="top-right" reverseOrder={false} />
+
+
             <SideBar heading="Request Interviews">
-                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[426px] w-[1050px]">
+                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[439px] w-[1050px]">
                     <div className="mt-1">
                         <label htmlFor="search" className="sr-only">Search</label>
                         <div className="relative">
@@ -115,9 +128,12 @@ const CandidateHome = () => {
                         </div>
                     )}
 
-                    {interviewers.length > 0 && (
+                    {tech && interviewers.length === 0 ? (
+                        <div className="mt-7 text-white text-center">
+                            <p className="text-gray-400">No interviewers available for {tech} at the moment.</p>
+                        </div>
+                    ) : interviewers.length > 0 ? (
                         <div className="mt-7 w-full">
-                            {/* <h2 className="text-white text-lg mb-4 mt-4">Available Interviewers</h2> */}
                             <ul className="list-none text-white w-full">
                                 {filteredInterviewers.map((interviewer: any, index: number) => (
                                     <li
@@ -141,7 +157,8 @@ const CandidateHome = () => {
                                 ))}
                             </ul>
                         </div>
-                    )}
+                    ) : null}
+
                 </div>
             </SideBar>
         </div>

@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
-import { bookingInterviewer, interviewerSlotDetails } from "../../../Services/candidateService";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { interviewerSlotDetails, paymentForBooking } from "../../../Services/candidateService";
+import { useLocation, useParams } from "react-router-dom";
 
-// import toast from "react-hot-toast"
 import { Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
 
 const SearchedInterviewerDetails = () => {
 
-    const navigate = useNavigate();
+
     const { interviewerId } = useParams<{ interviewerId: string }>();
     const location = useLocation();
     const [slotData, setSlotData] = useState<any[]>([]);
@@ -48,20 +47,6 @@ const SearchedInterviewerDetails = () => {
 
                     console.log(response.slotData, "slotData");
                     console.log(response.interviewerData, 'this is interviewerData')
-                    // if (
-                    //     response.slotData &&
-                    //     Array.isArray(response.slotData) &&
-                    //     response.slotData.length > 0 &&
-                    //     Array.isArray(response.slotData[0]) &&
-                    //     response.slotData[0].length > 0
-                    // ) {
-                    //     const slotDetails = response.slotData[0][0].slots || [];
-                    //     setSlotData(slotDetails);
-                    // } else {
-                    //     setSlotData([]); // No slots available
-                    // }
-
-                    // setSlotData(response.slotData[0]); // Ensure it's an array
                     setInterviewer(response.interviewerData); // Set interviewer details
                 } else {
                     console.log("not ready not ready");
@@ -77,32 +62,25 @@ const SearchedInterviewerDetails = () => {
 
     const handleToBooking = async (scheduledData: any) => {
         try {
-            console.log(scheduledData, 'this is slot data ');
-            console.log(interviewerId, ' this is interviewer Id');
-            const slotData = {
-                scheduledSlot: scheduledData,
-                interviewerId: interviewerId
-            }
-            const response: any = await bookingInterviewer(slotData);
 
-            if (response.success) {
-                console.log('Booking successful');
-                Swal.fire({
-                    title: "Success!",
-                    text: response.message,
-                    icon: "success",
-                    confirmButtonText: "OK",
-                }).then(() => {
-                    navigate("/candidate/home"); // Navigate after clicking OK
-                });
+            // console.log(scheduledData, 'this is scheduled data for the booking');
+            // console.log(interviewerId, 'this is scheduled data for the booking');
+            const data = {
+                slotId: scheduledData.slotId,
+                scheduleId: scheduledData.scheduleId,
+                amount: scheduledData.price,
+                interviewerId: interviewerId,
+                scheduleData: scheduledData
+            }
+            const paymentResponse: any = await paymentForBooking(data);
+            if (paymentResponse) {
+
+                if (paymentResponse?.session?.url) {
+                    window.location.href = paymentResponse.session.url
+                }
+                console.log("okokokokook");
             } else {
-                console.log("Booking failed");
-                Swal.fire({
-                    title: "Error!",
-                    text: response.message,
-                    icon: "error",
-                    confirmButtonText: "Try Again",
-                });
+                console.log("not ok not ok");
             }
         } catch (error: any) {
             console.log(error.message);
@@ -120,7 +98,7 @@ const SearchedInterviewerDetails = () => {
 
             <Toaster position="top-right" reverseOrder={false} />
 
-            <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-auto min-h-[426px]">
+            <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-auto min-h-[439px]">
                 <div className="flex flex-col lg:flex-row justify-between gap-4">
 
                     {/* Table Section */}
@@ -145,19 +123,33 @@ const SearchedInterviewerDetails = () => {
                                             </td>
                                             <td className="px-4 py-2">{slot.from} - {slot.to}</td>
                                             <td className="px-4 py-2">{slot.technology || "N/A"}</td>
-                                            <td className="px-4 py-2">${slot.price || "N/A"}</td>
+                                            <td className="px-4 py-2">Rs: {slot.price || "N/A"}</td>
+
                                             {slot.status === "open" ? (
                                                 <>
                                                     <td className="px-4 py-2 font-semibold text-green-600">Available</td>
                                                     <td>
-                                                        <button onClick={() => handleToBooking(slot)} className="bg-black text-white px-2 py-1 rounded"> BookNow </button>
+                                                        <button onClick={() => handleToBooking(slot)} className="bg-black text-white px-2 py-1 rounded">
+                                                            Book Now
+                                                        </button>
+                                                    </td>
+                                                </>
+                                            ) : slot.status === "expired" ? (
+                                                <>
+                                                    <td className="px-4 py-2 font-semibold text-gray-600">Expired</td>
+                                                    <td>
+                                                        <button disabled className="bg-gray-400 text-white px-2 py-1 rounded cursor-not-allowed">
+                                                            Expired
+                                                        </button>
                                                     </td>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <td className="px-4 py-2 font-semibold text-red-600">Unavailable</td>
+                                                    <td className="px-4 py-2 font-semibold text-red-600">Booked</td>
                                                     <td>
-                                                        <button disabled className="bg-gray-400 text-white pl-3 pr-4 py-1 rounded cursor-not-allowed"> Booked </button>
+                                                        <button disabled className="bg-gray-400 text-white px-2 py-1 rounded cursor-not-allowed">
+                                                            Booked
+                                                        </button>
                                                     </td>
                                                 </>
                                             )}
@@ -189,6 +181,9 @@ const SearchedInterviewerDetails = () => {
                     </div>
 
                 </div>
+
+
+
             </div>
         </SideBar>
     );

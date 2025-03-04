@@ -129,7 +129,15 @@ export const fetchStackData = async () => {
     }
 }
 
-
+export const getCandidateDetails = async (candidateId: string) => {
+    try {
+        const response = await ProtectedAPI.get(`/user-service/interviewer/candidate-details/${candidateId}`);
+        return response.data
+    } catch (error: any) {
+        console.error("candidate data fetch Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch candidate data process.");
+    }
+}
 
 
 
@@ -155,5 +163,32 @@ export const getSlotData = async () => {
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);
         throw new Error(error.response?.data?.message || "An error occurred during the fetch stackData process.");
+    }
+}
+
+export const getInterviewerScheduledInterviews = async () => {
+    try {
+        const response = await ProtectedAPI.get('/booking-service/interviewer/scheduled-interviews');
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch stackData process.");
+    }
+}
+
+
+
+
+
+// Payment servcie
+// ===========================
+
+export const getPaymentData = async () => {
+    try {
+        const response = await ProtectedAPI.get("/payment-service/interviewer/payment");
+        return response.data;
+    } catch (error: any) {
+        console.error("fetch payment Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch payement process.");
     }
 }

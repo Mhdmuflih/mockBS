@@ -163,3 +163,13 @@ export const fetchInterviewList = async () => {
         throw new Error(error.response?.data?.message || "An error occurred during the add Stack process.");
     }
 }
+
+export const fetchInterviewerAndCandidate = async (ids: { candidateId: string; interviewerId: string }) => {
+    try {
+        const response = await ProtectedAPI.get('/user-service/admin/interview-details', {params: ids});
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
+    }
+};

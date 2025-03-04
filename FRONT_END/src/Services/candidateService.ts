@@ -163,9 +163,42 @@ export const interviewerSlotDetails = async (interviewerId: string, tech: string
     }
 }
 
-export const bookingInterviewer = async (slotId: any) => {
+
+export const paymentForBooking = async (paymentData: any) => {
     try {
-        const response = await ProtectedAPI.post('/booking-service/candidate/schedule', slotId);
+        const response = await ProtectedAPI.post('/payment-service/candidate/payment', paymentData);
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the payment for booking process.");
+    }
+}
+
+export const updatePaymentStatus = async (sessionId: string) => {
+    try {
+        const response = await ProtectedAPI.post('/payment-service/candidate/verify-payment', {sessionId});
+        return response.data;
+    } catch (error: any) {
+        console.error("update payment status Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
+    }
+}
+
+
+export const bookingInterviewer = async (slotData: any) => {
+    try {
+        const response = await ProtectedAPI.post('/booking-service/candidate/schedule', slotData);
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the booking process.");
+    }
+}
+
+
+export const getCandidateScheduledInterviews = async () => {
+    try {
+        const response = await ProtectedAPI.get('/booking-service/candidate/scheduled-interviews');
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);
@@ -173,3 +206,12 @@ export const bookingInterviewer = async (slotId: any) => {
     }
 }
 
+export const getInterviewerDetails = async (interviewerId: string) => {
+    try {
+        const response = await ProtectedAPI.get(`/user-service/candidate/interviewer-details/${interviewerId}`);
+        return response.data
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the login process.");
+    }
+}

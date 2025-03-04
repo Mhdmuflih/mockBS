@@ -14,8 +14,8 @@ const AdminInterviewList = () => {
             try {
                 const response: any = await fetchInterviewList();
                 if (response.success) {
-                    // console.log("interview's data fetched successfully");
-                    // console.log(response.interviewData, 'tbis is for the interviewData');
+                    console.log("interview's data fetched successfully");
+                    console.log(response.interviewData, 'tbis is for the interviewData');
 
                     const formattedData = response.interviewData.map((item: any, index: number) => ({
                         serial: index + 1,
@@ -23,6 +23,9 @@ const AdminInterviewList = () => {
                         date: item.scheduledSlot?.date || "N/A", // Corrected date from scheduledSlot.date
                         time: item.scheduledSlot ? `${item.scheduledSlot.from} - ${item.scheduledSlot.to}` : "N/A", // Concatenating from and to
                         details: item.description || "N/A",
+                        scheduleId: item.scheduleId,
+                        interviewerId: item.interviewerId,
+                        candidateId: item.candidateId
                     }));
                     setInterviewData(formattedData);
                 } else {
@@ -35,8 +38,8 @@ const AdminInterviewList = () => {
         fetchInterviewsData();
     }, []);
 
-    const handleToDetails = () => {
-        navigate('')
+    const handleToDetails = (scheduleId: string, candidateId: string, interviewerId: string ) => {
+        navigate(`/admin/interviews/${scheduleId}`, { state: { candidateId: candidateId, interviewerId: interviewerId } })
     }
 
 
@@ -65,8 +68,8 @@ const AdminInterviewList = () => {
                                 time: data.time,
                                 details: (
                                     <button
-                                    onClick={() => handleToDetails()}
-                                    className="bg-[#32ADE6] text-white px-3 py-1 rounded-full hover:text-white hover:bg-[#999999] duration-500"                                    >
+                                        onClick={() => handleToDetails(data.scheduleId, data.candidateId, data.interviewerId)}
+                                        className="bg-[#32ADE6] text-white px-3 py-1 rounded-full hover:text-white hover:bg-[#999999] duration-500"                                    >
                                         Details
                                     </button>
                                 ),

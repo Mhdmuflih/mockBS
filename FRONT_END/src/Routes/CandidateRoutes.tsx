@@ -13,6 +13,10 @@ import SearchedInterviewerDetails from "../Pages/Candidate/Home/SearchedIntervie
 import CandidateInterviews from "../Pages/Candidate/Interviews/CandidateInterviews";
 import CandidateAnalytics from "../Pages/Candidate/Analytics/CandidateAnalytics";
 import CandidateChooseCommunity from "../Pages/Candidate/Community/CandidateChooseCommunity";
+import CandidateInterviewDetails from "../Pages/Candidate/Interviews/CandidateInterviewDetails";
+import SuccessPayment from "../Pages/Candidate/SuccessPayment/SuccessPayment";
+import CandidateVideoCall from "../Pages/Candidate/VideoCall/CandidateVideoCall";
+// import FailedPayment from "../Pages/Candidate/PaymentFailed/FailedPayment";
 
 const CandidateRoutes = () => {
     return (
@@ -27,15 +31,23 @@ const CandidateRoutes = () => {
                 </Route>
                 <Route element={<CandidateRouteProtector />}>
                     <Route path="/home" element={<CandidateHome />}></Route>
-                    <Route path="/interviewer-slot-details/:interviewerId" element={<SearchedInterviewerDetails />} ></Route> 
+                    <Route path="/interviewer-slot-details/:interviewerId" element={<SearchedInterviewerDetails />} ></Route>
 
                     <Route path="/profile" element={<CandidateProfile />}></Route>
 
                     <Route path="/outsourced-interviews" element={<CandidateInterviews />}></Route>
+                    <Route path="/outsourced-interviews/:id" element={<CandidateInterviewDetails />}></Route>
+
+                    <Route path="/video-call" element={<CandidateVideoCall />}></Route>
+                    {/* <Route path="/video-call/:roomId" element={<CandidateVideoCall />}></Route> */}
+
                     <Route path="/analytics" element={<CandidateAnalytics />}></Route>
                     <Route path="/community-chat" element={<CandidateChooseCommunity />}></Route>
                     
                     <Route path="/password" element={<CandidateProfileChangePassword />}></Route>
+
+                    <Route path="/payment-status" element={<SuccessPayment />}></Route>
+                    {/* <Route path="/payment-failed" element={<FailedPayment />}></Route> */}
                 </Route>
             </Routes>
         </>

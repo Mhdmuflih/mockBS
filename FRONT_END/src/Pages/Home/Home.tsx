@@ -25,7 +25,7 @@ const Home = () => {
 
             {/* top bar */}
 
-            <div className="bg-[#30323A] w-full p-1 flex justify-between items-center ">
+            <div className="bg-[#30323A] w-full p-1 flex justify-between items-center fixed top-0 left-0 shadow-md z-50">
                 <div>
                     <img onClick={navigateToHomePage} src={logo} alt="Company Logo" className="h-10 w-14 mr-4 ml-3 hover:cursor-pointer" />
                 </div>
@@ -38,7 +38,7 @@ const Home = () => {
 
             {/* 1 part */}
 
-            <div className="flex justify-between mt-20">
+            <div className="flex justify-between mt-20 flex-col md:flex-row ">
                 <div className="mt-20 ml-52">
                     <h1 className="text-black font-bold font-serif text-[27px]">Ace Your Dream Job Interviews</h1>
                     <h1 className="text-[#32ADE6] font-bold font-serif text-[27px]">with Confidence</h1>
@@ -155,40 +155,54 @@ const Home = () => {
                 </div>
             </div>
 
-
-            {/* footer */}
-
-            <div className="bg-[#30323A] h-full flex justify-normal space-x-64 mt-48">
-                <div className="flex ml-5">
-                    <div className="mt-10">
-                        <img onClick={navigateToHomePage} src={logo} alt="Company Logo" className="h-10 w-14 mr-4 ml-3 hover:cursor-pointer" />
+            <>
+                {/* Footer */}
+                <div className="bg-[#30323A] h-full flex flex-col md:flex-row justify-between px-5 md:px-20 py-10 space-y-10 md:space-y-0 mt-48">
+                    {/* Logo & Name */}
+                    <div className="flex items-center">
+                        <img
+                            onClick={navigateToHomePage}
+                            src={logo}
+                            alt="Company Logo"
+                            className="h-10 w-14 mr-4 hover:cursor-pointer"
+                        />
+                        <h1 className="font-bold text-white">mockBS</h1>
                     </div>
-                    <h1 className="font-bold text-white mt-12">mockBS</h1>
-                </div>
-                <div className="text-white mt-10 font-extralight">
-                    <h1 className="font-bold">Contact Information</h1>
-                    <div className="mt-5">
-                        <p>Email: mockbs@gmail.com</p>
-                        <p>Phone: +91 9495891255</p>
-                        <p>Address: 1232, Finland, Tech</p>
-                        <p>city</p>
-                    </div>
-                </div>
-                <div className="text-white mt-10 font-extralight">
-                    <h1 className="font-bold">Company</h1>
-                    <div className="mt-5">
-                        <p>About Us</p>
-                        <p>Careers</p>
-                        <p>Privacy Policy</p>
-                    </div>
-                </div>
-            </div>
 
-            <div className="bg-[#30323A] p-12">
-                <h1 className="text-center text-white mt-10">@ 2025 mock BS, All rights reserved.</h1>
-            </div>
+                    {/* Contact Information */}
+                    <div className="text-white font-extralight text-center md:text-left">
+                        <h1 className="font-bold">Contact Information</h1>
+                        <div className="mt-2">
+                            <p>Email: mockbs@gmail.com</p>
+                            <p>Phone: +91 9495891255</p>
+                            <p>Address: 1232, Finland, Tech</p>
+                            <p>City</p>
+                        </div>
+                    </div>
+
+                    {/* Company Links */}
+                    <div className="text-white font-extralight text-center md:text-left">
+                        <h1 className="font-bold">Company</h1>
+                        <div className="mt-2">
+                            <p>About Us</p>
+                            <p>Careers</p>
+                            <p>Privacy Policy</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer Bottom */}
+                <div className="bg-[#30323A] p-5">
+                    <h1 className="text-center text-white">@ 2025 mock BS, All rights reserved.</h1>
+                </div>
+
+            </>
+
 
         </>
+
+
+
     )
 }
 

@@ -26,13 +26,13 @@ const ChooseLogin = () => {
 
                 <TopBar />
 
-                <div className="font-bold text-center text-3xl pt-8">
+                <div className="font-bold text-center text-3xl pt-8 text-gray-800">
                     <h1>Elevate Your Career</h1>
                     <h1>Choose Your Path</h1>
                 </div>
 
-                <div className="flex justify-between relative items-center top-20 gap-8 px-32 ">
-                    <div className="bg-[#30323A] text-white p-6 max-w-md shadow-[8px_8px_10px_rgba(0,0,0,1)]  transition-all duration-300 hover:z-50 hover:scale-105">
+                <div className="flex justify-center flex-col lg:flex-row items-center px-6 md:px-16 lg:px-32 mt-32 gap-10 md:gap-20 lg:gap-32">
+                <div className="bg-[#30323A] text-white p-6 max-w-md shadow-[8px_8px_10px_rgba(0,0,0,1)]  transition-all duration-300 hover:z-50 hover:scale-105">
                         <div className="flex">
                             <span className="group-hover:scale-110 transition-transform duration-200 text-3xl border-2 border-white rounded-full p-3">
                                 <FaUserTie />

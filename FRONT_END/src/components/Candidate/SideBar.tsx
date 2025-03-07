@@ -61,8 +61,8 @@ const SideBar = (props: sideBarProps) => {
 
                 {/* Side Bar */}
                 <div className="sidebar bg-[#30323A] h-[500px] w-52 p-4 ml-3 mt-3 rounded-2xl">
-                    <div className="bg-white  w-24 h-24 ml-10 mt-5">
-                        <img src={profileImage ? profileImage : profileImageDemo} alt=""  className="h-24 w-24"/>
+                    <div className=" w-24 h-24 ml-10 mt-5">
+                        <img src={profileImage ? profileImage : profileImageDemo} alt=""  className="h-24 w-24 rounded-2xl"/>
                     </div>
 
                     <div className="pt-2 ">

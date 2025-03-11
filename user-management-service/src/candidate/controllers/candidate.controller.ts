@@ -1,20 +1,21 @@
-import { BadRequestException, Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Patch, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ICandidateController } from '../interface/ICandidateController';
 // import { ICandidateService } from '../interface/ICandidateService';
 import { ICandidate } from '../interface/interface';
 import { CandidateService } from '../services/candidate.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Request, Response } from 'express';
 // import { CandidateResponseDto } from '../dtos/candidate.response.dto';
 
 @Controller('candidate')
 export class CandidateController implements ICandidateController {
     constructor(private readonly candidateService: CandidateService) { }
-
+    
     @Get('profileURL')
-    async getProfileImage(@Headers('x-user-id') userId: string): Promise<{success: boolean, message: string, profileURL: string}> {
+    async getProfileImage(@Headers('x-user-id') userId: string): Promise<{ success: boolean, message: string, profileURL: string }> {
         try {
             const profile: any = await this.candidateService.findCandidate(userId);
-            return {success: true, message: "profile Image", profileURL: profile.profileURL}
+            return { success: true, message: "profile Image", profileURL: profile.profileURL }
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,7 +87,7 @@ export class CandidateController implements ICandidateController {
     async getStack(): Promise<{ success: boolean; message: string; stackData: any; }> {
         try {
             const stackData = await this.candidateService.getStack();
-            return { success: true, message: "Candidate password changed successfully.", stackData: stackData}
+            return { success: true, message: "Candidate password changed successfully.", stackData: stackData }
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -97,7 +98,7 @@ export class CandidateController implements ICandidateController {
     async getInterviewerDetails(@Param('interviewerId') interviewerId: string) {
         try {
             const interviewerData = await this.candidateService.getInterviewer(interviewerId);
-            return {success: true, message: "fetch interviewer Data", interviewerData: interviewerData}
+            return { success: true, message: "fetch interviewer Data", interviewerData: interviewerData }
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

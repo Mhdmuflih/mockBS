@@ -48,7 +48,7 @@ export class CandidateService implements ICandidateService {
                 fileName = await this.cloudinaryService.uploadFile(file, 'Uploads/profiles');
             }
 
-            if(candidate.name === formData.name && candidate.mobile === formData.mobile && (!file || candidate.profileURL == fileName)) {
+            if (candidate.name === formData.name && candidate.mobile === formData.mobile && (!file || candidate.profileURL == fileName)) {
                 throw new BadRequestException("Same data update is not allowed.")
             }
 
@@ -74,7 +74,7 @@ export class CandidateService implements ICandidateService {
                 throw new Error('Current password is incorrect');
             }
 
-            if(formData.currentPassword == formData.password) {
+            if (formData.currentPassword == formData.password) {
                 throw new Error('same Password change is not allowed')
             }
 

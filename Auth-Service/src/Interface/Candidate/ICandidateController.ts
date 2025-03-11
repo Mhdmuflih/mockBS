@@ -9,4 +9,6 @@ export interface ICandidateController {
     verifyEmail(req: Request, res: Response): Promise<void>;
     changePassword(req: Request, res: Response): Promise<void>;
     loginCandidate(req: Request, res: Response): Promise<void>;
+
+    validateRefreshToken(req: Request, res: Response): Promise<any>
 }

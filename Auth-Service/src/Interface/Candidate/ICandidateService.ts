@@ -9,4 +9,6 @@ export interface ICandidateService {
     verifyEmail(email: string, otp: number): Promise<any>;
     changePassword(email: string, password: string, confirmPassword: string): Promise<any>;
     loginCandidate(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; candidate: ICandidate }>;
+
+    validateRefreshToken(refreshToken: string): Promise<any>;
 }

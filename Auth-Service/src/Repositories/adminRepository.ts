@@ -25,14 +25,14 @@ class AdminRepository extends BaseRepository<IAdmin> implements IAdminRepository
         }
     }
 
-    async findByEmail(email: string): Promise<IAdmin | null> {
-        try {
-            return await this.model.findOne({ email });
-        } catch (error: unknown) {
-            throw new Error(`Error while creating admin : ${error instanceof Error ? error.message : String(error)}`);
-        }
+    // async findByEmail(email: string): Promise<IAdmin | null> {
+    //     try {
+    //         return await this.model.findOne({ email });
+    //     } catch (error: unknown) {
+    //         throw new Error(`Error while creating admin : ${error instanceof Error ? error.message : String(error)}`);
+    //     }
 
-    }
+    // }
 
 
 }

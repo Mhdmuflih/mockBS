@@ -8,5 +8,7 @@ export interface IInterviewerService {
     verifyEmail(email: string, otp: number): Promise<any>;
     changePassword(email: string, password: string, confirmPassword: string): Promise<any>;
     loginInterviewer(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; interviewer: IInterviewer }>;
+
+    validateRefreshToken(token: string): Promise<{accessToken: string, refreshToken: string, interviewer: IInterviewer}>;
     // addDetails(experience: number, designation: string, organization: string, university: string, introduction: string, email: string): Promise<IInterviewer | null>;
 }

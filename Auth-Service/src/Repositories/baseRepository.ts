@@ -26,9 +26,9 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
         }
     }
 
-    async findByEmail(email: string): Promise<any> {
+    async findByEmail(email: string): Promise<T> {
         try {
-            const data = this.model.findOne({ email });
+            const data: any = this.model.findOne({ email });
             // console.log(data, "this is the base respository data in login candidate");
             return data;
         } catch (error: any) {

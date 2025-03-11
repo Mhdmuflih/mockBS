@@ -50,7 +50,16 @@ class InterviewerRepository extends BaseRepository<any> implements IInterviewerR
             return await this.create(interviewerData);
         } catch (error: any) {
             console.log(error.message);
-            throw new Error(`Error while creating Candidate : ${error instanceof Error ? error.message : String(error)}`);
+            throw new Error(`Error while creating interviewer : ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
+    async findInterviewerById(interviewerId: string): Promise<IInterviewer | null> {
+        try {
+            return await this.findOne({_id: interviewerId});
+        } catch (error:  any) {
+            console.log(error.message);
+            throw new Error(`Error while creating interviewer : ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 

@@ -8,6 +8,9 @@ export interface IInterviewerController {
     verifyEmail(req: Request, res: Response): Promise<void>;
     changePassword(req: Request, res: Response): Promise<void>;
     loginInterviewer(req: Request, res: Response): Promise<void>;
+
+    validateRefreshToken(req: Request, res: Response): Promise<any>
+    
     // addDetails(req: Request, res: Response): Promise<void>;
     // login(req: Request, res: Response): Promise<void>;
 }

@@ -73,6 +73,15 @@ class CandidateRepository extends BaseRepository<ICandidate> implements ICandida
         }
     }
 
+    async findCandidateById(candidateId: string): Promise<ICandidate | null> {
+        try {
+            return await this.findOne({_id: candidateId});
+        } catch (error: any) {
+            console.log(error.message);
+            throw new Error(`Error while creating Candidate : ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
     async findCandidateByEmail(email: string): Promise<ICandidate | null> {
         try {
             return await this.findByEmail(email);

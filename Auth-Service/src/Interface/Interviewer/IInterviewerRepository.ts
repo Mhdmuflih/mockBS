@@ -11,6 +11,9 @@ export interface IInterviewerRepository {
     findInterviewerByEmail(email: string): Promise<IInterviewer | null>;
     deleteInterviewerOTP(email: string): Promise<IInterviewer | null>;
     updateInterviewerOTP(email: string, otp: number): Promise<IInterviewer | null>;
+
+    findInterviewerById(interviewerId: string): Promise<IInterviewer | null>;
+    
     // addInterviewerDetails(interviewerData: Partial<any>): Promise<IInterviewer | null>;
     // loginInterviewer(interviewerData: Partial<IInterviewer>): Promise<IInterviewer>;
 }

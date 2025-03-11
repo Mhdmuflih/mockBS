@@ -12,4 +12,6 @@ export interface ICandidateRepository {
     findCandidateByEmail(email: string): Promise<ICandidate | null>;
     deleteCandidateOTP(email: string): Promise<ICandidate | null>;
     updateCandidateOTP(email: string, otp: number): Promise<ICandidate | null>;
+
+    findCandidateById(candidateId: string): Promise<ICandidate | null>;
 }

@@ -19,5 +19,6 @@ Candidate_Route.post('/forgot-password', candidateController.forgotPassword.bind
 Candidate_Route.post('/email-verify', candidateController.verifyEmail.bind(candidateController));
 Candidate_Route.patch('/change-password', candidateController.changePassword.bind(candidateController));
 Candidate_Route.post('/login', candidateController.loginCandidate.bind(candidateController));
+Candidate_Route.post('/refresh-token', candidateController.validateRefreshToken.bind(candidateController));
 
 export default Candidate_Route;

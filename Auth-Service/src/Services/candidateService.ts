@@ -2,12 +2,10 @@ import { HTTP_STATUS } from "../Constants/httpStatus";
 import { MESSAGES } from "../Constants/messages";
 import { ICandidateRepository } from "../Interface/Candidate/ICandidateRepository";
 import { ICandidateService } from "../Interface/Candidate/ICandidateService";
-import { OTP } from "../Interface/Interface";
-import { generateAccessToken, generateRefreshToken } from "../JWT/jwt";
+import { generateAccessToken, generateRefreshToken, verifyToken } from "../JWT/jwt";
 import { ICandidate } from "../Models/candidateModel";
 import otpGenerator from "otp-generator";
 import { sendEmail } from "../Utility/email";
-import otpModel, { IOtp } from "../Models/otpModel";
 import { passwordCompare, passwordHashing } from "../Utility/bcypt";
 
 export class CandidateService implements ICandidateService {
@@ -234,6 +232,29 @@ export class CandidateService implements ICandidateService {
             console.log(`accessToken: ${accessToken} and refreshToken ${refreshToken}`)
 
             return { accessToken, refreshToken, candidate };
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
+    }
+
+
+    async validateRefreshToken(token: string): Promise<{accessToken: string, refreshToken: string, candidate:ICandidate}> {
+        try {
+            const decode: any = verifyToken(token);
+            const candidate = await this.candidateRepository.findCandidateById(decode.userId);
+
+            if(!candidate) {
+                const error: any = new Error("User not Found");
+                error.status = HTTP_STATUS.NOT_FOUND;
+                throw error;
+            }
+
+            const accessToken = generateAccessToken(candidate._id as string);
+            const refreshToken = generateRefreshToken(candidate._id as string);
+
+            return {accessToken, refreshToken, candidate};
+
         } catch (error: any) {
             console.log(error.message);
             throw error;

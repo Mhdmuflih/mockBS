@@ -15,6 +15,7 @@ Interviewer_Route.post('/forgot-password', interviewerController.forgotPassword.
 Interviewer_Route.post('/email-verify',interviewerController.verifyEmail.bind(interviewerController));
 Interviewer_Route.patch('/change-password', interviewerController.changePassword.bind(interviewerController));
 Interviewer_Route.post('/login', interviewerController.loginInterviewer.bind(interviewerController));
+Interviewer_Route.post('/refresh-token', interviewerController.validateRefreshToken.bind(interviewerController));
 // Interviewer_Route.post('/details', interviewerController.addDetails.bind(interviewerController));
 
 export default Interviewer_Route;

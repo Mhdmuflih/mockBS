@@ -9,35 +9,35 @@ export class CandidateControllers implements ICandidateController {
 
     async googleAuth(req: Request, res: Response): Promise<void> {
         try {
-          const { email, name, profileImage } = req.body;
-                
-          if (!email || !name) {
-            res.status(400).json({
-              success: false,
-              message: "Google data is missing required fields.",
+            const { email, name, profileImage } = req.body;
+
+            if (!email || !name) {
+                res.status(400).json({
+                    success: false,
+                    message: "Google data is missing required fields.",
+                });
+                return;
+            }
+
+            const { accessToken, refreshToken, candidate } = await this.candidateService.googleAuth({
+                name: name,
+                email: email,
+                profileImage: profileImage
             });
-            return;
-          }
-      
-          const { accessToken, refreshToken, candidate } = await this.candidateService.googleAuth({
-            name: name,
-            email: email,
-            profileImage: profileImage
-          });
-      
-          res.status(200).json({
-            success: true,
-            message: "Verified",
-            token: accessToken,
-            refreshToken,
-            candidateData: candidate,
-          });
+
+            res.status(200).json({
+                success: true,
+                message: "Verified",
+                token: accessToken,
+                refreshToken,
+                candidateData: candidate,
+            });
         } catch (error: any) {
-          console.error("Error in Google Auth Controller:", error.message);
-          res.status(409).json({ success: false, message: error.message });
+            console.error("Error in Google Auth Controller:", error.message);
+            res.status(409).json({ success: false, message: error.message });
         }
-      }
-      
+    }
+
 
     async signUpCanidate(req: Request, res: Response): Promise<void> {
         try {
@@ -178,12 +178,15 @@ export class CandidateControllers implements ICandidateController {
 
             // res.cookie("refreshToken", refreshToken, {
             //     httpOnly: true,
-            //     secure: process.env.NODE_ENV === "production",
-            //     maxAge: 10 * 1000
+            //     secure: false,  // Set to true only in production with HTTPS
+            //     sameSite: "lax", // Change to 'none' in production
+            //     maxAge: 30 * 60 * 1000
             // });
+            
+            
 
             console.log("successfully login in candidate");
-            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, candidateData: candidate });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, candidateData: candidate, refreshToken: refreshToken });
 
         } catch (error: any) {
             if (error instanceof Error) {
@@ -194,4 +197,26 @@ export class CandidateControllers implements ICandidateController {
             }
         }
     }
+
+    async validateRefreshToken(req: Request, res: Response): Promise<any> {
+        try {
+
+            if (!req.body.refreshToken) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: "Token not found" });
+                return;
+            }
+
+            const { accessToken, refreshToken, candidate } = await this.candidateService.validateRefreshToken(req.body.refreshToken);
+            
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "token created", token: accessToken, refreshToken: refreshToken, candidateData: candidate });
+        } catch (error: any) {
+            if (error instanceof Error) {
+                res.status(409).json({ message: error.message });
+            } else {
+                console.log(error.message);
+                res.status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+            }
+        }
+    }
+
 }

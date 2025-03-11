@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { IInterviewerController } from "../Interface/Interviewer/IInterviewerContorller";
 import { IInterviewerService } from "../Interface/Interviewer/IInterviewerService";
 import { HTTP_STATUS } from "../Constants/httpStatus";
+import { token } from "morgan";
 
 export class InterviewerControllers implements IInterviewerController {
     constructor(private interviewerService: IInterviewerService) { }
@@ -57,7 +58,7 @@ export class InterviewerControllers implements IInterviewerController {
 
     async resendOtp(req: Request, res: Response): Promise<void> {
         try {
-            const { email,context } = req.body;
+            const { email, context } = req.body;
             await this.interviewerService.resendOtp(email, context);
 
             res.status(HTTP_STATUS.OK).json({ success: true, message: "Resend OTP send Successfully." });
@@ -109,15 +110,15 @@ export class InterviewerControllers implements IInterviewerController {
         try {
             const { email, password, confirmPassword } = req.body;
             console.log(req.body, 'this is the change password body data in controller');
-            
+
             if (!email || !password || !confirmPassword) {
                 res.status(400).json({ success: false, message: "Please provide email, password, and confirm password." });
                 return;
             }
-    
+
             // Call the service method to change the password
             await this.interviewerService.changePassword(email, password, confirmPassword);
-    
+
             res.status(HTTP_STATUS.OK).json({ success: true, message: "Your password changed successfully." });
         } catch (error: any) {
             if (error instanceof Error) {
@@ -128,7 +129,7 @@ export class InterviewerControllers implements IInterviewerController {
             }
         }
     }
-    
+
 
     async loginInterviewer(req: Request, res: Response): Promise<void> {
         try {
@@ -142,16 +143,30 @@ export class InterviewerControllers implements IInterviewerController {
 
             const { accessToken, refreshToken, interviewer } = await this.interviewerService.loginInterviewer(email, password);
 
-            // res.cookie("refreshToken", refreshToken, {
-            //     httpOnly: true,
-            //     secure: process.env.NODE_ENV === "production",
-            //     maxAge: 10 * 1000
-            // })
-
             console.log("successfull loged in interviewer");
-            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, interviewerData: interviewer });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, interviewerData: interviewer, refreshToken: refreshToken });
 
 
+        } catch (error: any) {
+            if (error instanceof Error) {
+                res.status(409).json({ message: error.message });
+            } else {
+                console.log(error.message);
+                res.status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+            }
+        }
+    }
+
+    async validateRefreshToken(req: Request, res: Response): Promise<any> {
+        try {
+            if (!req.body.refreshToken) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: "Token not found" });
+                return;
+            }
+
+            const { accessToken, refreshToken, interviewer } = await this.interviewerService.validateRefreshToken(req.body.refreshToken);
+
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "token created", token: accessToken, refreshToken: refreshToken, interviewerData: interviewer });
         } catch (error: any) {
             if (error instanceof Error) {
                 res.status(409).json({ message: error.message });
@@ -166,7 +181,7 @@ export class InterviewerControllers implements IInterviewerController {
     //     try {
     //         const { formData, email } = req.body; // Extract formData and email from req.body
     //         const { experience, designation, organization, university, introduction } = formData || {};
-            
+
     //         if (!experience || !designation || !organization || !university || !introduction || !email) {
     //             res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: "All fields are required." });
     //             return;

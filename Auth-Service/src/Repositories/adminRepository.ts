@@ -25,6 +25,15 @@ class AdminRepository extends BaseRepository<IAdmin> implements IAdminRepository
         }
     }
 
+    async findAdminById(adminId: string): Promise<IAdmin | null> {
+        try {
+            return await this.findOne({_id: adminId});
+        } catch (error: any) {
+            console.log(error.message);
+            throw new Error(`Error while finding Candidate : ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
     // async findByEmail(email: string): Promise<IAdmin | null> {
     //     try {
     //         return await this.model.findOne({ email });

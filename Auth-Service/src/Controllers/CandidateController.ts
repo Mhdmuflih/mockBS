@@ -176,13 +176,6 @@ export class CandidateControllers implements ICandidateController {
 
             const { accessToken, refreshToken, candidate } = await this.candidateService.loginCandidate(email, password);
 
-            // res.cookie("refreshToken", refreshToken, {
-            //     httpOnly: true,
-            //     secure: false,  // Set to true only in production with HTTPS
-            //     sameSite: "lax", // Change to 'none' in production
-            //     maxAge: 30 * 60 * 1000
-            // });
-            
             
 
             console.log("successfully login in candidate");

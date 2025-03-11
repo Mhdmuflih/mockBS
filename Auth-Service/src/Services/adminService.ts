@@ -2,7 +2,7 @@ import { HTTP_STATUS } from "../Constants/httpStatus";
 import { MESSAGES } from "../Constants/messages";
 import { IAdminRepository } from "../Interface/Admin/IAdminRepository";
 import { IAdminService } from "../Interface/Admin/IAdminService";
-import { generateAccessToken, generateRefreshToken } from "../JWT/jwt";
+import { generateAccessToken, generateRefreshToken, verifyToken } from "../JWT/jwt";
 import { IAdmin } from "../Models/adminModel";
 
 export class AdminServices implements IAdminService {
@@ -57,6 +57,28 @@ export class AdminServices implements IAdminService {
             console.log(error.message);
             throw error;
         }
+    }
+
+    async validateRefreshToken(token: string): Promise<{ accessToken: string; refreshToken: string; admin: IAdmin }> {
+                try {
+                    const decode: any = verifyToken(token);
+                    const admin = await this.adminRepository.findAdminById(decode.userId);
+        
+                    if (!admin) {
+                        const error: any = new Error("User not Found");
+                        error.status = HTTP_STATUS.NOT_FOUND;
+                        throw error;
+                    }
+        
+                    const accessToken = generateAccessToken(admin._id as string);
+                    const refreshToken = generateRefreshToken(admin._id as string);
+        
+                    return { accessToken, refreshToken, admin };
+        
+                } catch (error: any) {
+                    console.log(error.message);
+                    throw error;
+                }
     }
 
     // async generateOtp(): Promise<number> {

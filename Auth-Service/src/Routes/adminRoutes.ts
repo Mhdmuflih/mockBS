@@ -20,5 +20,6 @@ const Admin_Route = Router();
 
 Admin_Route.post('/sign-up', adminController.signUp.bind(adminController));
 Admin_Route.post('/login', adminController.loginAdmin.bind(adminController));
+Admin_Route.post('/refresh-token', adminController.validateRefreshToken.bind(adminController));
 
 export default Admin_Route;

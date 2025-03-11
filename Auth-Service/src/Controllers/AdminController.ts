@@ -30,17 +30,33 @@ export class AdminControllers implements IAdminController {
             }
 
             const { accessToken, refreshToken, admin } = await this.adminService.loginAdmin(email, password);
-            // res.cookie("refreshToken", refreshToken, {
-            //     httpOnly: true,
-            //     secure: process.env.NODE_ENV === "production",
-            //     maxAge: 10 * 1000
-            // });
 
             console.log("successfully login in admin");
-            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, adminData: admin });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, adminData: admin, refreshToken: refreshToken });
 
         } catch (error: any) {
             console.log(error.message);
+        }
+    }
+
+    async validateRefreshToken(req: Request, res: Response): Promise<any> {
+        try {
+
+            if (!req.body.refreshToken) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: "Token not found" });
+                return;
+            }
+
+            const { accessToken, refreshToken, admin } = await this.adminService.validateRefreshToken(req.body.refreshToken);
+
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "token created", token: accessToken, refreshToken: refreshToken, adminData: admin });
+        } catch (error: any) {
+            if (error instanceof Error) {
+                res.status(409).json({ message: error.message });
+            } else {
+                console.log(error.message);
+                res.status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+            }
         }
     }
 

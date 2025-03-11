@@ -13,9 +13,10 @@ import profileImageDemo from "../../assets/profile image.jpg"
 
 interface IsideBarProps {
     heading: string;
-    subHeading?:string;
+    subHeading?: string;
     children?: ReactNode;
     addButton?: string;
+    checkApproved?: boolean
 }
 
 
@@ -38,7 +39,7 @@ const SideBar = (props: IsideBarProps) => {
             setProfileImage(profileURL);
         }
     }, [isLoggedIn, navigate, profileURL]);
-    
+
 
 
     const handleToLogout = () => {
@@ -59,11 +60,10 @@ const SideBar = (props: IsideBarProps) => {
 
             <div className="flex">
 
-
                 {/* Side Bar */}
                 <div className="sidebar bg-[#30323A] h-[500px] w-52 p-4 ml-3 mt-3 rounded-2xl">
                     <div className="bg-white  w-24 h-24 ml-10 mt-5">
-                        <img src={profileImage ? profileImage : profileImageDemo} alt="" className="h-24 w-24" />
+                        <img src={props.checkApproved == false ? profileImageDemo : profileImage} alt="" className="h-24 w-24" />
                     </div>
 
                     <div className="pt-2">
@@ -72,7 +72,7 @@ const SideBar = (props: IsideBarProps) => {
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/interviewer/profile" ? "bg-[#999999]" : ""}`}
+                                        ${activePath === "/interviewer/profile" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/interviewer/profile");
                                         navigate("/interviewer/profile");
@@ -87,11 +87,12 @@ const SideBar = (props: IsideBarProps) => {
 
                             <li>
                                 <div
-                                    className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
-                                ${activePath === "/interviewer/slot" ? "bg-[#999999]" : ""}`}
+                                    className={`${props.checkApproved === false ? "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50 flex items-center space-x-3  p-2  rounded-lg  transition-all duration-300 group" : "flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group"} 
+                                        ${activePath === "/interviewer/slot" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
-                                        setActivePath("/interviewer/slot");
-                                        navigate("/interviewer/slot");
+                                            setActivePath("/interviewer/slot");
+                                            navigate("/interviewer/slot");
+                                        
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
@@ -103,11 +104,12 @@ const SideBar = (props: IsideBarProps) => {
 
                             <li>
                                 <div
-                                    className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
+                                    className={`${props.checkApproved === false ? "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50 flex items-center space-x-3  p-2  rounded-lg  transition-all duration-300 group" : "flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group"} 
                                 ${activePath === "/interviewer/scheduled" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
-                                        setActivePath("/interviewer/scheduled");
-                                        navigate("/interviewer/scheduled");
+                                            setActivePath("/interviewer/scheduled");
+                                            navigate("/interviewer/scheduled");
+                                        
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
@@ -119,11 +121,13 @@ const SideBar = (props: IsideBarProps) => {
 
                             <li>
                                 <div
-                                    className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
+                                    className={`${props.checkApproved === false ? "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50 flex items-center space-x-3  p-2  rounded-lg  transition-all duration-300 group" : "flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group"} 
                                 ${activePath === "/interviewer/payment" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
-                                        setActivePath("/interviewer/payment");
-                                        navigate("/interviewer/payment");
+
+                                            setActivePath("/interviewer/payment");
+                                            navigate("/interviewer/payment");
+                                        
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">
@@ -137,7 +141,7 @@ const SideBar = (props: IsideBarProps) => {
                             {/* logout button */}
                             <li>
                                 <div
-                                    className={`flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
+                                    className={`${props.checkApproved === false ? "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50 flex items-center space-x-3  p-2  rounded-lg  transition-all duration-300 group" : "flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group"} 
                                 ${activePath === "/interviewer/password" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
                                         setActivePath("/interviewer/password");

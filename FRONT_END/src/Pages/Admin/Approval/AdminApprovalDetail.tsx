@@ -15,6 +15,7 @@ const AdminApprovalDetail = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // Access dynamic id from URL
     const [interviewerDetails, setInterviewerDetails] = useState<any>(null);
+    const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     if (!id) {
@@ -91,7 +92,7 @@ const AdminApprovalDetail = () => {
 
             {/* Sidebar */}
             <SideBar heading="Details">
-                
+
                 <div className="bg-[#30323A] ml-1 p-4 shadow-md mt-2 h-[476px]">
                     <h2 className="text-white text-xl font-semibold mb-4">Interviewer Details</h2>
 
@@ -111,22 +112,28 @@ const AdminApprovalDetail = () => {
                         </div>
 
                         <div>
-                            <h4 className="text-sm font-medium mt-16">Introduction:</h4>
-                            <p className="text-gray-300">{interviewerDetails.introduction || "No details available"}</p>
+                            <h4 className="text-sm font-medium">Introduction:</h4>
+                            <p className="text-gray-300 font-thin">{interviewerDetails.introduction || "No details available"}</p>
                         </div>
 
                         <div>
-                            <h4 className="text-sm font-medium mt-7">Current Designation:</h4>
-                            <p className="text-gray-300">{interviewerDetails.currentDesignation || "No details available"}</p>
+                            <h4 className="text-sm font-medium mt-5">Current Designation: <span className="text-gray-300 font-thin ml-4">{interviewerDetails.currentDesignation || "No details available"}</span></h4>
                         </div>
 
                         <div>
-                            <h4 className="text-sm font-medium mt-7">Year of Experience:</h4>
-                            <p className="text-gray-300">{interviewerDetails.yearOfExperience || "No details available"}</p>
+                            <h4 className="text-sm font-medium mt-5">Year of Experience: <span className="text-gray-300 font-thin ml-7">{interviewerDetails.yearOfExperience || "No details available"} year</span></h4>
                         </div>
-                        {/* <div>
-                            <button className="bg-white text-black py-2 px-4 rounded-md hover:bg-red-600" > View </button>
-                        </div> */}
+
+                        <div className="mt-5 space-x-24 flex">
+                            <div>
+                                <p>salary slip</p>
+                                <button className="bg-white text-black  rounded-md hover:bg-red-600 px-3 py-1" onClick={() => setSelectedDocument(interviewerDetails.salarySlipURL)} > View </button>
+                            </div>
+                            {/* <div>
+                                <p>resume</p>
+                                <button className="bg-white text-black  rounded-md hover:bg-red-600 px-3 py-1" onClick={() => setSelectedDocument(interviewerDetails.resumeURL)} > View </button>
+                            </div> */}
+                        </div>
 
                         <div className="mt-2 flex justify-end space-x-4">
                             <button
@@ -144,6 +151,25 @@ const AdminApprovalDetail = () => {
                         </div>
 
                     </div>
+
+
+
+                    {/* Modal for Viewing Documents */}
+                    {selectedDocument && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-5 rounded-md max-w-md">
+                                <button className="text-red-500 float-right" onClick={() => setSelectedDocument(null)}>
+                                    ❌
+                                </button>
+                                {selectedDocument.endsWith(".pdf") ? (
+                                    <iframe src={selectedDocument} width="100%" height="500px" />
+                                ) : (
+                                    <img src={selectedDocument} alt="Document" className="w-full" />
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </SideBar>
         </div>

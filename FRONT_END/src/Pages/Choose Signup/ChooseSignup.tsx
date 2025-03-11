@@ -26,9 +26,13 @@ const ChooseSignup = () => {
 
                 <TopBar />
 
-                <div>
-                    <h1 className="text-black font-bold text-center text-2xl pt-6">How do you want to use mock BS?</h1>
-                    <h4 className="text-black text-sm text-center pt-1">We'll personalize your experience accordingly</h4>
+                <div className="text-center mt-6">
+                    <h1 className="text-black font-bold text-2xl md:text-3xl">
+                        How do you want to use mock BS?
+                    </h1>
+                    <h4 className="text-black text-sm md:text-base pt-1">
+                        We'll personalize your experience accordingly
+                    </h4>
                 </div>
 
                 <div className="flex justify-between relative items-center top-20 gap-8 px-32">

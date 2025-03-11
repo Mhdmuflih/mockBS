@@ -133,7 +133,7 @@ const InterviewerProfile = () => {
     }
 
     return (
-        <SideBar heading="Profile">
+        <SideBar heading="Profile" checkApproved={interviewer.isApproved}>
             <Toaster position="top-right" reverseOrder={false} />
 
             <div className="bg-[#30323A] ml-1 p-3 rounded-b-lg shadow-md max-h-[73vh] overflow-y-auto">

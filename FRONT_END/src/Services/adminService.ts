@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { logout } from '../Store/Slice/AdminSlice';
+import { loginSuccess, logout } from '../Store/Slice/AdminSlice';
 import store from '../Store/Store';
 
 
@@ -27,23 +27,59 @@ ProtectedAPI.interceptors.request.use(
 );
 
 ProtectedAPI.interceptors.response.use(
-    (response: any) => response, // Success path
-    async (error: any) => {
-        const originalRequest = error.config as any & { _retry?: boolean };
-        console.log(originalRequest, 'this is the original request');
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
 
-        // Check if the error is 401 (Unauthorized)
-        if (originalRequest && error.response?.status === 403) {
-            store.dispatch(logout());
+        if (error.response?.status === 403 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                const refreshToken = localStorage.getItem("adminRefreshToken");
+                const response: any = await axios.post("http://localhost:8000/auth-service/admin/refresh-token", {refreshToken});
 
-            // window.location.replace('/');  // This will redirect to the '/' page
-            return Promise.reject(error);
+                if (response.data.success) {
+                    store.dispatch(loginSuccess({
+                        isLoggedIn: true, 
+                        storedData: response.data.adminData,
+                        token: response.data.token,
+                        refreshToken: response.data.refreshToken
+                    }))
+
+                    originalRequest.headers = originalRequest.headers || {};
+                    originalRequest.headers["Authorization"] = `Bearer ${response.data.accessToken}`;
+                    return ProtectedAPI(originalRequest);
+                }
+            } catch (refreshError) {
+                console.error("Refresh Token Error:", refreshError);
+                store.dispatch(logout()); // Uncomment if logout is needed
+                return Promise.reject(refreshError);
+            }
         }
 
-        // Return the original error if not a 401
         return Promise.reject(error);
     }
 );
+
+
+
+// ProtectedAPI.interceptors.response.use(
+//     (response: any) => response, // Success path
+//     async (error: any) => {
+//         const originalRequest = error.config as any & { _retry?: boolean };
+//         console.log(originalRequest, 'this is the original request');
+
+//         // Check if the error is 401 (Unauthorized)
+//         if (originalRequest && error.response?.status === 403) {
+//             store.dispatch(logout());
+
+//             // window.location.replace('/');  // This will redirect to the '/' page
+//             return Promise.reject(error);
+//         }
+
+//         // Return the original error if not a 401
+//         return Promise.reject(error);
+//     }
+// );
 
 
 export const fetchApprovalData = async (page: number = 1, limit: number = 4, search?: string) => {

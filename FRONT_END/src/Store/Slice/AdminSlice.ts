@@ -32,6 +32,7 @@ const adminAuthSlice = createSlice({
             console.log("payload", action.payload.isLoggedIn);
             // Store token and admin data in localStorage
             localStorage.setItem("adminToken", action.payload.token); // JWT token
+            localStorage.setItem("adminRefreshToken", action.payload.refreshToken);
             localStorage.setItem("admin", JSON.stringify(action.payload.storedData)); // Admin object
             state.isLoggedIn = action.payload.isLoggedIn;
             state.storedData = action.payload.storedData;
@@ -39,6 +40,7 @@ const adminAuthSlice = createSlice({
         logout: (state: ReduxInitialStateManage) => {
             // Clear localStorage on logout
             localStorage.removeItem("adminToken");
+            localStorage.removeItem("adminRefreshToken");
             localStorage.removeItem("admin");
             state.isLoggedIn = false;
             state.storedData = null;

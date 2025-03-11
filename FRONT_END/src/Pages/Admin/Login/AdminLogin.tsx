@@ -54,6 +54,7 @@ const AdminLogin = () => {
 
                     dispatch(loginSuccess({
                         token: response.token,
+                        refreshToken: response.refreshToken,
                         storedData: response.adminData,
                         isLoggedIn: true
                     }))

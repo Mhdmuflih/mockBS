@@ -61,6 +61,7 @@ const CandidateLogin = () => {
 
                     dispatch(loginSuccess({
                         token: response.token,
+                        refreshToken: response.refreshToken,
                         storedData: response.candidateData,
                         isLoggedIn: true
                     }))

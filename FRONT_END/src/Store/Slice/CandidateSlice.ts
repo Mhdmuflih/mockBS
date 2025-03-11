@@ -23,12 +23,14 @@ const candidateAuthSlice = createSlice({
         loginSuccess: (state: ReduxInitialStateManage, action: PayloadAction<LoginPayload>) => {
             console.log("payload", action.payload.isLoggedIn);
             localStorage.setItem("candidateToken", action.payload.token);
+            localStorage.setItem("candidateRefreshToken", action.payload.refreshToken)
             localStorage.setItem("candidate", JSON.stringify(action.payload.storedData));
             state.isLoggedIn = action.payload.isLoggedIn;
             state.storedData = action.payload.storedData;
         },
         logout: (state: ReduxInitialStateManage) => {
             localStorage.removeItem("candidateToken");
+            localStorage.removeItem("candidateRefreshToken");
             localStorage.removeItem("candidate");
             localStorage.removeItem('profileURL');
             state.isLoggedIn = false;

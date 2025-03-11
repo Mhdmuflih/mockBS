@@ -6,6 +6,7 @@ import ChooseLogin from "./Pages/Choose Login/ChooseLogin";
 import AdminRoutes from "./Routes/AdminRoutes";
 import CandidateRoutes from "./Routes/CandidateRoutes";
 import InterviewerRoutes from "./Routes/InterviewerRoutes";
+import PageNotFound from "./Pages/404 Page Not Found/PageNotFound";
 
 // src/App.tsx
 function App() {
@@ -25,6 +26,8 @@ function App() {
           <Route path="/candidate/*" element={<CandidateRoutes />}></Route>
           <Route path="/interviewer/*" element={<InterviewerRoutes />}></Route>
         </Route>
+
+        <Route path="*" element={<PageNotFound />}></Route>
 
       </Routes>
     </>

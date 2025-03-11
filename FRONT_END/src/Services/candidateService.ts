@@ -1,6 +1,7 @@
 import axios from "axios";
 import store from "../Store/Store";
-import { logout } from "../Store/Slice/CandidateSlice";
+import { loginSuccess, logout } from "../Store/Slice/CandidateSlice";
+
 
 
 const baseURL = "http://localhost:8000";
@@ -27,56 +28,61 @@ ProtectedAPI.interceptors.request.use(
 );
 
 ProtectedAPI.interceptors.response.use(
-    (response: any) => response, // Success path
-    async (error: any) => {
-        const originalRequest = error.config as any & { _retry?: boolean };
-        console.log(originalRequest, 'this is the original request');
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
 
-        // Check if the error is 401 (Unauthorized)
-        if (originalRequest && error.response?.status === 403) {
-            store.dispatch(logout());
+        if (error.response?.status === 403 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                const refreshToken = localStorage.getItem("candidateRefreshToken");
+                const response: any = await axios.post("http://localhost:8000/auth-service/candidate/refresh-token", {refreshToken});
 
-            // window.location.replace('/');  // This will redirect to the '/' page
-            return Promise.reject(error);
+                if (response.data.success) {
+                    store.dispatch(loginSuccess({
+                        isLoggedIn: true, 
+                        storedData: response.data.candidateData,
+                        token: response.data.token,
+                        refreshToken: response.data.refreshToken
+                    }))
+
+                    originalRequest.headers = originalRequest.headers || {};
+                    originalRequest.headers["Authorization"] = `Bearer ${response.data.accessToken}`;
+                    return ProtectedAPI(originalRequest);
+                }
+            } catch (refreshError) {
+                console.error("Refresh Token Error:", refreshError);
+                store.dispatch(logout()); // Uncomment if logout is needed
+                return Promise.reject(refreshError);
+            }
         }
 
-        // Return the original error if not a 401
         return Promise.reject(error);
     }
 );
 
 
 // ProtectedAPI.interceptors.response.use(
-//     (response: any) => response,
+//     (response: any) => response, // Success path
 //     async (error: any) => {
 //         const originalRequest = error.config as any & { _retry?: boolean };
 //         console.log(originalRequest, 'this is the original request');
-//         if (originalRequest && error.response?.status === 401 && !originalRequest._retry) {
 
-//             originalRequest._retry = true;
+//         // Check if the error is 401 (Unauthorized)
+//         if (originalRequest && error.response?.status === 403) {
+//             store.dispatch(logout());
 
-//             try {
-//                 const response: any = await axios.post("http://localhost:8080/user-service/candidate/refresh-token",
-//                     {},
-//                     { withCredentials: true }
-//                 );
-
-//                 if(response.status === 200 ) {
-//                     console.log("response:", response)
-//                     store.dispatch(loginSuccess({token: response.data.token, isLoggedIn: true, storedData: response.data.candidateData}));
-//                     originalRequest.headers = originalRequest.headers || {};
-//                     originalRequest.headers["Authorization"] = `Bearer ${response.data.token}`;
-//                     return ProtectedAPI(originalRequest);
-//                 }
-//             } catch (refreshError: any) {
-//                 console.error("Refresh Token Error:", refreshError);
-//                 store.dispatch(logout());
-//                 return Promise.reject(refreshError);
-//             }
+//             // window.location.replace('/');  // This will redirect to the '/' page
+//             return Promise.reject(error);
 //         }
-//     }
 
-// )
+//         // Return the original error if not a 401
+//         return Promise.reject(error);
+//     }
+// );
+
+
+
 
 
 // profile image take in route protected
@@ -176,7 +182,7 @@ export const paymentForBooking = async (paymentData: any) => {
 
 export const updatePaymentStatus = async (sessionId: string) => {
     try {
-        const response = await ProtectedAPI.post('/payment-service/candidate/verify-payment', {sessionId});
+        const response = await ProtectedAPI.post('/payment-service/candidate/verify-payment', { sessionId });
         return response.data;
     } catch (error: any) {
         console.error("update payment status Error:", error.response?.data || error.message);

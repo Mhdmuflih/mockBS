@@ -59,6 +59,7 @@ const InterviewerLogin = () => {
                 } else {
                     dispatch(loginSuccess({
                         token: response.token,
+                        refreshToken: response.refreshToken,
                         storedData: response.interviewerData,
                         isLoggedIn: true
                     }));

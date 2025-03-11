@@ -3,8 +3,7 @@ import SideBar from "../../../components/Candidate/SideBar";
 import { interviewerSlotDetails, paymentForBooking } from "../../../Services/candidateService";
 import { useLocation, useParams } from "react-router-dom";
 
-import { Toaster } from "react-hot-toast";
-import Swal from "sweetalert2";
+import toast, { Toaster } from "react-hot-toast";
 
 const SearchedInterviewerDetails = () => {
 
@@ -77,19 +76,15 @@ const SearchedInterviewerDetails = () => {
 
                 if (paymentResponse?.session?.url) {
                     window.location.href = paymentResponse.session.url
+                }else {
+                    toast.error(paymentResponse.message)
                 }
-                console.log("okokokokook");
             } else {
                 console.log("not ok not ok");
             }
         } catch (error: any) {
             console.log(error.message);
-            Swal.fire({
-                title: "Unexpected Error",
-                text: error?.message || "An unexpected error occurred. Please try again later.",
-                icon: "error",
-                confirmButtonText: "OK",
-            });
+            toast.error( error?.message || "An unexpected error occurred. Please try again later.")
         }
     };
 

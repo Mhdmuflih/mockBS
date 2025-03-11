@@ -1,6 +1,6 @@
 import axios from 'axios';
 import store from '../Store/Store';
-import { logout } from '../Store/Slice/InterviewerSlice';
+import { loginSuccess, logout } from '../Store/Slice/InterviewerSlice';
 
 
 
@@ -27,24 +27,61 @@ ProtectedAPI.interceptors.request.use(
     }
 );
 
+
 ProtectedAPI.interceptors.response.use(
-    (response: any) => response, // Success path
-    async (error: any) => {
-        const originalRequest = error.config as any & { _retry?: boolean };
-        console.log(originalRequest, 'this is the original request');
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
 
-        // Check if the error is 401 (Unauthorized)
-        if (originalRequest && error.response?.status === 403) {
-            store.dispatch(logout());
+        if (error.response?.status === 403 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                const refreshToken = localStorage.getItem("interviewerRefreshToken");
+                const response: any = await axios.post("http://localhost:8000/auth-service/interviewer/refresh-token", {refreshToken});
 
-            // window.location.replace('/');  // This will redirect to the '/' page
-            return Promise.reject(error);
+                if (response.data.success) {
+                    store.dispatch(loginSuccess({
+                        isLoggedIn: true,
+                        token: response.data.token,
+                        refreshToken: response.data.refreshToken,
+                        storedData: response.data.interviewerData
+                    }))
+
+                    originalRequest.headers = originalRequest.headers || {};
+                    originalRequest.headers["Authorization"] = `Bearer ${response.data.accessToken}`;
+                    return ProtectedAPI(originalRequest);
+                }
+            } catch (refreshError) {
+                console.error("Refresh Token Error:", refreshError);
+                store.dispatch(logout()); // Uncomment if logout is needed
+                return Promise.reject(refreshError);
+            }
         }
 
-        // Return the original error if not a 401
         return Promise.reject(error);
     }
 );
+
+
+
+// ProtectedAPI.interceptors.response.use(
+//     (response: any) => response, // Success path
+//     async (error: any) => {
+//         const originalRequest = error.config as any & { _retry?: boolean };
+//         console.log(originalRequest, 'this is the original request');
+
+//         // Check if the error is 401 (Unauthorized)
+//         if (originalRequest && error.response?.status === 403) {
+//             store.dispatch(logout());
+
+//             // window.location.replace('/');  // This will redirect to the '/' page
+//             return Promise.reject(error);
+//         }
+
+//         // Return the original error if not a 401
+//         return Promise.reject(error);
+//     }
+// );
 
 // profile image take in route protected
 export const fetchProfileImage = async () => {

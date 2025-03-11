@@ -22,12 +22,14 @@ const interviewerAuthSlice = createSlice({
         loginSuccess: (state: ReduxInitialStateManage, action: PayloadAction<LoginPayload>) => {
             console.log("payload", action.payload.isLoggedIn);
             localStorage.setItem("interviewerToken", action.payload.token);
+            localStorage.setItem("interviewerRefreshToken", action.payload.refreshToken);
             localStorage.setItem("interviewer", JSON.stringify(action.payload.storedData));
             state.isLoggedIn = action.payload.isLoggedIn;
             state.storedData = action.payload.storedData;
         },
         logout: (state: ReduxInitialStateManage) => {
             localStorage.removeItem("interviewerToken");
+            localStorage.removeItem("refreshToken");
             localStorage.removeItem("interviewer");
             state.isLoggedIn = false;
             state.storedData = null;

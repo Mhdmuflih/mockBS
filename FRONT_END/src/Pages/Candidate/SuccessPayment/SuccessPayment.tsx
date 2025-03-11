@@ -5,7 +5,7 @@ import { updatePaymentStatus } from "../../../Services/candidateService";
 
 const SuccessPayment = () => {
     const [searchParams] = useSearchParams();
-    const sessionId: any = searchParams.get("session_id");
+    const sessionId: any = searchParams.get("transaction_id");
     const status: any = searchParams.get("status");
 
 

@@ -47,6 +47,7 @@ export interface ReduxInitialStateManage {
 
 export interface LoginPayload {
     token: string;
+    refreshToken: string;
     isLoggedIn: boolean;
     storedData: IAdmin | IInterviewer | ICandidate;
     image?:string | undefined;

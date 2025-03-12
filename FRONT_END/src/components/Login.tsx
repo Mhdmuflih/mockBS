@@ -10,14 +10,14 @@ const Login = (props: LoginProps) => {
         <>
             <TopBar />
 
-            <div className={`h-screen flex w-full items-center justify-center pb-10 ${props.heading === "Admin Login" ? 'bg-black' : 'bg-white'}`}>
+            <div className={`h-screen flex w-full items-center justify-center pb-14 ${props.heading === "Admin Login" ? 'bg-black' : 'bg-white'}`}>
             <div style={{ backgroundImage: `url(${backgroundImage})` }} className="bg-black bg-cover bg-center text-white p-6 w-[600px] rounded-xl shadow-[8px_8px_10px_rgba(0,0,0,1)]">
 
                     <div className='flex justify-center items-center '>
                         {props.icon}
                     </div>
 
-                    <h2 className="text-center text-2xl font-semibold mb-4 text-white"> {props.heading} </h2>
+                    <h2 className="text-center text-2xl font-semibold  text-white"> {props.heading} </h2>
 
                     {props.chaild ? props.chaild : <></>}
 

@@ -52,17 +52,6 @@ class CandidateRepository extends BaseRepository<ICandidate> implements ICandida
             throw new Error(`Error changing password: ${error.message}`);
         }
     }
-    
-
-    // async createCandidateWithGoogle(candidateData: Partial<ICandidate>): Promise<ICandidate> {
-    //     try {
-    //         return await this.createCandidateWithGoogle(candidateData);
-    //     } catch (error: any) {
-    //         console.log(error.message);
-    //         throw new Error(`Error while creating Candidate : ${error instanceof Error ? error.message : String(error)}`);
-    //     }
-    // }
-
 
     async createCandidate(candidateData: Partial<ICandidate>): Promise<ICandidate> {
         try {
@@ -108,16 +97,6 @@ class CandidateRepository extends BaseRepository<ICandidate> implements ICandida
             throw new Error(`Error while delete Candidate OTP : ${error instanceof Error ? error.message : String(error)}`);
         }
     }
-
-    // async loginCandidate(candidateData: Partial<ICandidate>): Promise<any> {
-    //     try {
-    //         const data =  await this.model.findOne({email: candidateData.email});
-    //         console.log(data, 'this is the data from repository in candidate');
-    //         return data;
-    //     } catch (error: any) {
-    //         console.log(error.message);
-    //     }
-    // }
 }
 
 export default new CandidateRepository();

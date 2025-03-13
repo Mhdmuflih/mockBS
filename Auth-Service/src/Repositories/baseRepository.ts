@@ -1,19 +1,9 @@
-import { Document, FilterQuery, Model } from "mongoose";
+import { Document, FilterQuery, Model, Types } from "mongoose";
 import { IBaseRepository } from "../Interface/BaseRepository/IBaseRepository";
 
 export class BaseRepository<T extends Document> implements IBaseRepository<T> {
 
     constructor(protected readonly model: Model<T>) { }
-
-    // async googleAuth(data: Partial<T>): Promise<T> {
-    //     try {
-    //         const googleAuthData = new this.model(data);
-    //         console.log(googleAuthData,'this is google authdata in base rep');
-    //         return await googleAuthData.save();
-    //     } catch (error: unknown) {
-    //         throw new Error(`Error while creating entity in google auth:${error instanceof Error ? error.message : String}`);
-    //     }
-    // }
 
     async create(data: Partial<T>): Promise<T> {
         try {
@@ -23,6 +13,14 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
             return await entity.save();
         } catch (error: unknown) {
             throw new Error(`Error while creating entity:${error instanceof Error ? error.message : String}`);
+        }
+    }
+
+    async findById(id: string | Types.ObjectId): Promise<T | null> {
+        try {
+            return await this.model.findById(id);
+        } catch (error: unknown) {
+            throw new Error(`Error while creating find by id:${error instanceof Error ? error.message : String}`);
         }
     }
 

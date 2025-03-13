@@ -33,17 +33,6 @@ class AdminRepository extends BaseRepository<IAdmin> implements IAdminRepository
             throw new Error(`Error while finding Candidate : ${error instanceof Error ? error.message : String(error)}`);
         }
     }
-
-    // async findByEmail(email: string): Promise<IAdmin | null> {
-    //     try {
-    //         return await this.model.findOne({ email });
-    //     } catch (error: unknown) {
-    //         throw new Error(`Error while creating admin : ${error instanceof Error ? error.message : String(error)}`);
-    //     }
-
-    // }
-
-
 }
 
 export default new AdminRepository();

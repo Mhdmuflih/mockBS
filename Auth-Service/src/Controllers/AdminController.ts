@@ -7,16 +7,19 @@ import { HTTP_STATUS } from "../Constants/httpStatus";
 export class AdminControllers implements IAdminController {
     constructor(private readonly adminService: IAdminService) { }
 
-    async signUp(req: Request, res: Response): Promise<void> {
+    async signUp(req: Request, res: Response): Promise<any> {
         try {
             const { name, mobile, email, password } = req.body;
             await this.adminService.createAdmin(name, mobile, email, password);
 
             res.status(200).json({ success: true, message: "Admin Registration Successfully completed" })
-
         } catch (error: any) {
-            console.log(error.message);
-            res.status(500).json({ success: false, message: "Internel Server Error in create admin" })
+            if (error instanceof Error) {
+                res.status(409).json({ message: error.message });
+            } else {
+                console.log(error.message);
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+            }
         }
     }
 
@@ -35,7 +38,12 @@ export class AdminControllers implements IAdminController {
             res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, adminData: admin, refreshToken: refreshToken });
 
         } catch (error: any) {
-            console.log(error.message);
+            if (error instanceof Error) {
+                res.status(409).json({ message: error.message });
+            } else {
+                console.log(error.message);
+                res.status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+            }
         }
     }
 

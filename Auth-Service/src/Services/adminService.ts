@@ -20,11 +20,11 @@ export class AdminServices implements IAdminService {
                 return { success: false, message: "Admin with this email already exists." };
             }
 
-            await this.adminRepository.createAdmin({ name, mobile, email, password });
+            const admin = await this.adminRepository.createAdmin({ name, mobile, email, password });
             // console.log(admin, ' this is admin in service')
             // return { success: true, message: "Admin Registration Successfully completed" }
 
-            // return admin;
+            return admin;
         } catch (error: any) {
             console.log(error.message);
             throw error;
@@ -60,31 +60,25 @@ export class AdminServices implements IAdminService {
     }
 
     async validateRefreshToken(token: string): Promise<{ accessToken: string; refreshToken: string; admin: IAdmin }> {
-                try {
-                    const decode: any = verifyToken(token);
-                    const admin = await this.adminRepository.findAdminById(decode.userId);
-        
-                    if (!admin) {
-                        const error: any = new Error("User not Found");
-                        error.status = HTTP_STATUS.NOT_FOUND;
-                        throw error;
-                    }
-        
-                    const accessToken = generateAccessToken(admin._id as string);
-                    const refreshToken = generateRefreshToken(admin._id as string);
-        
-                    return { accessToken, refreshToken, admin };
-        
-                } catch (error: any) {
-                    console.log(error.message);
-                    throw error;
-                }
+        try {
+            const decode: any = verifyToken(token);
+            const admin = await this.adminRepository.findAdminById(decode.userId);
+
+            if (!admin) {
+                const error: any = new Error("User not Found");
+                error.status = HTTP_STATUS.NOT_FOUND;
+                throw error;
+            }
+
+            const accessToken = generateAccessToken(admin._id as string);
+            const refreshToken = generateRefreshToken(admin._id as string);
+
+            return { accessToken, refreshToken, admin };
+
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
     }
-
-    // async generateOtp(): Promise<number> {
-    //     return Math.floor(1000 + Math.random() * 9999)
-    // }
-
-
 
 }

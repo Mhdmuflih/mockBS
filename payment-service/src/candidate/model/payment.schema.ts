@@ -5,20 +5,17 @@ export type PaymentDocument = Payment & Document;
 
 @Schema({ timestamps: true })
 export class Payment {
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Scheduled', required: true }) // Ensure correct model name
+    @Prop({ type: MongooseSchema.Types.ObjectId, required: true }) // Ensure correct model name
     slotId: Types.ObjectId;
-    
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Scheduled', required: true }) // Ensure correct model name
+
+    @Prop({ type: MongooseSchema.Types.ObjectId, required: true }) // Ensure correct model name
     scheduleId: Types.ObjectId;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Candidate', required: true }) // Ensure correct model name
+    @Prop({ type: MongooseSchema.Types.ObjectId, required: true }) // Ensure correct model name
     candidateId: Types.ObjectId;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Interviewer', required: true }) // Ensure correct model name
+    @Prop({ type: MongooseSchema.Types.ObjectId, required: true }) // Ensure correct model name
     interviewerId: Types.ObjectId;
-
-    @Prop({type : String, required: true})
-    sessionId: string
 
     @Prop({
         type:
@@ -51,8 +48,11 @@ export class Payment {
     @Prop({ type: String, required: true, enum: ['credit_card', 'debit_card', 'paypal', 'bank_transfer'] })
     paymentMethod: string;
 
-    // @Prop({ type: String, required: true, unique: true }) // Unique transaction ID to avoid duplication
-    // transactionId: string;
+    @Prop({type: String, unique: true, required: true})
+    transactionId: string;
+
+    @Prop({ type: Date, default: Date.now })
+    createdAt: Date;
 }
 
 export const PaymentSchema = SchemaFactory.createForClass(Payment);

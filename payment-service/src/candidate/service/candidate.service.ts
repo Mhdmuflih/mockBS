@@ -19,7 +19,17 @@ export class CandidateService implements ICandidateService {
     try {
 
       const existingPayment = await this.candidateRepository.findPayment(candidateId, data);
+      if (existingPayment !== null) {
+        const deleteData: any = await this.candidateRepository.autoDeleteExpiredPayments(existingPayment);
+        if (deleteData === undefined) {
+          throw new Error("Another candidate is already making the payment. Please wait for 2 min.");
+        }
+      }
 
+      const existingPaymentForBooking = await this.candidateRepository.existingPaymentData(data);
+      if (existingPaymentForBooking) {
+        throw new Error("already another candidate booked for this scheduled data");
+      }
 
       const session = await this.stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -37,7 +47,7 @@ export class CandidateService implements ICandidateService {
             quantity: 1
           }
         ],
-        success_url: `http://localhost:5173/candidate/payment-status?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `http://localhost:5173/candidate/payment-status?transaction_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `http://localhost:5173/candidate/payment-status?status=cancelled`
       });
 
@@ -58,8 +68,8 @@ export class CandidateService implements ICandidateService {
 
 
 
-      await this.candidateRepository.savePayment(candidateId, paymentData);
-
+      const saveData = await this.candidateRepository.savePayment(candidateId, paymentData);
+      // console.log(saveData, 'this is save data')
       return session;  // Return session to frontend
     } catch (error: any) {
       console.log(error.message);
@@ -92,11 +102,16 @@ export class CandidateService implements ICandidateService {
         scheduledId: verifyPaymetData.scheduleId,
         slotId: verifyPaymetData.slotId
       }
-      
-      const response = await sendBookingData(bookingData);
-      console.log(response, 'this is for the response of the booking in grpc')
 
-      await this.candidateRepository.verifyPayment(sessionId);
+      console.log(bookingData, 'this is booking data');
+
+      const response = await sendBookingData(bookingData);
+      console.log(response, 'this is for the response of the booking in grpc');
+
+      const data = await this.candidateRepository.verifyPayment(sessionId);
+      console.log(data, 'this is update data')
+
+
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

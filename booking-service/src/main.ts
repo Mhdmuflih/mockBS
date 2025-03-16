@@ -2,9 +2,12 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ConfigService } from '@nestjs/config';
 import mongoose from "mongoose";
+import { IoAdapter } from "@nestjs/platform-socket.io";
 
 async function Server() {
   const app = await NestFactory.create(AppModule);
+  
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   const configService = app.get(ConfigService);
 
@@ -16,6 +19,8 @@ async function Server() {
   });
 
 
+  // microservice gRPC connection
+  // ===============================================================================
   const grpcOptions = AppModule.grpcOptions();
 
   // ivide ath connect cheyyum
@@ -24,8 +29,11 @@ async function Server() {
   // athine ivide start cheyyum ipo gRPC server running ayirikkum 
   await app.startAllMicroservices();
   console.log('NestJS gRPC server running...');
+  // ===============================================================================
 
 
+  // mongodb Connection
+  // ===============================================================================
   const mongoURL = configService.get<string>("mongoURL");
   if (!mongoURL) {
     console.error("❌ MongoDB URL not found in environment variables.");
@@ -39,12 +47,11 @@ async function Server() {
     console.error('❌ Failed to connect to MongoDB:', error.message);
     process.exit(1);
   }
-
-
-
-
-
-
+  // ===============================================================================
+  
+  
+  // Server connection
+  // ===============================================================================
   const PORT = configService.get<number>("PORT") || 3030;
   await app.listen(PORT);
   console.log(`🚀 Server running on: http://localhost:${PORT}`);

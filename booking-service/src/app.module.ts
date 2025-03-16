@@ -6,6 +6,8 @@ import { CandidateModule } from './candidate/candidate.module';
 import { AdminModule } from './admin/admin.module';
 import { ClientsModule, GrpcOptions, RmqOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import { WebrtcGateway } from './rtc/rtc.gateway';
+import { RTCScheduleRepository } from './repository/rtc.respository';
 
 @Module({
   imports: [
@@ -32,10 +34,10 @@ import { join } from 'path';
     ]),
     InterviewerModule,
     CandidateModule,
-    AdminModule
+    AdminModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [WebrtcGateway, RTCScheduleRepository],
 })
 export class AppModule {
   static grpcOptions(): GrpcOptions {

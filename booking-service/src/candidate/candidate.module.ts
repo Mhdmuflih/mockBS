@@ -17,6 +17,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
   ],
   controllers: [CandidateController],
   providers: [CandidateService, SlotRepository, ScheduleRepository],
-  exports: [CandidateService]
+  exports: [CandidateService, MongooseModule]
 })
 export class CandidateModule { }

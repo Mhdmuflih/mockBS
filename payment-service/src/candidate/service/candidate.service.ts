@@ -103,14 +103,11 @@ export class CandidateService implements ICandidateService {
         slotId: verifyPaymetData.slotId
       }
 
-      console.log(bookingData, 'this is booking data');
 
       const response = await sendBookingData(bookingData);
       console.log(response, 'this is for the response of the booking in grpc');
 
-      const data = await this.candidateRepository.verifyPayment(sessionId);
-      console.log(data, 'this is update data')
-
+      await this.candidateRepository.verifyPayment(sessionId);
 
     } catch (error: any) {
       console.log(error.message);

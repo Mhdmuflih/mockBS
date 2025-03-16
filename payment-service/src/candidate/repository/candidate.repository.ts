@@ -80,9 +80,8 @@ export class CandidateRepository implements ICandidateRepository {
 
     async verifyPayment(transactionId: string): Promise<any> {
         try {
-            const data =  await this.paymentModel.findOneAndUpdate({ transactionId: transactionId }, { $set: { status: "completed" } }, { new: true })
-            console.log(data, 'this is update data');
-            return data;
+            const updatePayment =  await this.paymentModel.findOneAndUpdate({ transactionId: transactionId }, { $set: { status: "completed" } }, { new: true })
+            return updatePayment;
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -91,9 +90,8 @@ export class CandidateRepository implements ICandidateRepository {
 
     async findPaymentData(transactionId: string): Promise<any> {
         try {
-            const data =  await this.paymentModel.findOne({ transactionId: transactionId });
-            console.log(data, 'this is that data')
-            return data;
+            const findedData =  await this.paymentModel.findOne({ transactionId: transactionId });
+            return findedData;
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

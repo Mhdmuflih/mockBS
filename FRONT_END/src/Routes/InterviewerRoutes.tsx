@@ -39,7 +39,7 @@ const InterviewerRoutes = () => {
                     <Route path='/scheduled' element={<InterviewerScheduled />}></Route>
                     <Route path='/scheduled/:id' element={<InterviewerInterviewDetails />}></Route>
 
-                    <Route path='/video-call' element={<InterviewerVideoCall />}></Route>
+                    <Route path='/video-call/:scheduleId' element={<InterviewerVideoCall />}></Route>
 
                     <Route path='/payment' element={<InterviewerPayment />}></Route>
                 </Route>

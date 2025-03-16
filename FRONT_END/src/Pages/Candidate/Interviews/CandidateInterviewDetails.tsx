@@ -21,6 +21,7 @@ const CandidateInterviewDetails = () => {
 
         const { detailsData } = location.state;
         const interviewerId = detailsData.interviewerId
+        // console.log(detailsData._id            , 'this is details data')
 
         if (!interviewerId) {
             console.error("Interviewer ID is missing");
@@ -48,9 +49,9 @@ const CandidateInterviewDetails = () => {
     }, []);
 
 
-    const handleToJoin = () => {
-
-        navigate('/candidate/video-call');
+    const handleToJoin = (scheduleId: string) => {
+        console.log(scheduleId)
+        navigate(`/candidate/video-call/${scheduleId}`);
 
         // const roomId = uuidv4();
         // console.log(roomId ,' this is for the video room id');
@@ -105,7 +106,7 @@ const CandidateInterviewDetails = () => {
 
                             </div>
                             <div>
-                                <button className="bg-[#4B4F60] p-2 px-40 rounded-2xl ml-36" onClick={() => handleToJoin()}>JOIN</button>
+                                <button className="bg-[#4B4F60] p-2 px-40 rounded-2xl ml-36" onClick={() => handleToJoin(detailsData.slotData.scheduleId)}>JOIN</button>
                             </div>
 
 

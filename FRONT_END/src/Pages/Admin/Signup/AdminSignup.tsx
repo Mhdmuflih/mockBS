@@ -39,8 +39,9 @@ const AdminSignup = () => {
         try {
             console.log(formData, "This is formData");
             const response: any = await signUpAdmin(formData);
-            console.log(response.data, 'this is the response data');
-            if (response.response.success) {
+            console.log(response, 'this is the response data');
+            console.log(response.sussess, 'this is the response data for success');
+            if (response.success) {
                 Swal.fire({
                     title: "Success!",
                     text: response.response.message,

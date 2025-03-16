@@ -20,7 +20,6 @@ const InterviewerInterviewDetails = () => {
 
         const { detailsData } = location.state;
         const candidateId = location.state.detailsData.candidateId;
-
         if (!candidateId) {
             console.error("candidateId ID is missing");
             return;
@@ -29,13 +28,13 @@ const InterviewerInterviewDetails = () => {
         const fetchCandidateDetails = async () => {
             try {
                 const response: any = await getCandidateDetails(candidateId);
-                // console.log(response.candidateData, 'this is for the candidat data');
+                // console.log(response, 'this is for the candidat data');
                 if (response.success) {
                     const formattedData = {
                         slotData: detailsData,
                         candidateData: response.candidateData
                     }
-                    console.log(formattedData, 'this is for the candidat data');
+                    console.log(formattedData, 'this is for the formatted data');
                     setDetailsData(formattedData);
                 } else {
                     console.log("not ok not ok")
@@ -48,8 +47,8 @@ const InterviewerInterviewDetails = () => {
     }, []);
 
 
-    const handleToJoin = () => {
-        navigate('/interviewer/video-call');
+    const handleToJoin = (scheduleId: string) => {
+        navigate(`/interviewer/video-call/${scheduleId}`);
     }
 
     return (
@@ -100,7 +99,7 @@ const InterviewerInterviewDetails = () => {
 
                             </div>
                             <div>
-                                <button className="bg-[#4B4F60] p-2 px-40 rounded-2xl ml-36" onClick={() => handleToJoin()}>JOIN</button>
+                                <button className="bg-[#4B4F60] p-2 px-40 rounded-2xl ml-36" onClick={() => handleToJoin(detailsData.slotData.scheduledId)}>JOIN</button>
                             </div>
 
 

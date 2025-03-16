@@ -38,7 +38,7 @@ const CandidateRoutes = () => {
                     <Route path="/outsourced-interviews" element={<CandidateInterviews />}></Route>
                     <Route path="/outsourced-interviews/:id" element={<CandidateInterviewDetails />}></Route>
 
-                    <Route path="/video-call" element={<CandidateVideoCall />}></Route>
+                    <Route path="/video-call/:scheduleId" element={<CandidateVideoCall />}></Route>
                     {/* <Route path="/video-call/:roomId" element={<CandidateVideoCall />}></Route> */}
 
                     <Route path="/analytics" element={<CandidateAnalytics />}></Route>

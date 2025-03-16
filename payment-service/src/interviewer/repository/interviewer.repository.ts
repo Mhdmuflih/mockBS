@@ -10,7 +10,7 @@ export class InterviewerRepository implements IInterviewerRepository {
 
     async getPaymentHistoryData(interviewerId: string): Promise<any> {
         try {
-            return await this.paymentModel.find({interviewerId: interviewerId});
+            return await this.paymentModel.find({interviewerId: interviewerId, status:"completed"});
         } catch (error: any) {
             console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

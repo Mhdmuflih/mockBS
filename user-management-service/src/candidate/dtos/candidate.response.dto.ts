@@ -12,17 +12,21 @@ export class CandidateResponseDto {
   email: string;
 
   @IsString()
-  @IsOptional()
   password: string;
 
-  @IsBoolean()
-  isBlocked: boolean;
+  @IsString()
+  @IsOptional()
+  profileURL?: string
 
   @IsBoolean()
-  isVerified: boolean;
+  @IsOptional()
+  isBlocked?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isVerified?: boolean;
 
   @IsOptional()
-  @IsString()
   OTP?: number;
 
   @IsOptional()

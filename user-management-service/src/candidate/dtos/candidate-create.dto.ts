@@ -13,13 +13,19 @@ export class CandidateCreateDto {
 
   @IsString()
   @IsOptional()
-  password: string;
+  password?: string;
+
+  @IsString()
+  @IsOptional()
+  profileURL?: string
 
   @IsBoolean()
-  isBlocked: boolean;
+  @IsOptional()
+  isBlocked?: boolean;
 
   @IsBoolean()
-  isVerified: boolean;
+  @IsOptional()
+  isVerified?: boolean;
 
   @IsOptional()
   OTP?: number;

@@ -1,5 +1,5 @@
 import { ICandidateRepository } from '../interface/ICandidateRepository';
-import { ICandidate } from '../interface/interface';
+import { ICandidate, IStack } from '../interface/interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Candidate } from '../Model/candidate.schemas';
@@ -7,6 +7,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Stack } from 'src/admin/Model/stack.schema';
 import { Interviewer } from 'src/interviewer/Model/interviewer.schema';
 import { IInterviewer } from 'src/interviewer/interface/interface';
+import { CandidateCreateDto } from '../dtos/candidate-create.dto';
 
 @Injectable()
 export class CandidateRepository implements ICandidateRepository {
@@ -26,7 +27,7 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async findCandidateByEmail(email: string): Promise<ICandidate> {
+    async findCandidateByEmail(email: string): Promise<ICandidate | null> {
         try {
             const candidate = await this.candidateModel.findOne({email: email});
             return candidate;
@@ -36,7 +37,7 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async updateCandidateData(userId: string, formData: ICandidate, fileName: string): Promise<ICandidate | null> {
+    async updateCandidateData(userId: string, formData: CandidateCreateDto, fileName: string): Promise<ICandidate | null> {
         try {
             const updateData: Partial<ICandidate> = {
                 name: formData.name,
@@ -60,7 +61,7 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async updatePassword(userId: string, securePassword: string): Promise<ICandidate> {
+    async updatePassword(userId: string, securePassword: string): Promise<ICandidate | null> {
         try {
             const updatedCandidate = await this.candidateModel.findOneAndUpdate(
                 { _id: userId },
@@ -74,7 +75,7 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async getStack(): Promise<any> {
+    async getStack(): Promise<IStack[] | null> {
         try {
             const getStack = await this.stackModel.find();
             return getStack;
@@ -84,7 +85,7 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async findInterviewer(interviewerId: string): Promise<IInterviewer> {
+    async findInterviewer(interviewerId: string): Promise<IInterviewer | null> {
         try {
             const interviewer = await this.interviewerModel.findOne({_id: interviewerId});
             return interviewer;

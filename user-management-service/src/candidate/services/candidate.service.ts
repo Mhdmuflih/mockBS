@@ -1,9 +1,11 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ICandidateService } from '../interface/ICandidateService';
-import { ICandidate } from '../interface/interface';
+import { ICandidate, IStack } from '../interface/interface';
 import { CandidateRepository } from '../repository/candidate.repository';
 import * as bcrypt from 'bcryptjs';
 import { CloudinaryService } from 'src/Config/cloudinary.service';
+import { IInterviewer } from 'src/interviewer/interface/interface';
+import { CandidateCreateDto } from '../dtos/candidate-create.dto';
 
 
 @Injectable()
@@ -34,7 +36,7 @@ export class CandidateService implements ICandidateService {
         }
     }
 
-    async editProfileCandidate(userId: string, formData: ICandidate, file?: Express.Multer.File): Promise<ICandidate> {
+    async editProfileCandidate(userId: string, formData: CandidateCreateDto, file?: Express.Multer.File): Promise<ICandidate | null> {
         try {
             console.log(formData, 'this is candidate formData')
             if (!formData || !userId) {
@@ -92,7 +94,7 @@ export class CandidateService implements ICandidateService {
         }
     }
 
-    async getStack(): Promise<any> {
+    async getStack(): Promise<IStack[] | null> {
         try {
             return await this.candidateRepository.getStack();
         } catch (error: any) {
@@ -101,7 +103,7 @@ export class CandidateService implements ICandidateService {
         }
     }
 
-    async getInterviewer(interviewerId: string): Promise<any> {
+    async getInterviewer(interviewerId: string): Promise<IInterviewer | null> {
         try {
             return await this.candidateRepository.findInterviewer(interviewerId);
         } catch (error: any) {

@@ -11,3 +11,8 @@ export interface ICandidate extends Document {
     isVerified?: boolean;
     profileURL?: string
 }
+
+export interface IStack extends Document {
+    stackName: string;
+    technologies?: string[]
+}

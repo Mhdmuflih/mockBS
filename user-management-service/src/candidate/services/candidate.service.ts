@@ -38,7 +38,7 @@ export class CandidateService implements ICandidateService {
 
     async editProfileCandidate(userId: string, formData: CandidateCreateDto, file?: Express.Multer.File): Promise<ICandidate | null> {
         try {
-            console.log(formData, 'this is candidate formData')
+            // console.log(formData, 'this is candidate formData')
             if (!formData || !userId) {
                 throw new BadRequestException('formData or userId is missing');
             }

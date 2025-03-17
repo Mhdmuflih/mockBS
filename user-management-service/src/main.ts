@@ -3,11 +3,14 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import * as mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
+import * as morgan from 'morgan';
 
 dotenv.config();
 
 async function server() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(morgan("tiny"));
 
   const configService = app.get(ConfigService);
 

@@ -49,7 +49,7 @@ export class CandidateController implements ICandidateController {
     @UseInterceptors(FileInterceptor('profileImage'))
     async editProfileCandidate(@Headers('x-user-id') userId: string, @Body() formData: ICandidate, @UploadedFile() file?: Express.Multer.File): Promise<{ success: boolean; message: string; profileURL: string }> {
         try {
-            console.log(formData, 'this is form Data for edit profile')
+            // console.log(formData, 'this is form Data for edit profile')
             const candidate = await this.candidateService.editProfileCandidate(userId, formData, file);
             return { success: true, message: "Candidate profile edited successfully.", profileURL: candidate.profileURL }
         } catch (error: any) {

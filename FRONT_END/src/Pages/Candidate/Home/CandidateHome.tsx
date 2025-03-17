@@ -3,8 +3,11 @@ import SideBar from "../../../components/Candidate/SideBar";
 import { getExpertInterviewerList, GetStack } from "../../../Services/candidateService";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import PageLoading from "../../../components/PageLoading";
 
 const CandidateHome = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const [stacks, setStacks] = useState<any>([]);
@@ -15,6 +18,10 @@ const CandidateHome = () => {
     const [interviewers, setInterviewers] = useState<any>([]);
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
 
         const paymentStatus = localStorage.getItem("paymentStatus");
 
@@ -37,6 +44,10 @@ const CandidateHome = () => {
         };
         fetchStack();
     }, []);
+
+    if(isLoading) {
+        return <div><PageLoading /></div>
+    }
 
     const handleStackClick = (stack: any) => {
         setSelectedStack(stack);

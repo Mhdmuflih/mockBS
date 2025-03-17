@@ -19,9 +19,9 @@ const AdminSideLoading = () => {
 
 const StyledWrapper = styled.div`
   .dot-spinner {
-    --uib-size: 2.8rem;
+    --uib-size: 3.8rem;
     --uib-speed: .9s;
-    --uib-color: #ffffff;
+    --uib-color: #00ccff;
     position: relative;
     display: flex;
     align-items: center;

@@ -1,6 +1,21 @@
+import { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar"
+import PageLoading from "../../../components/PageLoading";
 
 const CandidateAnalytics = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(()=> {
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+    }, []);
+
+    if(isLoading) {
+        return <div><PageLoading /></div>
+    }
+
     return (
         <>
             <SideBar heading="Analytics">

@@ -2,14 +2,22 @@ import { useEffect, useState } from "react"
 import SideBar from "../../../components/Candidate/SideBar"
 import { getCandidateScheduledInterviews } from "../../../Services/candidateService";
 import { useNavigate } from "react-router-dom";
+import PageLoading from "../../../components/PageLoading";
 
 const CandidateInterviews = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const [scheduledData, setScheduledData] = useState<any[]>([])
 
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const fetchCandidateScheduledInterviews = async () => {
             try {
                 const response: any = await getCandidateScheduledInterviews();
@@ -27,8 +35,12 @@ const CandidateInterviews = () => {
         fetchCandidateScheduledInterviews();
     }, []);
 
+    if (isLoading) {
+        return <div><PageLoading /></div>
+    }
+
     const handleToDetails = (id: string, detailsData: any) => {
-        navigate(`/candidate/outsourced-interviews/${id}`, { state: {detailsData: detailsData} });
+        navigate(`/candidate/outsourced-interviews/${id}`, { state: { detailsData: detailsData } });
     }
 
     return (

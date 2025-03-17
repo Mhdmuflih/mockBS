@@ -3,16 +3,23 @@ import SideBar from "../../../components/Candidate/SideBar";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getInterviewerDetails } from "../../../Services/candidateService";
 import backgroundImage from "../../../assets/interivewsDetails background image.jpeg";
+import PageLoading from "../../../components/PageLoading";
 
 // import { v4 as uuidv4 } from "uuid";
 
 const CandidateInterviewDetails = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const location = useLocation();
     const [detailsData, setDetailsData] = useState<any>(null);
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
 
         if (!location.state || !location.state.detailsData) {
             console.error("Location state is missing interview details");
@@ -47,6 +54,10 @@ const CandidateInterviewDetails = () => {
         }
         fetchInterviewerDetails();
     }, []);
+
+    if (isLoading) {
+        return <div><PageLoading /></div>
+    }
 
 
     const handleToJoin = (scheduleId: string) => {

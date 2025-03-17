@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
+import Loading from "./components/Loading";
 
 // imported pages
 // ======================
@@ -21,7 +22,7 @@ const PageNotFound = lazy(() => import("./Pages/404 Page Not Found/PageNotFound"
 function App() {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div><Loading /></div>}>
 
         <Routes>
 

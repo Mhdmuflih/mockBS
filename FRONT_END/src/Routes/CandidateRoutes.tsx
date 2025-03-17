@@ -9,6 +9,7 @@ import { Suspense, lazy } from "react";
 import CandidateLoginProtector from "../RouterProtector/CandidateLoginProtector";
 import CandidateRouteProtector from "../RouterProtector/CandidateRouteProtector";
 import Loading from "../components/Loading";
+import PageLoading from "../components/PageLoading";
 // -----------------------------------------------------------------------------------------------------
 const CandidateLogin = lazy(() => import("../Pages/Candidate/Login/CandidateLogin"));
 const CandidateSignup = lazy(() => import("../Pages/Candidate/Signup/CandidateSignup"));
@@ -61,6 +62,7 @@ const CandidateRoutes = () => {
                         <Route path="/otp" element={<CandidateOtp />}></Route>
                         <Route path="/forgot-password" element={<CandidateForgotPassword />}></Route>
                         <Route path="/change-password" element={<CandidateChangePassword />}></Route>
+                        <Route path="/loading" element={<PageLoading />}></Route>
                     </Route>
 
                     {/* Route protected */}

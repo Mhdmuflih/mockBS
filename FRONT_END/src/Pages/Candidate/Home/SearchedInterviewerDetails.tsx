@@ -4,9 +4,11 @@ import { interviewerSlotDetails, paymentForBooking } from "../../../Services/can
 import { useLocation, useParams } from "react-router-dom";
 
 import toast, { Toaster } from "react-hot-toast";
+import PageLoading from "../../../components/PageLoading";
 
 const SearchedInterviewerDetails = () => {
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const { interviewerId } = useParams<{ interviewerId: string }>();
     const location = useLocation();
@@ -17,6 +19,11 @@ const SearchedInterviewerDetails = () => {
     const selectedTech = searchParams.get("selectedTech") || "";
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const fetchData = async () => {
             try {
                 if (!interviewerId || !selectedTech) return;
@@ -56,6 +63,10 @@ const SearchedInterviewerDetails = () => {
         }
         fetchData();
     }, [interviewerId, selectedTech]);
+
+    if(isLoading) {
+        return <div><PageLoading /></div>
+    }
 
     { console.log(slotData, 'this is slot data in state') }
 

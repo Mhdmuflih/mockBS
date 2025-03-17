@@ -1,9 +1,13 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SideBar from "../../../components/Candidate/SideBar";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { updatePaymentStatus } from "../../../Services/candidateService";
+import PageLoading from "../../../components/PageLoading";
 
 const SuccessPayment = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
     const [searchParams] = useSearchParams();
     const sessionId: any = searchParams.get("transaction_id");
     const status: any = searchParams.get("status");
@@ -14,13 +18,17 @@ const SuccessPayment = () => {
 
     useEffect(() => {
 
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         console.log(status, 'this is status')
         if (status === "cancelled") {
             localStorage.setItem("paymentStatus", "failed"); // Store failed status
             navigate("/candidate/home");
             return;
         }
-        
+
         if (!sessionId || hasFetched.current) return; // Prevent re-calling
         hasFetched.current = true;
 
@@ -35,6 +43,10 @@ const SuccessPayment = () => {
         };
         checkPaymentStatus();
     }, [sessionId, status]); // Only run when sessionId changes
+
+    if (isLoading) {
+        return <div><PageLoading /></div>
+    }
 
     const handleToHomePage = () => {
         navigate('/candidate/home');

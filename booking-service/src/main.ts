@@ -3,9 +3,12 @@ import { AppModule } from "./app.module";
 import { ConfigService } from '@nestjs/config';
 import mongoose from "mongoose";
 import { IoAdapter } from "@nestjs/platform-socket.io";
+import * as morgan from 'morgan';
 
 async function Server() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(morgan("tiny"));
   
   app.useWebSocketAdapter(new IoAdapter(app));
 

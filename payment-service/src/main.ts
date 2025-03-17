@@ -3,9 +3,12 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import mongoose from 'mongoose';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import * as morgan from 'morgan';
 
 async function Server() {
   const app = await NestFactory.create(AppModule);
+ 
+  app.use(morgan("tiny"));
   
   // Get ConfigService instance
   const configService = app.get(ConfigService);

@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import SideBar from "../../../components/Interviewer/Sidebar";
 import Table from "../../../components/Interviewer/Table";
 import { getSlotData } from "../../../Services/interviewerService";
+import PageLoading from "../../../components/PageLoading";
 
 const InterviewerSlots = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const slotTable = [
         { key: "stack", label: "Stack Name" },
@@ -20,6 +23,11 @@ const InterviewerSlots = () => {
 
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const fetchSlotData = async () => {
             try {
                 const response: any = await getSlotData();
@@ -54,6 +62,10 @@ const InterviewerSlots = () => {
         }
         fetchSlotData();
     }, []);
+
+    if (isLoading) {
+        return <div><PageLoading /></div>
+    }
 
 
     return (

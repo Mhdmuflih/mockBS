@@ -3,15 +3,22 @@ import PaymentBackgroundImage from '../../../assets/payment baground image.jpeg'
 import Table from "../../../components/Interviewer/Table";
 import { useEffect, useState } from "react";
 import { getPaymentData } from "../../../Services/interviewerService";
+import PageLoading from "../../../components/PageLoading";
 
 const InterviewerPayment = () => {
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [paymentData, setPaymentData] = useState([]);
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const fetchPaymentData = async () => {
             const response: any = await getPaymentData();
-            if(response.success) {
+            if (response.success) {
                 const formattedData: any = response.paymentData.map((paymentData: any) => ({
                     date: new Date(paymentData.updatedAt).toISOString().split('T')[0], // Extracts only date part
                     candidate: paymentData.candidateId?.toString(), // Convert ObjectId to string if needed
@@ -19,11 +26,11 @@ const InterviewerPayment = () => {
                     slot: `${paymentData.scheduleData?.from || "N/A"} - ${paymentData.scheduleData?.to || "N/A"}`,
                     amount: paymentData.scheduleData?.price || 0, // Default to 0 if missing
                 }));
-                
+
                 console.log(response.paymentData[0].scheduleData.from, "this is payment data");
-                
+
                 setPaymentData(formattedData);
-                
+
                 console.log(response.paymentData, 'this is payment data');
                 setPaymentData(formattedData);
             } else {
@@ -32,6 +39,10 @@ const InterviewerPayment = () => {
         }
         fetchPaymentData()
     }, [])
+
+    if (isLoading) {
+        return <div><PageLoading /></div>
+    }
 
     const paymentTable = [
         { key: "date", label: "Date" },
@@ -69,7 +80,7 @@ const InterviewerPayment = () => {
                     </div>
 
                     {/* tabke part */}
-                    
+
                     <Table columns={paymentTable} data={paymentData} />
 
                 </div>

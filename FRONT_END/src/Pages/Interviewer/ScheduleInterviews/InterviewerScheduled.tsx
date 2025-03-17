@@ -3,14 +3,21 @@ import SideBar from "../../../components/Interviewer/Sidebar";
 import Table from "../../../components/Interviewer/Table";
 import { getInterviewerScheduledInterviews } from "../../../Services/interviewerService";
 import { useNavigate } from "react-router-dom";
+import PageLoading from "../../../components/PageLoading";
 
 const InterviewerScheduled = () => {
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
 
     const [scheduledData, setScheduledData] = useState<any[]>([]);
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const fetchInterviewerScheduledInterviews = async () => {
             try {
                 const response: any = await getInterviewerScheduledInterviews();
@@ -39,6 +46,10 @@ const InterviewerScheduled = () => {
         fetchInterviewerScheduledInterviews();
     }, []);
 
+    if (isLoading) {
+        return <div><PageLoading /></div>
+    }
+
     const scheduledTable = [
         { key: "stack", label: "Stack" },
         { key: "technology", label: "Technology" },
@@ -51,7 +62,7 @@ const InterviewerScheduled = () => {
 
 
     const handleToDetails = (id: string, detailsData: any) => {
-        navigate(`/interviewer/scheduled/${id}`, {state: {detailsData: detailsData}});
+        navigate(`/interviewer/scheduled/${id}`, { state: { detailsData: detailsData } });
     }
 
     return (

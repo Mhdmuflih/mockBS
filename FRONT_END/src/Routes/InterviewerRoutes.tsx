@@ -8,7 +8,7 @@ import { Suspense, lazy } from 'react';
 // ----------------------
 import InterviewerLoginProtector from '../RouterProtector/InterviewerLoginProtector';
 import InterviewerRouteProtector from '../RouterProtector/InterviewerRouteProtector';
-// ----------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
 const InterviewerSignup = lazy(() => import("../Pages/Interviewer/Signup/InterviewerSignup"));
 const InterviewerLogin = lazy(() => import("../Pages/Interviewer/Login/InterviewerLogin"));
 const InterviewerOtp = lazy(() => import("../Pages/Interviewer/OTP/InterviewerOtp"));

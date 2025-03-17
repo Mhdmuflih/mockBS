@@ -10,12 +10,15 @@ import profileImage from "../../../assets/profile image.jpg";
 import toast from "react-hot-toast"
 import { Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
+import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 // import Pagination from '@mui/material/Pagination';
 
 
 
 const AdminInterviewersList = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const [searchQuery, setSearchQuery] = useState("");
     const dispatch = useDispatch();
@@ -26,6 +29,11 @@ const AdminInterviewersList = () => {
     const itemsPerPage = 4;
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const takeApprovalDetails = async () => {
             try {
                 const response: any = await fetchInterviewerData();
@@ -41,6 +49,10 @@ const AdminInterviewersList = () => {
         };
         takeApprovalDetails();
     }, []);
+
+    if(isLoading) {
+        return <div><AdminSideLoading /></div>
+    }
 
     // Pagination logic
     const totalPages = Math.ceil(approvalData.length / itemsPerPage);

@@ -8,21 +8,28 @@ import profileImage from "../../../assets/profile image.jpg";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
+import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 
 const AdminApprovalDetail = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const { id } = useParams(); // Access dynamic id from URL
     const [interviewerDetails, setInterviewerDetails] = useState<any>(null);
     const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
 
     if (!id) {
         return <div>Error: No interviewer's id provided.</div>;
     }
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const fetchDetails = async () => {
             if (!id) {
                 console.log("No id provided");
@@ -38,16 +45,17 @@ const AdminApprovalDetail = () => {
                 }
             } catch (error: any) {
                 console.log("Error fetching details:", error.message);
-            } finally {
-                setLoading(false); // Stop loading once data is fetched
-            }
+            } 
+            // finally {
+            //     setIsLoading(false); // Stop loading once data is fetched
+            // }
         };
 
         fetchDetails();
     }, [id]);
 
-    if (loading) {
-        return <div>Loading...</div>; // Show loading state while data is being fetched
+    if (isLoading) {
+        return <div><AdminSideLoading /></div>; // Show loading state while data is being fetched
     }
 
     if (!interviewerDetails) {

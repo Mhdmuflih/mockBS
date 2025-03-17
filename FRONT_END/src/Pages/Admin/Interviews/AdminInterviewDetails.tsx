@@ -3,8 +3,11 @@ import SideBar from "../../../components/Admin/SideBar";
 import { useEffect, useState } from "react";
 import { fetchInterviewerAndCandidate } from "../../../Services/adminService";
 import { TiArrowBack } from "react-icons/ti";
+import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminInterviewDetails = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
 
@@ -24,6 +27,11 @@ const AdminInterviewDetails = () => {
 
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const { candidateId, interviewerId }: { candidateId: string, interviewerId: string } = location.state;
         console.log(candidateId, interviewerId, 'this is that candidate and interviewer id');
         const ids: { candidateId: string, interviewerId: string } = {
@@ -59,6 +67,10 @@ const AdminInterviewDetails = () => {
         }
         fetchInterviewerAndCandidateData();
     }, []);
+
+    if(isLoading) {
+        return <div><AdminSideLoading /></div>
+    }
 
     return (
         <>

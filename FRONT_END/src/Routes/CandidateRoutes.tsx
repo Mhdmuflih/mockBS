@@ -6,8 +6,9 @@ import { Suspense, lazy } from "react";
                 // =====================
 // protected Routes
 // --------------------
-const CandidateRouteProtector = lazy(() => import("../RouterProtector/CandidateRouteProtector"));
-const CandidateLoginProtector = lazy(() => import("../RouterProtector/CandidateLoginProtector"));
+import CandidateLoginProtector from "../RouterProtector/CandidateLoginProtector";
+import CandidateRouteProtector from "../RouterProtector/CandidateRouteProtector";
+import Loading from "../components/Loading";
 // -----------------------------------------------------------------------------------------------------
 const CandidateLogin = lazy(() => import("../Pages/Candidate/Login/CandidateLogin"));
 const CandidateSignup = lazy(() => import("../Pages/Candidate/Signup/CandidateSignup"));
@@ -50,7 +51,7 @@ const CandidatePageNotFound = lazy(() => import("../Pages/404 Page Not Found/Can
 const CandidateRoutes = () => {
     return (
         <>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loading />}>
 
                 <Routes>
                     {/* login protected */}

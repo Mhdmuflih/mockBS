@@ -7,6 +7,7 @@ import { Suspense, lazy } from 'react';
 // --------------------
 import AdminLoginProtector from '../RouterProtector/AdminLoginProtector';
 import AdminRouteProtector from '../RouterProtector/AdminRouteProtector';
+import Loading from '../components/Loading';
 // ----------------------------------------------------------------------------------------------------------
 const AdminSignup = lazy(() => import('../Pages/Admin/Signup/AdminSignup'));
 const AdminLogin = lazy(() => import('../Pages/Admin/Login/AdminLogin'));
@@ -45,7 +46,7 @@ const AdminInterviewDetails = lazy(() => import('../Pages/Admin/Interviews/Admin
 const AdminRoutes = () => {
     return (
         <>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loading />}>
 
                 <Routes>
 

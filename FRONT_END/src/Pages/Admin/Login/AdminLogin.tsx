@@ -59,12 +59,12 @@ const AdminLogin = () => {
                         isLoggedIn: true
                     }))
 
-                    Swal.fire({
-                        title: "Success!",
-                        text: response.message,
-                        icon: "success",
-                        confirmButtonText: 'OK'
-                    });
+                    // Swal.fire({
+                    //     title: "Success!",
+                    //     text: response.message,
+                    //     icon: "success",
+                    //     confirmButtonText: 'OK'
+                    // });
 
                     navigate("/admin/dashboard");
                 }

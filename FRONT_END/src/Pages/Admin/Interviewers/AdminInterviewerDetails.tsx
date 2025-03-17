@@ -3,15 +3,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchInterviewerDetails } from "../../../Services/adminService";
 import SideBar from "../../../components/Admin/SideBar";
 import { TiArrowBack } from "react-icons/ti";
+import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminInterviewerDetails = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const { id } = useParams(); // Access dynamic id from URL
     const [interviewerDetails, setInterviewerDetails] = useState<any>(null);
-    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const fetchDetails = async () => {
             if (!id) {
                 console.log("No id provided");
@@ -27,16 +34,17 @@ const AdminInterviewerDetails = () => {
                 }
             } catch (error: any) {
                 console.log("Error fetching details:", error.message);
-            } finally {
-                setLoading(false);
-            }
+            } 
+            // finally {
+            //     setIsLoading(false);
+            // }
         };
 
         fetchDetails();
     }, [id]);
 
-    if (loading) {
-        return <div>Loading...</div>; // Show loading state while data is being fetched
+    if (isLoading) {
+        return <div><AdminSideLoading /></div>; // Show loading state while data is being fetched
     }
 
     if (!interviewerDetails) {

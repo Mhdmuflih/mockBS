@@ -3,12 +3,21 @@ import { useEffect, useState } from "react";
 import { IoAddCircle } from "react-icons/io5";
 import SideBar from "../../../components/Admin/SideBar";
 import { fetchStackList } from "../../../Services/adminService";
+import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminStackList = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
     const navigate = useNavigate();
     const [stackList, setStackList] = useState<any[]>([]);
 
     useEffect(() => {
+
+        setTimeout(()=> {
+            setIsLoading(false);
+        },2000);
+
         const fetchStackData = async () => {
             try {
                 const response: any = await fetchStackList();
@@ -24,6 +33,10 @@ const AdminStackList = () => {
         };
         fetchStackData();
     }, []);
+
+    if(isLoading) {
+        return <div><AdminSideLoading /></div>
+    }
 
     const handleToAddStack = () => {
         navigate('/admin/add-stack');

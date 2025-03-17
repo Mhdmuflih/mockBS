@@ -3,13 +3,21 @@ import SideBar from "../../../components/Admin/SideBar";
 import Table from "../../../components/Admin/Table";
 import { fetchInterviewList } from "../../../Services/adminService";
 import { useNavigate } from "react-router-dom";
+import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminInterviewList = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const [interviewData, setInterviewData] = useState<any[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
+
+        setTimeout(()=> {
+            setIsLoading(false);
+        },2000);
+
         const fetchInterviewsData = async () => {
             try {
                 const response: any = await fetchInterviewList();
@@ -37,6 +45,10 @@ const AdminInterviewList = () => {
         }
         fetchInterviewsData();
     }, []);
+
+    if(isLoading) {
+        return <div><AdminSideLoading /></div>
+    }
 
     const handleToDetails = (scheduleId: string, candidateId: string, interviewerId: string ) => {
         navigate(`/admin/interviews/${scheduleId}`, { state: { candidateId: candidateId, interviewerId: interviewerId } })

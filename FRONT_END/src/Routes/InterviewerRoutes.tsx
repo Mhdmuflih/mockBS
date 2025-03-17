@@ -8,6 +8,7 @@ import { Suspense, lazy } from 'react';
 // ----------------------
 import InterviewerLoginProtector from '../RouterProtector/InterviewerLoginProtector';
 import InterviewerRouteProtector from '../RouterProtector/InterviewerRouteProtector';
+import Loading from '../components/Loading';
 // ------------------------------------------------------------------------------------------------------------------------
 const InterviewerSignup = lazy(() => import("../Pages/Interviewer/Signup/InterviewerSignup"));
 const InterviewerLogin = lazy(() => import("../Pages/Interviewer/Login/InterviewerLogin"));
@@ -47,7 +48,7 @@ const InterviewerPageNotFound = lazy(() => import("../Pages/404 Page Not Found/I
 const InterviewerRoutes = () => {
     return (
         <>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loading />}>
 
                 <Routes>
 

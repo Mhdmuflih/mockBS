@@ -6,9 +6,12 @@ import profileImage from "../../../assets/profile image.jpg";
 
 // import Typography from '@mui/material/Typography';
 import Pagination from '@mui/material/Pagination';
+import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 // import Stack from '@mui/material/Stack';
 
 const AdminApproval = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const [searchQuery, setSearchQuery] = useState("");
     const navigate = useNavigate();
@@ -18,6 +21,11 @@ const AdminApproval = () => {
     const itemsPerPage = 5;
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
         const takeApprovalDetails = async () => {
             try {
                 const response: any = await fetchApprovalData(currentPage, itemsPerPage);
@@ -40,6 +48,10 @@ const AdminApproval = () => {
         };
         takeApprovalDetails();
     }, [currentPage]);  // Now, it will re-run when currentPage changes
+
+    if (isLoading) {
+        return <AdminSideLoading  />
+    }
 
     const handleSearch = (e: any) => {
         const query = e.target.value;
@@ -153,7 +165,7 @@ const AdminApproval = () => {
                                 },
                                 "& .MuiPaginationItem-root:hover": {
                                     backgroundColor: "#FFD633", // Lighter yellow on hover
-                                    color:"#000"
+                                    color: "#000"
                                 }
                             }}
                         />

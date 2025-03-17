@@ -1,6 +1,21 @@
+import { useEffect, useState } from "react";
 import SideBar from "../../../components/Admin/SideBar";
+import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminCommunityList = () => {
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+    }, []);
+
+    if (isLoading) {
+        return <div><AdminSideLoading /></div>
+    }
+
     return (
         <>
             <div className="flex">

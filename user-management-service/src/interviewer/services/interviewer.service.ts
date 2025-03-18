@@ -4,6 +4,10 @@ import { InterviewerRepository } from "../repository/interviewer.repository";
 import * as bcrypt from 'bcryptjs';
 import { IInterviewer } from "../interface/interface";
 import { CloudinaryService } from "src/Config/cloudinary.service";
+import { InterviewerDataDto, UpdateInterviewerDto } from "../dto/interviewer-data.dto";
+import { ChagnePasswordDTO } from "../dto/change-password.dto";
+import { StackResponseDto } from "../dto/stack-response.dto";
+import { ICandidate } from "src/candidate/interface/interface";
 
 
 @Injectable()
@@ -14,7 +18,7 @@ export class InterviewerService implements IInterviewerService {
 
     ) { }
 
-    async findInterviewer(userId: string): Promise<any> {
+    async findInterviewer(userId: string): Promise<InterviewerDataDto> {
         try {
             if (!userId) {
                 throw new BadRequestException('User ID is missing from the request');
@@ -33,10 +37,10 @@ export class InterviewerService implements IInterviewerService {
         }
     }
 
-    async addDetails(formData: any, files: Express.Multer.File[]): Promise<any> {
+    async addDetails(formData: UpdateInterviewerDto, files: Express.Multer.File[]): Promise<UpdateInterviewerDto> {
         try {
 
-            const updateInterviewerDetails = await this.interviewerRepository.addDetails(formData, files)
+            const updateInterviewerDetails: UpdateInterviewerDto = await this.interviewerRepository.addDetails(formData, files)
 
             if (!updateInterviewerDetails) {
                 throw new Error("Interviewer not found.");
@@ -51,7 +55,7 @@ export class InterviewerService implements IInterviewerService {
         }
     }
 
-    async editProfileInterviewer(userId: string, formData: IInterviewer, file?: Express.Multer.File): Promise<IInterviewer> {
+    async editProfileInterviewer(userId: string, formData: UpdateInterviewerDto, file?: Express.Multer.File): Promise<UpdateInterviewerDto> {
         try {
             if (!formData || !userId) {
                 throw new BadRequestException('formData or userId is missing');
@@ -90,7 +94,7 @@ export class InterviewerService implements IInterviewerService {
     }
 
 
-    async changePassword(userId: string, formData: { currentPassword: string; password: string; confirmPassword: string; }): Promise<void> {
+    async changePassword(userId: string, formData: ChagnePasswordDTO): Promise<void> {
         try {
             const interviewer = await this.interviewerRepository.findOne(userId);
             if (!interviewer) {
@@ -121,7 +125,7 @@ export class InterviewerService implements IInterviewerService {
         }
     }
 
-    async fetchStack(): Promise<void> {
+    async fetchStack(): Promise<StackResponseDto[]> {
         try {
             return await this.interviewerRepository.fetchStack();
         } catch (error: any) {
@@ -130,20 +134,7 @@ export class InterviewerService implements IInterviewerService {
         }
     }
 
-    // async getInterviewerData(interviewerId: string): Promise<any> {
-    //     try {
-    //         console.log(interviewerId, 'thsis is interviewer id in service');
-    //         // const interviewer = await this.interviewerRepository.findOne(interviewerId);
-    //         // console.log(interviewer, 'this is interviewer');
-    //         // return interviewer
-    //         return " okokokokokokokokoko";
-    //     } catch (error: any) {
-    //         console.log(error.message);
-    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
-
-    async getCandidate(candidateId: string): Promise<any> {
+    async getCandidate(candidateId: string): Promise<ICandidate> {
         try {
             return await this.interviewerRepository.getCandidate(candidateId);
         } catch (error: any) {
@@ -152,7 +143,7 @@ export class InterviewerService implements IInterviewerService {
         }
     }
 
-    async sendInterviewer(data: any): Promise<any> {
+    async sendInterviewer(data: any): Promise<InterviewerDataDto[]> {
         try {
             const interviewers = await this.interviewerRepository.sendInterviewer(data);
             return interviewers;

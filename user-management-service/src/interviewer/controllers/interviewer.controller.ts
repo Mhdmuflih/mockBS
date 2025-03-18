@@ -5,6 +5,10 @@ import { AnyFilesInterceptor, FileInterceptor } from "@nestjs/platform-express";
 import { InterviewerService } from "../services/interviewer.service";
 import { IInterviewer } from "../interface/interface";
 import { GrpcMethod } from "@nestjs/microservices";
+import { InterviewerDataDto, UpdateInterviewerDto } from "../dto/interviewer-data.dto";
+import { ChagnePasswordDTO } from "../dto/change-password.dto";
+import { GetStackResponseDto, StackResponseDto } from "../dto/stack-response.dto";
+import { ICandidate } from "src/candidate/interface/interface";
 
 @Controller('interviewer')
 export class InterviewerController implements IInterviewerController {
@@ -16,7 +20,7 @@ export class InterviewerController implements IInterviewerController {
     @Get('profileURL')
     async getProfileImage(@Headers('x-user-id') userId: string): Promise<{success: boolean, message: string, profileURL: string}> {
         try {
-            const interviewer: any = await this.interviewerService.findInterviewer(userId);
+            const interviewer = await this.interviewerService.findInterviewer(userId);
             return {success: true, message: "profile Image", profileURL: interviewer.profileURL}
         } catch (error: any) {
             console.log(error.message);
@@ -29,8 +33,8 @@ export class InterviewerController implements IInterviewerController {
     @UseInterceptors(AnyFilesInterceptor())
     async updateInterviewerDetails(
         @UploadedFiles() files: Array<Express.Multer.File>,
-        @Body() bodyData: any
-    ) {
+        @Body() bodyData: UpdateInterviewerDto
+    ):Promise<{ success: boolean, message: string, interviewerData: UpdateInterviewerDto }> {
 
         try {
             const imageFile = files.find(file => file.fieldname === 'image');
@@ -51,7 +55,6 @@ export class InterviewerController implements IInterviewerController {
             }
 
             const updateInterviewerDetails = await this.interviewerService.addDetails(bodyData, fileName)
-            console.log(updateInterviewerDetails, 'this is the controlelr data last')
 
             return { success: true, message: 'Details added successfully', interviewerData: updateInterviewerDetails };
 
@@ -62,7 +65,7 @@ export class InterviewerController implements IInterviewerController {
     }
 
     @Get('profile')
-    async profileInterviewer(@Headers('x-user-id') userId: string): Promise<{ success: boolean; message: string; interviewerData?: any }> {
+    async profileInterviewer(@Headers('x-user-id') userId: string): Promise<{ success: boolean; message: string; interviewerData?: InterviewerDataDto }> {
         try {
             if (!userId) {
                 throw new BadRequestException('User ID is missing from the headers');
@@ -87,11 +90,9 @@ export class InterviewerController implements IInterviewerController {
 
     @Patch('profile')
     @UseInterceptors(FileInterceptor('profileImage'))
-    async editProfileInterviewer(@Headers('x-user-id') userId: string, @Body() formData: IInterviewer, @UploadedFile() file?: Express.Multer.File): Promise<{ success: boolean; message: string; profileURL:string }> {
+    async editProfileInterviewer(@Headers('x-user-id') userId: string, @Body() formData: UpdateInterviewerDto, @UploadedFile() file?: Express.Multer.File): Promise<{ success: boolean; message: string; profileURL:string }> {
         try {
             const interviewer: any = await this.interviewerService.editProfileInterviewer(userId, formData, file);
-            // console.log(interviewer, 'interviewer data');
-
             return { success: true, message: "Candidate profile edited successfully.", profileURL: interviewer.profileURL }
         } catch (error: any) {
             console.log(error.message);
@@ -101,9 +102,8 @@ export class InterviewerController implements IInterviewerController {
 
 
     @Patch('password')
-    async changePassword(@Headers('x-user-id') userId: string, @Body() formData: { currentPassword: string, password: string, confirmPassword: string }) {
+    async changePassword(@Headers('x-user-id') userId: string, @Body() formData: ChagnePasswordDTO): Promise<{success: boolean, message: string}> {
         try {
-            // console.log(userId, formData, 'this is the userID and formData');
             if (!userId || !formData) {
                 throw new BadRequestException('User ID or form data is missing');
             }
@@ -126,9 +126,10 @@ export class InterviewerController implements IInterviewerController {
     }
 
     @Post('slot')
-    async fetchStackData(): Promise<{ success: boolean; message: string; stackData: any }> {
+    async fetchStackData(): Promise<GetStackResponseDto> {
         try {
-            const stack = await this.interviewerService.fetchStack();
+            const stack: StackResponseDto[] = await this.interviewerService.fetchStack();
+            console.log(stack, 'this is stack data')
             return {success: true, message: "stack Data", stackData: stack}
         } catch (error: any) {
             console.error('Error:', error.message);
@@ -137,7 +138,7 @@ export class InterviewerController implements IInterviewerController {
     }
 
     @Get('/candidate-details/:candidateId')
-    async getCandidateData(@Param('candidateId') candidateId: string) {
+    async getCandidateData(@Param('candidateId') candidateId: string): Promise<{success: boolean; message: string; candidateData: ICandidate}> {
         try {
             const candidateData = await this.interviewerService.getCandidate(candidateId);
             return {success: true, message: "get candidate data", candidateData: candidateData};
@@ -148,7 +149,7 @@ export class InterviewerController implements IInterviewerController {
     }
 
     @GrpcMethod('InterviewerService', 'SendInterviewer')
-    async getInterviewerData(interviewerId: string): Promise<any> {
+    async getInterviewerData(interviewerId: string): Promise<{interviewers: InterviewerDataDto[]}> {
         try {
             if(!interviewerId){
                 throw new Error('Invalid request data in grpc');

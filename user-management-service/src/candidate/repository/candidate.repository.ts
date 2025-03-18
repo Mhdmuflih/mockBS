@@ -7,7 +7,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Stack } from 'src/admin/Model/stack.schema';
 import { Interviewer } from 'src/interviewer/Model/interviewer.schema';
 import { IInterviewer } from 'src/interviewer/interface/interface';
-import { CandidateCreateDto } from '../dtos/candidate-create.dto';
+import { CandidateDataDto, UpdateCandidateDto } from '../dtos/candidate-data.dto';
+import { StackResponseDto } from '../dtos/stack-response.dto';
 
 @Injectable()
 export class CandidateRepository implements ICandidateRepository {
@@ -17,19 +18,9 @@ export class CandidateRepository implements ICandidateRepository {
         @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
     ) { }
 
-    async findOne(userId: string): Promise<ICandidate | null> {
+    async findOne(userId: string): Promise<CandidateDataDto | null> {
         try {
             const candidate = await this.candidateModel.findOne({ _id: userId }).exec();
-            return candidate; 
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    async findCandidateByEmail(email: string): Promise<ICandidate | null> {
-        try {
-            const candidate = await this.candidateModel.findOne({email: email});
             return candidate;
         } catch (error: any) {
             console.log(error.message);
@@ -37,21 +28,31 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async updateCandidateData(userId: string, formData: CandidateCreateDto, fileName: string): Promise<ICandidate | null> {
+    async findCandidateByEmail(email: string): Promise<CandidateDataDto | null> {
         try {
-            const updateData: Partial<ICandidate> = {
+            const candidate = await this.candidateModel.findOne({ email: email });
+            return candidate;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async updateCandidateData(userId: string, formData: UpdateCandidateDto, fileName: string): Promise<UpdateCandidateDto | null> {
+        try {
+            const updateData: Partial<UpdateCandidateDto> = {
                 name: formData.name,
                 mobile: formData.mobile
             };
-            
+
             if (fileName) {
                 updateData.profileURL = fileName;
             }
 
             const candidate = await this.candidateModel.findOneAndUpdate(
-                { _id: userId  }, 
+                { _id: userId },
                 { $set: updateData },
-                { new: true, upsert:true }
+                { new: true, upsert: true }
             );
 
             return candidate;
@@ -61,7 +62,7 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async updatePassword(userId: string, securePassword: string): Promise<ICandidate | null> {
+    async updatePassword(userId: string, securePassword: string): Promise<CandidateDataDto | null> {
         try {
             const updatedCandidate = await this.candidateModel.findOneAndUpdate(
                 { _id: userId },
@@ -75,7 +76,7 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async getStack(): Promise<IStack[] | null> {
+    async getStack(): Promise<StackResponseDto[]> {
         try {
             const getStack = await this.stackModel.find();
             return getStack;
@@ -87,7 +88,7 @@ export class CandidateRepository implements ICandidateRepository {
 
     async findInterviewer(interviewerId: string): Promise<IInterviewer | null> {
         try {
-            const interviewer = await this.interviewerModel.findOne({_id: interviewerId});
+            const interviewer = await this.interviewerModel.findOne({ _id: interviewerId });
             return interviewer;
         } catch (error: any) {
             console.log(error.message);

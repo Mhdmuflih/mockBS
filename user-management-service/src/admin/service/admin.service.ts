@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IAdminService } from '../interface/IAdminService';
 import { AdminRepository } from '../repository/admin.repository';
+import { IInterviewer } from 'src/interviewer/interface/interface';
+import { ICandidate, IStack } from 'src/candidate/interface/interface';
 
 @Injectable()
 export class AdminService implements IAdminService {
@@ -33,7 +35,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async findOne(id: string): Promise<any> {
+  async findOne(id: string): Promise<IInterviewer> {
     try {
       const getApprovalDetails = await this.adminRepository.findOne(id);
       return getApprovalDetails
@@ -43,7 +45,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async approveDetails(id: string): Promise<any> {
+  async approveDetails(id: string): Promise<IInterviewer> {
     try {
       return await this.adminRepository.approveDetails(id);
     } catch (error: any) {
@@ -52,7 +54,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getAllCandidate(): Promise<any> {
+  async getAllCandidate(): Promise<ICandidate[]> {
     try {
       const candidatesData = await this.adminRepository.getAllCandidate();
       return candidatesData;
@@ -62,7 +64,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getcandidateDetails(id: string): Promise<any> {
+  async getcandidateDetails(id: string): Promise<ICandidate> {
     try {
       const candidateDetails = await this.adminRepository.getcandidateDetails(id);
       return candidateDetails;
@@ -72,7 +74,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async candidateAction(id: string): Promise<any> {
+  async candidateAction(id: string): Promise<ICandidate> {
     try {
 
       const updatedCandidate = await this.adminRepository.candidateAction(id);
@@ -85,7 +87,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getAllInterviewers(): Promise<any> {
+  async getAllInterviewers(): Promise<IInterviewer[]> {
     try {
       const interviewersData = await this.adminRepository.getAllInterviewers();
       return interviewersData;
@@ -95,7 +97,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async interviewerAction(id: string): Promise<any> {
+  async interviewerAction(id: string): Promise<IInterviewer> {
     try {
 
       const updatedInterviewer = await this.adminRepository.interviewerAction(id);
@@ -108,7 +110,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async addStack(formData: any): Promise<any> {
+  async addStack(formData: any): Promise<IStack> {
     try {
 
       // const existingStack = await this.stackModel.find({ stackName: formData.stackName });
@@ -125,7 +127,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getAllStack(): Promise<any> {
+  async getAllStack(): Promise<IStack[]> {
     try {
       const stack = await this.adminRepository.getAllStack();
       return stack;
@@ -135,7 +137,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getInterviewsDetailsData(ids: {candidateId: string, interviewerId: string}): Promise<any> {
+  async getInterviewsDetailsData(ids: {candidateId: string, interviewerId: string}): Promise<[IInterviewer, ICandidate]> {
     try {
       // console.log(ids, "this is for the service in admin")
       const interviewerDetails = await this.adminRepository.findOne(ids.interviewerId);

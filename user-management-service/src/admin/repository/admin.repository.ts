@@ -1,7 +1,7 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { ICandidate } from "src/candidate/interface/interface";
+import { ICandidate, IStack } from "src/candidate/interface/interface";
 import { IInterviewer } from "src/interviewer/interface/interface";
 import { Stack } from "../Model/stack.schema";
 import { IAdminRepository } from "../interface/IAdminRepository";
@@ -62,7 +62,7 @@ export class AdminRepository implements IAdminRepository {
         }
     }
 
-    async findOne(id: string): Promise<any> {
+    async findOne(id: string): Promise<IInterviewer> {
         try {
             const getApprovalDetails = await this.interviewerModel.findById({ _id: id });
             return getApprovalDetails
@@ -72,7 +72,7 @@ export class AdminRepository implements IAdminRepository {
         }
     }
 
-    async approveDetails(id: string): Promise<any> {
+    async approveDetails(id: string): Promise<IInterviewer> {
         try {
             return await this.interviewerModel.findByIdAndUpdate({ _id: id }, { $set: { isApproved: true } });
         } catch (error: any) {
@@ -81,7 +81,7 @@ export class AdminRepository implements IAdminRepository {
         }
     }
 
-    async getAllCandidate(): Promise<any> {
+    async getAllCandidate(): Promise<ICandidate[]> {
         try {
             const candidatesData = await this.candidateModel.find().exec();
             return candidatesData;
@@ -91,7 +91,7 @@ export class AdminRepository implements IAdminRepository {
         }
     }
 
-    async getcandidateDetails(id: string): Promise<any> {
+    async getcandidateDetails(id: string): Promise<ICandidate> {
         try {
             const candidateDetails = await this.candidateModel.findById({ _id: id });
             return candidateDetails;
@@ -101,12 +101,12 @@ export class AdminRepository implements IAdminRepository {
         }
     }
 
-    async candidateAction(id: string): Promise<any> {
+    async candidateAction(id: string): Promise<ICandidate> {
         try {
             const candidate = await this.candidateModel.findOne({ _id: id });
 
             if (!candidate) {
-                return { success: false, message: "Candidate not found!" };
+                throw new BadRequestException('Candidate not found!');
             }
 
             const updatedCandidate = await this.candidateModel.findOneAndUpdate(
@@ -123,7 +123,7 @@ export class AdminRepository implements IAdminRepository {
         }
     }
 
-    async getAllInterviewers(): Promise<any> {
+    async getAllInterviewers(): Promise<IInterviewer[]> {
         try {
             const interviewersData = await this.interviewerModel.find({ isApproved: true }).exec();
             return interviewersData;
@@ -133,12 +133,12 @@ export class AdminRepository implements IAdminRepository {
         }
     }
 
-    async interviewerAction(id: string): Promise<any> {
+    async interviewerAction(id: string): Promise<IInterviewer> {
         try {
             const interviewer = await this.interviewerModel.findOne({ _id: id });
 
             if (!interviewer) {
-                return { success: false, message: "Interviewer not found!" };
+                throw new BadRequestException('Interviewer not found!');
             }
 
             const updatedInterviewer = await this.interviewerModel.findOneAndUpdate(
@@ -155,7 +155,7 @@ export class AdminRepository implements IAdminRepository {
         }
     }
 
-    async addStack(formData: any): Promise<any> {
+    async addStack(formData: any): Promise<IStack> {
         try {
             const existingStack = await this.stackModel.findOne({ stackName: formData.stackName });
             if (existingStack) {
@@ -170,7 +170,7 @@ export class AdminRepository implements IAdminRepository {
         }
     }
 
-    async getAllStack(): Promise<any> {
+    async getAllStack(): Promise<IStack[]> {
         try {
             const stack = await this.stackModel.find().exec();
             return stack;

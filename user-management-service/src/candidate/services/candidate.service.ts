@@ -5,7 +5,9 @@ import { CandidateRepository } from '../repository/candidate.repository';
 import * as bcrypt from 'bcryptjs';
 import { CloudinaryService } from 'src/Config/cloudinary.service';
 import { IInterviewer } from 'src/interviewer/interface/interface';
-import { CandidateCreateDto } from '../dtos/candidate-create.dto';
+import { ChagnePasswordDTO } from '../dtos/change-password.dto';
+import { CandidateDataDto, UpdateCandidateDto } from '../dtos/candidate-data.dto';
+import { StackResponseDto } from '../dtos/stack-response.dto';
 
 
 @Injectable()
@@ -17,7 +19,7 @@ export class CandidateService implements ICandidateService {
 
     ) { }
 
-    async findCandidate(userId: string): Promise<ICandidate | null> {
+    async findCandidate(userId: string): Promise<CandidateDataDto | null> {
         try {
             if (!userId) {
                 throw new BadRequestException('User ID is missing from the request');
@@ -36,7 +38,7 @@ export class CandidateService implements ICandidateService {
         }
     }
 
-    async editProfileCandidate(userId: string, formData: CandidateCreateDto, file?: Express.Multer.File): Promise<ICandidate | null> {
+    async editProfileCandidate(userId: string, formData: UpdateCandidateDto, file?: Express.Multer.File): Promise<UpdateCandidateDto | null> {
         try {
             // console.log(formData, 'this is candidate formData')
             if (!formData || !userId) {
@@ -64,7 +66,7 @@ export class CandidateService implements ICandidateService {
     }
 
 
-    async changePassword(userId: string, formData: { currentPassword: string; password: string; confirmPassword: string; }): Promise<void> {
+    async changePassword(userId: string, formData: ChagnePasswordDTO): Promise<void> {
         try {
             const candidate = await this.candidateRepository.findOne(userId);
             if (!candidate) {
@@ -94,7 +96,7 @@ export class CandidateService implements ICandidateService {
         }
     }
 
-    async getStack(): Promise<IStack[] | null> {
+    async getStack(): Promise<StackResponseDto[]> {
         try {
             return await this.candidateRepository.getStack();
         } catch (error: any) {

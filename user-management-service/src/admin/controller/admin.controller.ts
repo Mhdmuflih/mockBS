@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Param, Body, BadRequestException, Query } from '@nestjs/common';
 import { AdminService } from '../service/admin.service';
 import { IAdminController } from '../interface/IAdminController';
+import { IInterviewer } from 'src/interviewer/interface/interface';
+import { ICandidate, IStack } from 'src/candidate/interface/interface';
 
 @Controller('admin')
 export class AdminController implements IAdminController {
@@ -11,7 +13,7 @@ export class AdminController implements IAdminController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search?: string
-  ): Promise<any> {
+  ): Promise<{ success: boolean; message: string; approvalData: IInterviewer }> {
     try {
 
       // if (search) {
@@ -32,7 +34,7 @@ export class AdminController implements IAdminController {
       // };
       // console.log(search, page, limit, 'this is forntend to send in backend')
       const approvalData = await this.adminService.findAllApproval(page, limit, search);
-      // console.log(approvalData, 'this is approval data for the pagination ')
+      console.log(approvalData, 'this is approval data for the pagination ');
       return { success: true, message: "interviewer Data.", approvalData: approvalData };
     } catch (error: any) {
       console.log(error.message);
@@ -41,7 +43,7 @@ export class AdminController implements IAdminController {
   }
 
   @Get('approval-details/:id')
-  async getApprovalDetails(@Param('id') id: string): Promise<any> {
+  async getApprovalDetails(@Param('id') id: string): Promise<{ success: boolean; message: string; approvalData: IInterviewer }> {
     try {
       const getApprovalDetails = await this.adminService.findOne(id);
       return { success: true, message: "interviewerDetails", approvalData: getApprovalDetails };
@@ -52,7 +54,7 @@ export class AdminController implements IAdminController {
   }
 
   @Post('approval-details/:id')
-  async approveDetails(@Param('id') id: string): Promise<any> {
+  async approveDetails(@Param('id') id: string): Promise<{ success: boolean; message: string }> {
     try {
       await this.adminService.approveDetails(id);
       return { success: true, message: "interviewerDetails" };
@@ -64,7 +66,7 @@ export class AdminController implements IAdminController {
   }
 
   @Get('candidates')
-  async getAllCandidates(): Promise<any> {
+  async getAllCandidates(): Promise<{ success: boolean; message: string; candidateData: ICandidate[] }> {
     try {
       const candidatesData = await this.adminService.getAllCandidate();
       return { success: true, message: "interviewerDetails", candidateData: candidatesData };
@@ -76,7 +78,7 @@ export class AdminController implements IAdminController {
   }
 
   @Get('candidates/:id')
-  async getCandidateDetails(@Param('id') id: string): Promise<any> {
+  async getCandidateDetails(@Param('id') id: string): Promise<{ success: boolean; message: string; candidateData: ICandidate }> {
     try {
       const candidateDetails = await this.adminService.getcandidateDetails(id);
       return { success: true, message: "interviewerDetails", candidateData: candidateDetails };
@@ -87,7 +89,7 @@ export class AdminController implements IAdminController {
   }
 
   @Post('candidate-action/:id')
-  async candidateAction(@Param('id') id: string): Promise<any> {
+  async candidateAction(@Param('id') id: string): Promise<{ success: boolean; message: string; candidateData: ICandidate }> {
     try {
       const updatedCandidate = await this.adminService.candidateAction(id);
       return { success: true, message: "Candidate status updated successfully!", candidateData: updatedCandidate };
@@ -98,7 +100,7 @@ export class AdminController implements IAdminController {
   }
 
   @Get('interviewers')
-  async getAllInterviewers(): Promise<any> {
+  async getAllInterviewers(): Promise<{ success: boolean; message: string; interviewerData: IInterviewer[] }> {
     try {
       const interviewersData = await this.adminService.getAllInterviewers();
       return { success: true, message: "interviewerDetails", interviewerData: interviewersData };
@@ -109,7 +111,7 @@ export class AdminController implements IAdminController {
   }
 
   @Post('interviewer-action/:id')
-  async interviewerAction(@Param('id') id: string): Promise<any> {
+  async interviewerAction(@Param('id') id: string): Promise<{ success: boolean; message: string; interviewerData: IInterviewer }> {
     try {
       const updatedInterviewer = await this.adminService.interviewerAction(id);
       return { success: true, message: "Interviewer status updated successfully!", interviewerData: updatedInterviewer };
@@ -120,7 +122,7 @@ export class AdminController implements IAdminController {
   }
 
   @Post('add-stack')
-  async addStack(@Body() formData): Promise<any> {
+  async addStack(@Body() formData): Promise<{ success: boolean; message: string; stackData: IStack }> {
     try {
       const saveStack = await this.adminService.addStack(formData);
       return { success: true, message: 'Stack added successfully!', stackData: saveStack };
@@ -131,7 +133,7 @@ export class AdminController implements IAdminController {
   }
 
   @Get('stack-list')
-  async stackList(): Promise<any> {
+  async stackList(): Promise<{ success: boolean; message: string; stackData: IStack[] }> {
     try {
       const stack = await this.adminService.getAllStack();
       return { success: true, message: "stack Data", stackData: stack };
@@ -142,12 +144,12 @@ export class AdminController implements IAdminController {
   }
 
   @Get('interview-details')
-  async getInterviewDetails(@Query() ids: { candidateId: string; interviewerId: string }) {
+  async getInterviewDetails(@Query() ids: { candidateId: string; interviewerId: string }): Promise<{ success: boolean; message: string; interviewDetailsData: any }> {
     try {
       // console.log(ids, 'this is ids of interviews');
       const interviewDetailsData = await this.adminService.getInterviewsDetailsData(ids)
       // console.log(interviewDetailsData, 'this is interview data');
-      return {success: true, message: "interview Details data", interviewDetailsData: interviewDetailsData}
+      return { success: true, message: "interview Details data", interviewDetailsData: interviewDetailsData }
     } catch (error: any) {
       console.log(error.message);
       throw new BadRequestException(error.message || 'An error occurred');

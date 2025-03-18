@@ -3,17 +3,19 @@ import { ICandidateController } from '../interface/ICandidateController';
 import { ICandidate, IStack } from '../interface/interface';
 import { CandidateService } from '../services/candidate.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CandidateResponseDto } from '../dtos/candidate.response.dto';
 import { IInterviewer } from 'src/interviewer/interface/interface';
+import { ChagnePasswordDTO } from '../dtos/change-password.dto';
+import { CandidateDataDto, UpdateCandidateDto } from '../dtos/candidate-data.dto';
+import { GetStackResponseDto, StackResponseDto } from '../dtos/stack-response.dto';
 
 @Controller('candidate')
 export class CandidateController implements ICandidateController {
     constructor(private readonly candidateService: CandidateService) { }
-    
+
     @Get('profileURL')
     async getProfileImage(@Headers('x-user-id') userId: string): Promise<{ success: boolean, message: string, profileURL: string }> {
         try {
-            const candidate: ICandidate = await this.candidateService.findCandidate(userId);
+            const candidate: CandidateDataDto = await this.candidateService.findCandidate(userId);
             return { success: true, message: "profile Image", profileURL: candidate.profileURL }
         } catch (error: any) {
             console.log(error.message);
@@ -22,13 +24,13 @@ export class CandidateController implements ICandidateController {
     }
 
     @Get('profile')
-    async profileCandidate(@Headers('x-user-id') userId: string): Promise<{ success: boolean; message: string; candidateData?: CandidateResponseDto | null }> {
+    async profileCandidate(@Headers('x-user-id') userId: string): Promise<{ success: boolean; message: string; candidateData?: CandidateDataDto | null }> {
         try {
             if (!userId) {
                 throw new BadRequestException('User ID is missing from the headers');
             }
 
-            const candidateData: ICandidate = await this.candidateService.findCandidate(userId);
+            const candidateData: CandidateDataDto = await this.candidateService.findCandidate(userId);
 
             if (!candidateData) {
                 throw new HttpException('Candidate not found', HttpStatus.NOT_FOUND);
@@ -47,9 +49,8 @@ export class CandidateController implements ICandidateController {
 
     @Patch('profile')
     @UseInterceptors(FileInterceptor('profileImage'))
-    async editProfileCandidate(@Headers('x-user-id') userId: string, @Body() formData: ICandidate, @UploadedFile() file?: Express.Multer.File): Promise<{ success: boolean; message: string; profileURL: string }> {
+    async editProfileCandidate(@Headers('x-user-id') userId: string, @Body() formData: UpdateCandidateDto, @UploadedFile() file?: Express.Multer.File): Promise<{ success: boolean; message: string; profileURL?: string }> {
         try {
-            // console.log(formData, 'this is form Data for edit profile')
             const candidate = await this.candidateService.editProfileCandidate(userId, formData, file);
             return { success: true, message: "Candidate profile edited successfully.", profileURL: candidate.profileURL }
         } catch (error: any) {
@@ -59,7 +60,7 @@ export class CandidateController implements ICandidateController {
     }
 
     @Patch('password')
-    async changePassword(@Headers('x-user-id') userId: string, @Body() formData: { currentPassword: string; password: string; confirmPassword: string; }): Promise<{ success: boolean; message: string; }> {
+    async changePassword(@Headers('x-user-id') userId: string, @Body() formData: ChagnePasswordDTO): Promise<{ success: boolean; message: string; }> {
         try {
             if (!userId || !formData) {
                 throw new BadRequestException('User ID or form data is missing');
@@ -84,9 +85,9 @@ export class CandidateController implements ICandidateController {
     }
 
     @Get('stack')
-    async getStack(): Promise<{ success: boolean; message: string; stackData: IStack[] | null; }> {
+    async getStack(): Promise<GetStackResponseDto> {
         try {
-            const stackData: IStack[] = await this.candidateService.getStack();
+            const stackData: StackResponseDto[] = await this.candidateService.getStack();
             return { success: true, message: "Candidate password changed successfully.", stackData: stackData }
         } catch (error: any) {
             console.log(error.message);
@@ -95,7 +96,7 @@ export class CandidateController implements ICandidateController {
     }
 
     @Get('/interviewer-details/:interviewerId')
-    async getInterviewerDetails(@Param('interviewerId') interviewerId: string): Promise<{success: boolean, message: string, interviewerData: IInterviewer}> {
+    async getInterviewerDetails(@Param('interviewerId') interviewerId: string): Promise<{ success: boolean, message: string, interviewerData: IInterviewer }> {
         try {
             const interviewerData = await this.candidateService.getInterviewer(interviewerId);
             return { success: true, message: "fetch interviewer Data", interviewerData: interviewerData }

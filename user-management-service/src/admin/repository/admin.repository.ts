@@ -5,14 +5,17 @@ import { ICandidate, IStack } from "src/candidate/interface/interface";
 import { IInterviewer } from "src/interviewer/interface/interface";
 import { Stack } from "../Model/stack.schema";
 import { IAdminRepository } from "../interface/IAdminRepository";
+import { BaseRepository } from "src/Repository/baseRepository";
 
 @Injectable()
-export class AdminRepository implements IAdminRepository {
+export class AdminRepository extends BaseRepository<Stack> implements IAdminRepository {
     constructor(
         @InjectModel('Candidate') private readonly candidateModel: Model<ICandidate>,
         @InjectModel('Interviewer') private readonly interviewerModel: Model<IInterviewer>,
         @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
-    ) { }
+    ) {
+        super(stackModel);
+    }
 
     async findAllApproval(skip: number, limit: number, search?: string): Promise<any> {
         try {

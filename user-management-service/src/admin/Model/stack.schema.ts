@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 export type StackDocument = Stack & Document;
 
 @Schema()
-export class Stack {
+export class Stack extends Document {
   @Prop({ type: String,  required: true })
   stackName: string;
 

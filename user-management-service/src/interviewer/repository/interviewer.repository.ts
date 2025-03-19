@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { IInterviewerRepository } from "../interface/IInterviewerRepository";
 import { InjectModel } from "@nestjs/mongoose";
-import { Interviewer } from "../Model/interviewer.schema";
+import { Interviewer, InterviewerDocument } from "../Model/interviewer.schema";
 import { Model } from "mongoose";
 import { IInterviewer } from "../interface/interface";
 import { Stack } from "src/admin/Model/stack.schema";
@@ -9,18 +9,22 @@ import { Candidate } from "src/candidate/Model/candidate.schemas";
 import { InterviewerDataDto, UpdateInterviewerDto } from "../dto/interviewer-data.dto";
 import { StackResponseDto } from "../dto/stack-response.dto";
 import { ICandidate } from "src/candidate/interface/interface";
+import { BaseRepository } from "src/Repository/baseRepository";
 
 @Injectable()
-export class InterviewerRepository implements IInterviewerRepository {
+export class InterviewerRepository extends BaseRepository<Interviewer> implements IInterviewerRepository {
     constructor(
         @InjectModel(Interviewer.name) private readonly interviewerModel: Model<Interviewer>,
         @InjectModel(Candidate.name) private readonly candidateModel: Model<Candidate>,
         @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
-    ) { }
+    ) {
+        super(interviewerModel);
+    }
 
     async addDetails(formData: UpdateInterviewerDto, files: Express.Multer.File[]): Promise<InterviewerDataDto> {
         try {
             console.log(formData, 'this is formdata')
+            // const updateInterviewerDetails = await this.update()
             const updateInterviewerDetails = await this.interviewerModel.findOneAndUpdate(
                 { email: formData.email },
                 {
@@ -43,19 +47,21 @@ export class InterviewerRepository implements IInterviewerRepository {
         }
     }
 
-    async findInterviewerByEmail(email: string): Promise<InterviewerDataDto | null> {
-        try {
-            const interviewer = await this.interviewerModel.findOne({ email: email });
-            return interviewer;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async findInterviewerByEmail(email: string): Promise<InterviewerDataDto | null> {
+    //     try {
+    //         const interviewer = await this.findByEmail(email)
+    //         // const interviewer = await this.interviewerModel.findOne({ email: email });
+    //         return interviewer;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
     async findOne(userId: string): Promise<InterviewerDataDto | null> {
         try {
-            const interviewer = await this.interviewerModel.findOne({ _id: userId }).exec();
+            const interviewer = await this.findOneById(userId);
+            // const interviewer = await this.interviewerModel.findOne({ _id: userId }).exec();
             return interviewer;
         } catch (error: any) {
             console.log(error.message);
@@ -79,11 +85,13 @@ export class InterviewerRepository implements IInterviewerRepository {
                 updateData.profileURL = fileName;
             }
 
-            const interviewer = await this.interviewerModel.findOneAndUpdate(
-                { _id: userId },
-                { $set: updateData },
-                { new: true, upsert: true }
-            );
+            const interviewer = await this.update(userId, updateData);
+
+            // const interviewer = await this.interviewerModel.findOneAndUpdate(
+            //     { _id: userId },
+            //     { $set: updateData },
+            //     { new: true, upsert: true }
+            // );
 
             return interviewer;
         } catch (error: any) {

@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type InterviewerDocument = Interviewer & Document;
+export type InterviewerDocument = Interviewer & Document;  // ✅ Extend Document
 
 @Schema({ timestamps: true, collection: 'interviewers' }) // Corrected spelling for collection
-export class Interviewer {
+export class Interviewer extends Document {
   
   @Prop({ required: true })
   name: string;

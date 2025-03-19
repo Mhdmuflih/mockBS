@@ -8,13 +8,15 @@ import { InterviewerDataDto, UpdateInterviewerDto } from "../dto/interviewer-dat
 import { ChagnePasswordDTO } from "../dto/change-password.dto";
 import { StackResponseDto } from "../dto/stack-response.dto";
 import { ICandidate } from "src/candidate/interface/interface";
+import { InterviewerCandidateRepository } from "../repository/interviewer-candidate.repository";
 
 
 @Injectable()
 export class InterviewerService implements IInterviewerService {
     constructor(
+        private readonly cloudinaryService: CloudinaryService,
         private readonly interviewerRepository: InterviewerRepository,
-        private readonly cloudinaryService: CloudinaryService
+        private readonly interviewerCandidateRepository: InterviewerCandidateRepository
 
     ) { }
 
@@ -136,7 +138,7 @@ export class InterviewerService implements IInterviewerService {
 
     async getCandidate(candidateId: string): Promise<ICandidate> {
         try {
-            return await this.interviewerRepository.getCandidate(candidateId);
+            return await this.interviewerCandidateRepository.getCandidate(candidateId);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

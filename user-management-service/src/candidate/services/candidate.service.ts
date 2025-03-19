@@ -8,15 +8,18 @@ import { IInterviewer } from 'src/interviewer/interface/interface';
 import { ChagnePasswordDTO } from '../dtos/change-password.dto';
 import { CandidateDataDto, UpdateCandidateDto } from '../dtos/candidate-data.dto';
 import { StackResponseDto } from '../dtos/stack-response.dto';
+import { CandidateInterviewerRepository } from '../repository/candidate-interviewer.repository';
+import { CandidateStackRepository } from '../repository/candidate-stack.repository';
 
 
 @Injectable()
 export class CandidateService implements ICandidateService {
 
     constructor(
+        private readonly cloudinaryService: CloudinaryService,
         private readonly candidateRepository: CandidateRepository,
-        private readonly cloudinaryService: CloudinaryService
-
+        private readonly candidateInterviewerRepository: CandidateInterviewerRepository,
+        private readonly candidateStackRepository: CandidateStackRepository
     ) { }
 
     async findCandidate(userId: string): Promise<CandidateDataDto | null> {
@@ -98,7 +101,7 @@ export class CandidateService implements ICandidateService {
 
     async getStack(): Promise<StackResponseDto[]> {
         try {
-            return await this.candidateRepository.getStack();
+            return await this.candidateStackRepository.getStack();
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -107,7 +110,7 @@ export class CandidateService implements ICandidateService {
 
     async getInterviewer(interviewerId: string): Promise<IInterviewer | null> {
         try {
-            return await this.candidateRepository.findInterviewer(interviewerId);
+            return await this.candidateInterviewerRepository.findInterviewer(interviewerId);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

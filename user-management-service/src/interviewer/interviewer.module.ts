@@ -10,6 +10,7 @@ import { InterviewerController } from './controllers/interviewer.controller';
 import { InterviewerService } from './services/interviewer.service';
 import { Stack, StackSchema } from 'src/admin/Model/stack.schema';
 import { CandidateModule } from 'src/candidate/candidate.module';
+import { InterviewerCandidateRepository } from './repository/interviewer-candidate.repository';
 
 @Module({
   imports: [
@@ -28,9 +29,10 @@ import { CandidateModule } from 'src/candidate/candidate.module';
   ],
   controllers: [InterviewerController],
   providers: [
+    CloudinaryService,
     InterviewerService,
     InterviewerRepository,
-    CloudinaryService,
+    InterviewerCandidateRepository
   ],
   exports: [MongooseModule]
 })

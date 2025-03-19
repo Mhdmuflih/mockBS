@@ -10,6 +10,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/Config/cloudinary.service';
 import { Stack, StackSchema } from 'src/admin/Model/stack.schema';
 import { InterviewerModule } from 'src/interviewer/interviewer.module';
+import { CandidateStackRepository } from './repository/candidate-stack.repository';
+import { CandidateInterviewerRepository } from './repository/candidate-interviewer.repository';
 
 @Module({
   imports: [
@@ -30,7 +32,9 @@ import { InterviewerModule } from 'src/interviewer/interviewer.module';
   providers: [
     CandidateService,
     CandidateRepository,
-    CloudinaryService
+    CloudinaryService,
+    CandidateInterviewerRepository,
+    CandidateStackRepository,
   ],
   exports: [MongooseModule]
 })

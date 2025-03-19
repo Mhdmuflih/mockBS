@@ -8,6 +8,6 @@ export interface ICandidateRepository {
     // findCandidateByEmail(email: string): Promise<CandidateDataDto | null>;
     updateCandidateData(userId: string, formData: UpdateCandidateDto, fileName: string): Promise<UpdateCandidateDto | null>;
     updatePassword(userId: string, securePassword: string): Promise<CandidateDataDto | null>
-    getStack(): Promise<StackResponseDto[]>;
-    findInterviewer(interviewerId: string): Promise<IInterviewer | null>;
+    // getStack(): Promise<StackResponseDto[]>;
+    // findInterviewer(interviewerId: string): Promise<IInterviewer | null>;
 }

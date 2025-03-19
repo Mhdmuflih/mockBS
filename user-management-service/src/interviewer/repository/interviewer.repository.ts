@@ -15,7 +15,7 @@ import { BaseRepository } from "src/Repository/baseRepository";
 export class InterviewerRepository extends BaseRepository<Interviewer> implements IInterviewerRepository {
     constructor(
         @InjectModel(Interviewer.name) private readonly interviewerModel: Model<Interviewer>,
-        @InjectModel(Candidate.name) private readonly candidateModel: Model<Candidate>,
+        // @InjectModel(Candidate.name) private readonly candidateModel: Model<Candidate>,
         @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
     ) {
         super(interviewerModel);
@@ -125,14 +125,14 @@ export class InterviewerRepository extends BaseRepository<Interviewer> implement
         }
     }
 
-    async getCandidate(candidateId: string): Promise<ICandidate> {
-        try {
-            return await this.candidateModel.findOne({_id: candidateId});
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async getCandidate(candidateId: string): Promise<ICandidate> {
+    //     try {
+    //         return await this.candidateModel.findOne({_id: candidateId});
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
     async sendInterviewer(data: any): Promise<InterviewerDataDto[]> {
         try {

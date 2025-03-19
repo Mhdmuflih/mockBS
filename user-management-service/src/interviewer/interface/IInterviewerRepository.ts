@@ -10,6 +10,6 @@ export interface IInterviewerRepository {
     updateInterviewerData(userId: string, formData: UpdateInterviewerDto, fileName: string): Promise<UpdateInterviewerDto | null>;
     updatePassword(userId: string, securePassword: string): Promise<InterviewerDataDto>;
     fetchStack(): Promise<StackResponseDto[]>;
-    getCandidate(candidateId: string): Promise<ICandidate>;
+    // getCandidate(candidateId: string): Promise<ICandidate>;
     sendInterviewer(data: any): Promise<InterviewerDataDto[]>;
 }

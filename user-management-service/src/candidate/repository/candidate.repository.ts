@@ -15,8 +15,8 @@ import { BaseRepository } from 'src/Repository/baseRepository';
 export class CandidateRepository extends BaseRepository<Candidate> implements ICandidateRepository {
     constructor(
         @InjectModel(Candidate.name) private readonly candidateModel: Model<Candidate>,
-        @InjectModel(Interviewer.name) private readonly interviewerModel: Model<Interviewer>,
-        @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
+        // @InjectModel(Interviewer.name) private readonly interviewerModel: Model<Interviewer>,
+        // @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
     ) {
         super(candidateModel)
     }
@@ -82,23 +82,23 @@ export class CandidateRepository extends BaseRepository<Candidate> implements IC
         }
     }
 
-    async getStack(): Promise<StackResponseDto[]> {
-        try {
-            const getStack = await this.stackModel.find();
-            return getStack;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async getStack(): Promise<StackResponseDto[]> {
+    //     try {
+    //         const getStack = await this.stackModel.find();
+    //         return getStack;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
-    async findInterviewer(interviewerId: string): Promise<IInterviewer | null> {
-        try {
-            const interviewer = await this.interviewerModel.findOne({ _id: interviewerId });
-            return interviewer;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async findInterviewer(interviewerId: string): Promise<IInterviewer | null> {
+    //     try {
+    //         const interviewer = await this.interviewerModel.findOne({ _id: interviewerId });
+    //         return interviewer;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 }

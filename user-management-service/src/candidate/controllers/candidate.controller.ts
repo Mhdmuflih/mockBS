@@ -84,11 +84,11 @@ export class CandidateController implements ICandidateController {
         }
     }
 
-    @Get('stack')
+    @Get('/stack')
     async getStack(): Promise<GetStackResponseDto> {
         try {
             const stackData: StackResponseDto[] = await this.candidateService.getStack();
-            return { success: true, message: "Candidate password changed successfully.", stackData: stackData }
+            return { success: true, message: "Candidate Stack successfully.", stackData: stackData }
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

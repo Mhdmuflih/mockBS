@@ -3,11 +3,15 @@ import { IAdminService } from '../interface/IAdminService';
 import { AdminRepository } from '../repository/admin.repository';
 import { IInterviewer } from 'src/interviewer/interface/interface';
 import { ICandidate, IStack } from 'src/candidate/interface/interface';
+import { AdminCandidateRepository } from '../repository/admin-candidate.repository';
+import { AdminInterviewerRepository } from '../repository/admin-interviewer.repository';
 
 @Injectable()
 export class AdminService implements IAdminService {
   constructor(
-    private readonly adminRepository: AdminRepository
+    private readonly adminRepository: AdminRepository,
+    private readonly adminCandidateRepository: AdminCandidateRepository,
+    private readonly adminInterviewerRepository: AdminInterviewerRepository
   ) { }
 
   async findAllApproval(page: number, limit: number, search?: string): Promise<any> {
@@ -20,8 +24,8 @@ export class AdminService implements IAdminService {
       // }
 
       const skip = (page - 1) * limit;
-      const approvalData = await this.adminRepository.findAllApproval(skip, limit, search);
-      const totalRecords = await this.adminRepository.countApproval(search);
+      const approvalData = await this.adminInterviewerRepository.findAllApproval(skip, limit, search);
+      const totalRecords = await this.adminInterviewerRepository.countApproval(search);
 
       return {
         approvalData,
@@ -37,7 +41,7 @@ export class AdminService implements IAdminService {
 
   async findOne(id: string): Promise<IInterviewer> {
     try {
-      const getApprovalDetails = await this.adminRepository.findOne(id);
+      const getApprovalDetails = await this.adminInterviewerRepository.findOne(id);
       return getApprovalDetails
     } catch (error: any) {
       console.log(error.message);
@@ -47,7 +51,7 @@ export class AdminService implements IAdminService {
 
   async approveDetails(id: string): Promise<IInterviewer> {
     try {
-      return await this.adminRepository.approveDetails(id);
+      return await this.adminInterviewerRepository.approveDetails(id);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -56,7 +60,8 @@ export class AdminService implements IAdminService {
 
   async getAllCandidate(): Promise<ICandidate[]> {
     try {
-      const candidatesData = await this.adminRepository.getAllCandidate();
+      // const candidatesData = await this.adminRepository.getAllCandidate();
+      const candidatesData = await this.adminCandidateRepository.getAllCandidate();
       return candidatesData;
     } catch (error: any) {
       console.log(error.message);
@@ -66,7 +71,8 @@ export class AdminService implements IAdminService {
 
   async getcandidateDetails(id: string): Promise<ICandidate> {
     try {
-      const candidateDetails = await this.adminRepository.getcandidateDetails(id);
+      // const candidateDetails = await this.adminRepository.getcandidateDetails(id);
+      const candidateDetails = await this.adminCandidateRepository.getcandidateDetails(id);
       return candidateDetails;
     } catch (error: any) {
       console.log(error.message);
@@ -77,7 +83,8 @@ export class AdminService implements IAdminService {
   async candidateAction(id: string): Promise<ICandidate> {
     try {
 
-      const updatedCandidate = await this.adminRepository.candidateAction(id);
+      // const updatedCandidate = await this.adminRepository.candidateAction(id);
+      const updatedCandidate = await this.adminCandidateRepository.candidateAction(id);
 
       return updatedCandidate;
 
@@ -89,7 +96,7 @@ export class AdminService implements IAdminService {
 
   async getAllInterviewers(): Promise<IInterviewer[]> {
     try {
-      const interviewersData = await this.adminRepository.getAllInterviewers();
+      const interviewersData = await this.adminInterviewerRepository.getAllInterviewers();
       return interviewersData;
     } catch (error: any) {
       console.log(error.message);
@@ -100,7 +107,7 @@ export class AdminService implements IAdminService {
   async interviewerAction(id: string): Promise<IInterviewer> {
     try {
 
-      const updatedInterviewer = await this.adminRepository.interviewerAction(id);
+      const updatedInterviewer = await this.adminInterviewerRepository.interviewerAction(id);
 
       return updatedInterviewer;
 
@@ -140,8 +147,9 @@ export class AdminService implements IAdminService {
   async getInterviewsDetailsData(ids: {candidateId: string, interviewerId: string}): Promise<[IInterviewer, ICandidate]> {
     try {
       // console.log(ids, "this is for the service in admin")
-      const interviewerDetails = await this.adminRepository.findOne(ids.interviewerId);
-      const candidateDetails = await this.adminRepository.getcandidateDetails(ids.candidateId);
+      const interviewerDetails = await this.adminInterviewerRepository.findOne(ids.interviewerId);
+      // const candidateDetails = await this.adminRepository.getcandidateDetails(ids.candidateId);
+      const candidateDetails = await this.adminCandidateRepository.getcandidateDetails(ids.candidateId);
       
       // console.log(interviewerDetails, candidateDetails, 'this is for the interviewer and candidate data');
       return [interviewerDetails, candidateDetails]

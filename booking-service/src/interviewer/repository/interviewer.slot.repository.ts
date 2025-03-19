@@ -1,25 +1,36 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { InterviewerSlot } from "../model/interviewer-slot.schema";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { IInterviewerSlotRepository } from "../interface/IInterviewerSlotRepository";
+import { BaseRepository } from "src/repository/base.respository";
+import { IInterviewerSlot } from "../../interface/interface";
 
 @Injectable()
-export class interviewerSlotRepository implements IInterviewerSlotRepository {
+export class interviewerSlotRepository extends BaseRepository<InterviewerSlot> implements IInterviewerSlotRepository {
     constructor(
         @InjectModel(InterviewerSlot.name) private readonly slotModel: Model<InterviewerSlot>
-    ) { }
+    ) {
+        super(slotModel)
+    }
 
-    async create(interviewerId: string, formData: any): Promise<any> {
+    async create(interviewerId: string, formData: any): Promise<IInterviewerSlot> {
         try {
-            const newSlot = new this.slotModel({
-                interviewerId: interviewerId,
-                stack: formData.stack,
-                slots: formData.slots
-            });
 
-            const savedSlot = await newSlot.save();
-            return savedSlot;
+            return await this.createData({
+                interviewerId: new Types.ObjectId(interviewerId),
+                stack:formData.stack,
+                slots: formData.slots
+            } as Partial<IInterviewerSlot>)
+
+            // const newSlot = new this.slotModel({
+            //     interviewerId: interviewerId,
+            //     stack: formData.stack,
+            //     slots: formData.slots
+            // });
+
+            // const savedSlot = await newSlot.save();
+            // return savedSlot;
 
         } catch (error: any) {
             console.log(error.message);
@@ -27,7 +38,7 @@ export class interviewerSlotRepository implements IInterviewerSlotRepository {
         }
     }
 
-    async updateScheduleData(interviewerId: string, updatedSchedule: any, date: any): Promise<any> {
+    async updateScheduleData(interviewerId: string, updatedSchedule: any, date: any): Promise<IInterviewerSlot> {
         try {
             // console.log("Updating Schedule:", interviewerId, updatedSchedule, date);
             // console.log(updatedSchedule.slots[0].date)
@@ -54,7 +65,7 @@ export class interviewerSlotRepository implements IInterviewerSlotRepository {
         }
     }
 
-    async getSlot(interviewerId: string): Promise<any> {
+    async getSlot(interviewerId: string): Promise<IInterviewerSlot[]> {
         try {
             const slotData = await this.slotModel.find({ interviewerId: interviewerId })
             return slotData;

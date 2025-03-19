@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IInterviewerSlotService } from '../interface/IInterviewerSlotService';
 import { interviewerSlotRepository } from '../repository/interviewer.slot.repository';
 import { ScheduleRepository } from '../repository/scheduled.repository';
+import { IInterviewerSlot, ISchedule } from '../../interface/interface';
 
 
 @Injectable()
@@ -11,7 +12,7 @@ export class InterviewerService implements IInterviewerSlotService {
     private readonly interviewerScheduledRepository: ScheduleRepository
   ) { }
 
-  async addSlot(interviewerId: string, formData: any): Promise<any> {
+  async addSlot(interviewerId: string, formData: any): Promise<IInterviewerSlot> {
     try {
 
       if(new Date(formData.date) < new Date()) {
@@ -84,7 +85,7 @@ export class InterviewerService implements IInterviewerSlotService {
   }
 
 
-  async getSlot(interviewerId: string): Promise<any> {
+  async getSlot(interviewerId: string): Promise<IInterviewerSlot[]> {
     try {
       const getSlotData = await this.interviewerSlotRepository.getSlot(interviewerId);
       // console.log(getSlotData[0].slots, 'this is get slot data')
@@ -95,7 +96,7 @@ export class InterviewerService implements IInterviewerSlotService {
     }
   }
 
-  async getSheduledInterviews(interviewerId: string): Promise<any> {
+  async getSheduledInterviews(interviewerId: string): Promise<ISchedule[]> {
     try {
       return await this.interviewerScheduledRepository.scheduledInterviews(interviewerId);
     } catch (error: any) {

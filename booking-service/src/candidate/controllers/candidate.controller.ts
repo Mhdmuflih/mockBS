@@ -3,6 +3,7 @@ import { CandidateService } from '../services/candidate.service';
 import { ICandidateController } from '../interface/ICandidateController';
 import { ClientKafka, EventPattern, GrpcMethod, MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
+import { IInterviewerSlot, ISchedule } from 'src/interface/interface';
 
 
 @Controller('candidate')
@@ -12,7 +13,7 @@ export class CandidateController implements ICandidateController {
   ) { }
 
   @Get('match-interviewer/:tech')
-  async getSlotMatchedInterviewer(@Param('tech') tech: string): Promise<any> {
+  async getSlotMatchedInterviewer(@Param('tech') tech: string): Promise<{success:boolean; message: string; matchedData: any}> {
     try {
       const matchedData = await this.candidateService.getMatchedSlot(tech);
       return { success: true, message: "matched Slot data", matchedData: matchedData };
@@ -23,7 +24,7 @@ export class CandidateController implements ICandidateController {
   }
 
   @Get('/interviewer-slot-details/:interviewerId')
-  async getinterviewerSlotDetails(@Param('interviewerId') interviewerId: string, @Query('selectedTech') tech: string): Promise<any> {
+  async getinterviewerSlotDetails(@Param('interviewerId') interviewerId: string, @Query('selectedTech') tech: string): Promise<{success: boolean; message: string; slotData: IInterviewerSlot, interviewerData: any}> {
     try {
       const interviewerSlotData: any = await this.candidateService.getinterviewerSlotDetails(interviewerId, tech);
       return { success: true, message: "slot interviewer Data", slotData: interviewerSlotData[0], interviewerData: interviewerSlotData[1].interviewers[0] };
@@ -35,9 +36,10 @@ export class CandidateController implements ICandidateController {
 
 
   @Get('scheduled-interviews')
-  async scheduledInterviews(@Headers('x-user-id') candidateId: string): Promise<any> {
+  async scheduledInterviews(@Headers('x-user-id') candidateId: string): Promise<{success: boolean; message: string; scheduledData: ISchedule[]}> {
     try {
       const data = await this.candidateService.scheduledInterviews(candidateId);
+      console.log(data, 'this is schedule data');
       return { success: true, message: "candidate Scheduled interviews", scheduledData: data };
     } catch (error: any) {
       console.log(error.message);

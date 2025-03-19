@@ -4,6 +4,7 @@ import { sendInterviewer } from 'src/gRPC/interviewer.client';
 import { ScheduleRepository } from '../repository/schedule.repositor';
 import { ICandidateService } from '../interface/ICandidateService';
 import { ClientKafka } from '@nestjs/microservices';
+import { ISchedule } from 'src/interface/interface';
 
 @Injectable()
 export class CandidateService implements ICandidateService {
@@ -58,7 +59,7 @@ export class CandidateService implements ICandidateService {
     }
   }
 
-  async scheduledInterviews(candidateId: string): Promise<any> {
+  async scheduledInterviews(candidateId: string): Promise<ISchedule[]> {
     try {
       return await this.scheduleRepository.candidateSceduledInterviews(candidateId);
     } catch (error: any) {

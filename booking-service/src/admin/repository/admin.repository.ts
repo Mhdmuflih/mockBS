@@ -3,14 +3,19 @@ import { IAdminRepository } from "../interface/IAdminRepository";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Scheduled } from "src/candidate/model/scheduled.schema";
+import { ISchedule } from "src/interface/interface";
+import { BaseRepository } from "src/repository/base.respository";
 
 @Injectable()
-export class AdminRepository implements IAdminRepository {
-    constructor(@InjectModel(Scheduled.name) private readonly shceduleModel: Model<Scheduled>) { }
+export class AdminRepository extends BaseRepository<Scheduled> implements IAdminRepository {
+    constructor(@InjectModel(Scheduled.name) private readonly shceduleModel: Model<Scheduled>) {
+        super(shceduleModel)
+    }
 
-    async getInterviews(): Promise<any> {
+    async getInterviews(): Promise<ISchedule[]> {
         try {
-            const interviewData = await this.shceduleModel.find().exec();
+            const interviewData = await this.findAll()
+            // const interviewData = await this.shceduleModel.find().exec();
             return interviewData;
         } catch (error: any) {
             console.log(error.message);

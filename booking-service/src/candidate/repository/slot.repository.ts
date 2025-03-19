@@ -3,14 +3,18 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { InterviewerSlot } from "src/interviewer/model/interviewer-slot.schema";
 import { ICandidateSlotRepository } from "../interface/ICandidateSlotRepository";
+import { BaseRepository } from "src/repository/base.respository";
+import { IInterviewerSlot } from "src/interface/interface";
 
 @Injectable()
-export class SlotRepository implements ICandidateSlotRepository {
+export class SlotRepository extends BaseRepository<InterviewerSlot> implements ICandidateSlotRepository {
     constructor(
         @InjectModel(InterviewerSlot.name) private readonly slotModel: Model<InterviewerSlot>
-    ) { }
+    ) {
+        super(slotModel)
+    }
 
-    async getMatchSlot(tech: string): Promise<any> {
+    async getMatchSlot(tech: string): Promise<IInterviewerSlot[]> {
         try {
             const getMatchedSlotData = await this.slotModel.find({ "stack.technologies": tech }).exec();
             return getMatchedSlotData;
@@ -51,7 +55,7 @@ export class SlotRepository implements ICandidateSlotRepository {
         }
     }
 
-    async getSlotInterviewerDetails(interviewerId: string, tech: string): Promise<any> {
+    async getSlotInterviewerDetails(interviewerId: string, tech: string): Promise<IInterviewerSlot[]> {
         try {
             const slotInterviewerDetails = await this.slotModel.find({ interviewerId: interviewerId, "stack.technologies": tech });
             if (!slotInterviewerDetails) {

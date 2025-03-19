@@ -4,7 +4,8 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 export type InterviewerSlotDocument = InterviewerSlot & Document;
 
 @Schema({ timestamps: true })
-export class InterviewerSlot {
+export class InterviewerSlot extends Document {
+    
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'interviewer', required: true })
     interviewerId: Types.ObjectId;
 

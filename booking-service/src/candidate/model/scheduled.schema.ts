@@ -4,7 +4,7 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 export type ScheduledDocument = Scheduled & Document;
 
 @Schema({ timestamps: true })
-export class Scheduled {
+export class Scheduled extends Document {
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'candidate', required: true })
     candidateId: Types.ObjectId;
 

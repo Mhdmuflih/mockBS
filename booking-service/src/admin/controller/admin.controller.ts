@@ -1,13 +1,14 @@
 import { Controller, Get, HttpException, HttpStatus } from "@nestjs/common";
 import { IAdminController } from "../interface/IAdminController";
 import { AdminService } from "../service/admin.service";
+import { ISchedule } from "src/interface/interface";
 
 @Controller('admin')
 export class AdminController implements IAdminController {
     constructor(private readonly adminService: AdminService) { }
 
     @Get('interviews')
-    async getInterviews(): Promise<any> {
+    async getInterviews(): Promise<{ success: boolean; message: string; interviewData: ISchedule[] }> {
         try {
             const interviewData = await this.adminService.getInterview();
             // console.log(interviewData, 'this is for interviewData');

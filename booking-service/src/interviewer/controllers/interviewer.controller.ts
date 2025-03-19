@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Headers, HttpException, HttpStatus } from '@nestjs/common';
 import { InterviewerService } from '../services/interviewer.service';
 import { IInterviewerSlotController } from '../interface/IInterviewerSlotController';
+import { IInterviewerSlot, ISchedule } from '../../interface/interface';
 
 @Controller('interviewer')
 export class InterviewerSlotController implements IInterviewerSlotController {
@@ -9,6 +10,7 @@ export class InterviewerSlotController implements IInterviewerSlotController {
   @Post('slot')
   async addSlot(@Headers('x-user-id') interviewerId: string, @Body() formData: any): Promise<{ success: boolean; message: string; }> {
     try {
+      console.log(formData, 'this is formData');
       await this.interviewerService.addSlot(interviewerId, formData);
       return { success: true, message: "slot added successfully." };
     } catch (error: any) {
@@ -18,7 +20,7 @@ export class InterviewerSlotController implements IInterviewerSlotController {
   }
 
   @Get('slot')
-  async getSlot(@Headers('x-user-id') interviewerId: string): Promise<any> {
+  async getSlot(@Headers('x-user-id') interviewerId: string): Promise<{success: boolean; message: string; slotData: IInterviewerSlot[]}> {
     try {
       const getSlotData = await this.interviewerService.getSlot(interviewerId);
       return {success: true, message: "get Slot Data", slotData: getSlotData};
@@ -29,13 +31,10 @@ export class InterviewerSlotController implements IInterviewerSlotController {
   }
 
   @Get('scheduled-interviews')
-  async getScheduledInterviews(@Headers('x-user-id') interviewerId: string): Promise<any> {
+  async getScheduledInterviews(@Headers('x-user-id') interviewerId: string): Promise<{success: boolean; message: string; sheduledData: ISchedule[]}> {
     try {
-      // console.log(interviewerId, 'this is interviewerId');
-      const data = await this.interviewerService.getSheduledInterviews(interviewerId);
-      // console.log(data,' this is the scheduled interviews for tthe interviewer');
-      return {success: true, message: "interviewer scheduled interivews", sheduledData: data}
-      
+      const data: ISchedule[] = await this.interviewerService.getSheduledInterviews(interviewerId);
+      return {success: true, message: "interviewer scheduled interivews", sheduledData: data};
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

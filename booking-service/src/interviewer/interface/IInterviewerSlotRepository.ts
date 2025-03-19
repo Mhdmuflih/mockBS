@@ -1,5 +1,7 @@
+import { IInterviewerSlot } from "../../interface/interface";
+
 export interface IInterviewerSlotRepository {
-    create(interviewerId: string,formData: any): Promise<any>;
-    updateScheduleData(interviewerId: string, updatedSchedule: any, date: any): Promise<any>;
-    getSlot(interviewerId: string): Promise<any>;
+    create(interviewerId: string,formData: any): Promise<IInterviewerSlot>;
+    updateScheduleData(interviewerId: string, updatedSchedule: any, date: any): Promise<IInterviewerSlot>;
+    getSlot(interviewerId: string): Promise<IInterviewerSlot[]>;
 }

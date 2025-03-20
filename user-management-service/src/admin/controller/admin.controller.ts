@@ -13,28 +13,10 @@ export class AdminController implements IAdminController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search?: string
-  ): Promise<{ success: boolean; message: string; approvalData: IInterviewer }> {
+  ): Promise<{ success: boolean; message: string; approvalData: {approvalData: IInterviewer[], totalRecords: number, totalPages: number, currentPage:number} }> {
     try {
-
-      // if (search) {
-      //   const approvalData = await this.adminService.findAllApproval(0, 0, search);
-      //   return {
-      //     success: true,
-      //     message: "Search Results",
-      //     approvalData,
-      //     totalRecords: approvalData.length,
-      //     searchMode: true,
-      //   };
-      // }
-      // const approvalData = await this.adminService.findAllApproval(page, limit, search);
-      // return {
-      //   success: true,
-      //   message: "Interviewer Data",
-      //   approvalData: approvalData,
-      // };
-      // console.log(search, page, limit, 'this is forntend to send in backend')
       const approvalData = await this.adminService.findAllApproval(page, limit, search);
-      console.log(approvalData, 'this is approval data for the pagination ');
+      // console.log(approvalData, 'this is approval data for the pagination ');
       return { success: true, message: "interviewer Data.", approvalData: approvalData };
     } catch (error: any) {
       console.log(error.message);
@@ -66,9 +48,13 @@ export class AdminController implements IAdminController {
   }
 
   @Get('candidates')
-  async getAllCandidates(): Promise<{ success: boolean; message: string; candidateData: ICandidate[] }> {
+  async getAllCandidates(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('search') search: string,
+  ): Promise<{ success: boolean; message: string; candidateData: {candidatesData: ICandidate[]; totalRecords: number, totalPages: number, currentPage: number} }> {
     try {
-      const candidatesData = await this.adminService.getAllCandidate();
+      const candidatesData = await this.adminService.getAllCandidate(page, limit,search);
       return { success: true, message: "interviewerDetails", candidateData: candidatesData };
 
     } catch (error: any) {
@@ -100,9 +86,13 @@ export class AdminController implements IAdminController {
   }
 
   @Get('interviewers')
-  async getAllInterviewers(): Promise<{ success: boolean; message: string; interviewerData: IInterviewer[] }> {
+  async getAllInterviewers(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('search') search?: string
+  ): Promise<{ success: boolean; message: string; interviewerData: {interviewersData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number} }> {
     try {
-      const interviewersData = await this.adminService.getAllInterviewers();
+      const interviewersData = await this.adminService.getAllInterviewers(page, limit, search);
       return { success: true, message: "interviewerDetails", interviewerData: interviewersData };
     } catch (error: any) {
       console.log(error.message);

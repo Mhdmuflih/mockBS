@@ -14,23 +14,13 @@ export class AdminService implements IAdminService {
     private readonly adminInterviewerRepository: AdminInterviewerRepository
   ) { }
 
-  async findAllApproval(page: number, limit: number, search?: string): Promise<any> {
+  async findAllApproval(page: number, limit: number, search?: string): Promise<{ approvalData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      console.log(search, 'this is the search')
-
-      // if (search) {
-      //   const approvalData = await this.adminRepository.findAllApproval(0, 0, search);
-      //   return approvalData;
-      // }
-
-      const skip = (page - 1) * limit;
-      const approvalData = await this.adminInterviewerRepository.findAllApproval(skip, limit, search);
-      const totalRecords = await this.adminInterviewerRepository.countApproval(search);
-
+      const approvalData = await this.adminInterviewerRepository.findAllApproval(page, limit, search);
       return {
-        approvalData,
-        totalRecords,
-        totalPages: Math.ceil(totalRecords / limit),
+        approvalData: approvalData.data,
+        totalRecords: approvalData.total,
+        totalPages: Math.ceil(approvalData.total / limit),
         currentPage: page,
       };
     } catch (error: any) {
@@ -58,11 +48,15 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getAllCandidate(): Promise<ICandidate[]> {
+  async getAllCandidate(page: number, limit: number, search: string): Promise<{candidatesData: ICandidate[]; totalRecords: number, totalPages: number, currentPage: number}> {
     try {
-      // const candidatesData = await this.adminRepository.getAllCandidate();
-      const candidatesData = await this.adminCandidateRepository.getAllCandidate();
-      return candidatesData;
+      const candidatesData = await this.adminCandidateRepository.getAllCandidate(page, limit, search);
+      return {
+        candidatesData: candidatesData.data,
+        totalRecords: candidatesData.total,
+        totalPages: Math.ceil(candidatesData.total / limit),
+        currentPage: page,
+      };
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,10 +88,16 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getAllInterviewers(): Promise<IInterviewer[]> {
+  async getAllInterviewers(page: number, limit: number, search?: string): Promise<{ interviewersData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      const interviewersData = await this.adminInterviewerRepository.getAllInterviewers();
-      return interviewersData;
+      const interviewersData = await this.adminInterviewerRepository.getAllInterviewers(page, limit, search);
+      return {
+        interviewersData: interviewersData.data,
+        totalRecords: interviewersData.total,
+        totalPages: Math.ceil(interviewersData.total / limit),
+        currentPage: page,
+      }
+      // return interviewersData;
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -144,13 +144,13 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getInterviewsDetailsData(ids: {candidateId: string, interviewerId: string}): Promise<[IInterviewer, ICandidate]> {
+  async getInterviewsDetailsData(ids: { candidateId: string, interviewerId: string }): Promise<[IInterviewer, ICandidate]> {
     try {
       // console.log(ids, "this is for the service in admin")
       const interviewerDetails = await this.adminInterviewerRepository.findOne(ids.interviewerId);
       // const candidateDetails = await this.adminRepository.getcandidateDetails(ids.candidateId);
       const candidateDetails = await this.adminCandidateRepository.getcandidateDetails(ids.candidateId);
-      
+
       // console.log(interviewerDetails, candidateDetails, 'this is for the interviewer and candidate data');
       return [interviewerDetails, candidateDetails]
     } catch (error: any) {

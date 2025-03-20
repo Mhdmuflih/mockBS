@@ -16,7 +16,7 @@ export class InterviewerRepository extends BaseRepository<Interviewer> implement
     constructor(
         @InjectModel(Interviewer.name) private readonly interviewerModel: Model<Interviewer>,
         // @InjectModel(Candidate.name) private readonly candidateModel: Model<Candidate>,
-        @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
+        // @InjectModel(Stack.name) private readonly stackModel: Model<Stack>
     ) {
         super(interviewerModel);
     }
@@ -114,16 +114,16 @@ export class InterviewerRepository extends BaseRepository<Interviewer> implement
         }
     }
 
-    async fetchStack(): Promise<StackResponseDto[]> {
-        try {
-            const stack = await this.stackModel.find();
-            console.log(stack, 'this is stack')
-            return stack;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async fetchStack(): Promise<StackResponseDto[]> {
+    //     try {
+    //         const stack = await this.stackModel.find();
+    //         console.log(stack, 'this is stack')
+    //         return stack;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
     // async getCandidate(candidateId: string): Promise<ICandidate> {
     //     try {

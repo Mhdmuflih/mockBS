@@ -14,7 +14,8 @@ export class InterviewerCandidateRepository extends BaseRepository<Candidate> im
 
         async getCandidate(candidateId: string): Promise<ICandidate | null> {
             try {
-                return await this.candidateModel.findOne({_id: candidateId});
+                return await this.findOneById(candidateId);
+                // return await this.candidateModel.findOne({_id: candidateId});
             } catch (error: any) {
                 console.log(error.message);
                 throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

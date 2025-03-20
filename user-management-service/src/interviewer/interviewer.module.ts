@@ -11,6 +11,7 @@ import { InterviewerService } from './services/interviewer.service';
 import { Stack, StackSchema } from 'src/admin/Model/stack.schema';
 import { CandidateModule } from 'src/candidate/candidate.module';
 import { InterviewerCandidateRepository } from './repository/interviewer-candidate.repository';
+import { InterviewerStackRepository } from './repository/interviewer-stack.repository';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { InterviewerCandidateRepository } from './repository/interviewer-candida
     CloudinaryService,
     InterviewerService,
     InterviewerRepository,
-    InterviewerCandidateRepository
+    InterviewerCandidateRepository,
+    InterviewerStackRepository
   ],
   exports: [MongooseModule]
 })

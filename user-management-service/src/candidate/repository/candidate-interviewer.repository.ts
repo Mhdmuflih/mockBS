@@ -14,7 +14,8 @@ export class CandidateInterviewerRepository extends BaseRepository<Interviewer> 
 
     async findInterviewer(interviewerId: string): Promise<IInterviewer | null> {
         try {
-            const interviewer = await this.interviewerModel.findOne({ _id: interviewerId });
+            const interviewer = await this.findOneById(interviewerId);
+            // const interviewer = await this.interviewerModel.findOne({ _id: interviewerId });
             return interviewer;
         } catch (error: any) {
             console.log(error.message);

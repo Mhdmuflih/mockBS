@@ -175,7 +175,8 @@ export class AdminRepository extends BaseRepository<Stack> implements IAdminRepo
 
     async getAllStack(): Promise<IStack[]> {
         try {
-            const stack = await this.stackModel.find().exec();
+            const stack = await this.findAll();
+            // const stack = await this.stackModel.find().exec();
             return stack;
         } catch (error: any) {
             console.log(error.message)

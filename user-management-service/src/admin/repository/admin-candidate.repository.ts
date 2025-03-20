@@ -12,9 +12,11 @@ export class AdminCandidateRepository extends BaseRepository<Candidate> implemen
         super(candidateModel);
     }
 
-    async getAllCandidate(): Promise<ICandidate[]> {
+    async getAllCandidate(page: number, limit: number, search?: string): Promise<{total: number, data: ICandidate[]}> {
         try {
-            const candidatesData = await this.candidateModel.find().exec();
+            const candidatesData = await this.findWithPagination({}, page, limit, search);
+            // const candidatesData = await this.findAll();
+            // const candidatesData = await this.candidateModel.find().exec();
             return candidatesData;
         } catch (error: any) {
             console.log(error.message)
@@ -24,7 +26,8 @@ export class AdminCandidateRepository extends BaseRepository<Candidate> implemen
 
     async getcandidateDetails(id: string): Promise<ICandidate> {
         try {
-            const candidateDetails = await this.candidateModel.findById({ _id: id });
+            const candidateDetails = await this.findOneById(id);
+            // const candidateDetails = await this.candidateModel.findById({ _id: id });
             return candidateDetails;
         } catch (error: any) {
             console.log(error.message)
@@ -34,7 +37,8 @@ export class AdminCandidateRepository extends BaseRepository<Candidate> implemen
 
     async candidateAction(id: string): Promise<ICandidate> {
         try {
-            const candidate = await this.candidateModel.findOne({ _id: id });
+            const candidate = await  this.findOneById(id);
+            // const candidate = await this.candidateModel.findOne({ _id: id });
 
             if (!candidate) {
                 throw new BadRequestException('Candidate not found!');

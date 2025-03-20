@@ -9,7 +9,7 @@ export interface IInterviewerRepository {
     findOne(userId: string): Promise<InterviewerDataDto | null>;
     updateInterviewerData(userId: string, formData: UpdateInterviewerDto, fileName: string): Promise<UpdateInterviewerDto | null>;
     updatePassword(userId: string, securePassword: string): Promise<InterviewerDataDto>;
-    fetchStack(): Promise<StackResponseDto[]>;
+    // fetchStack(): Promise<StackResponseDto[]>;
     // getCandidate(candidateId: string): Promise<ICandidate>;
     sendInterviewer(data: any): Promise<InterviewerDataDto[]>;
 }

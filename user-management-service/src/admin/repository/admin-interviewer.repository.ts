@@ -12,28 +12,10 @@ export class AdminInterviewerRepository extends BaseRepository<Interviewer> impl
         super(interviewerModel);
     }
 
-    async findAllApproval(skip: number, limit: number, search?: string): Promise<any> {
+    async findAllApproval(page: number, limit: number, search?: string): Promise<{total: number, data: IInterviewer[]}> {
         try {
-            let filter: any = { isApproved: false, isDetails: true };
-
-            // Apply search filter if search term is provided
-            if (search) {
-                filter.$or = [
-                    { name: { $regex:   search , $options: "i" } },
-                    { email: { $regex:   search ,  $options: "i" } },
-                    { mobile: { $regex:   search ,  $options: "i" } },
-                ];
-            }
-
-            // if (search) {
-            //     return await this.interviewerModel.find(filter).exec();
-            // }
-
-            const approvalData = await this.interviewerModel.find(filter)
-                .skip(skip)
-                .limit(limit)
-                .exec();
-
+            let filter = { isApproved: false, isDetails: true };
+            const approvalData = await this.findWithPagination(filter, page, limit, search)
             return approvalData;
         } catch (error: any) {
             console.log(error.message)
@@ -41,28 +23,10 @@ export class AdminInterviewerRepository extends BaseRepository<Interviewer> impl
         }
     }
 
-    async countApproval(search?: string): Promise<number> {
-        try {
-            let filter: any = { isApproved: false, isDetails: true };
-
-            if (search) {
-                filter.$or = [
-                    { name: { $regex:  search , $options: "i" } },
-                    { email: { $regex: search , $options: "i" } },
-                    { mobile: { $regex:  search , $options: "i" } },
-                ];
-            }
-
-            return await this.interviewerModel.countDocuments(filter).exec();
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     async findOne(id: string): Promise<IInterviewer> {
         try {
-            const getApprovalDetails = await this.interviewerModel.findById({ _id: id });
+            const getApprovalDetails = await this.findOneById(id);
+            // const getApprovalDetails = await this.interviewerModel.findById({ _id: id });
             return getApprovalDetails
         } catch (error: any) {
             console.log(error.message)
@@ -80,9 +44,14 @@ export class AdminInterviewerRepository extends BaseRepository<Interviewer> impl
     }
 
 
-      async getAllInterviewers(): Promise<IInterviewer[]> {
+      async getAllInterviewers(page: number, limit: number, search?: string): Promise<{total: number, data: IInterviewer[]}> {
             try {
-                const interviewersData = await this.interviewerModel.find({ isApproved: true }).exec();
+
+                const filter = { isApproved: true }
+
+                const interviewersData = await this.findWithPagination(filter, page, limit, search)
+
+                // const interviewersData = await this.interviewerModel.find({ isApproved: true }).exec();
                 return interviewersData;
             } catch (error: any) {
                 console.log(error.message)
@@ -92,7 +61,8 @@ export class AdminInterviewerRepository extends BaseRepository<Interviewer> impl
     
         async interviewerAction(id: string): Promise<IInterviewer> {
             try {
-                const interviewer = await this.interviewerModel.findOne({ _id: id });
+                const interviewer = await this.findOneById(id);
+                // const interviewer = await this.interviewerModel.findOne({ _id: id });
     
                 if (!interviewer) {
                     throw new BadRequestException('Interviewer not found!');

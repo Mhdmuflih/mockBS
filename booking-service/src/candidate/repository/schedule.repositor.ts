@@ -68,9 +68,10 @@ export class ScheduleRepository extends BaseRepository<Scheduled> implements ICa
         }
     }
 
-    async candidateSceduledInterviews(candidateId: string): Promise<ISchedule[]> {
+    async candidateSceduledInterviews(candidateId: string, page: number, limit: number, search: string): Promise<{ total: number, data: ISchedule[] }> {
         try {
-            const candidateScheduledData = await this.findAll({candidateId});
+            const candidateScheduledData = await this.findWithPagination({ candidateId }, page, limit, search)
+            // const candidateScheduledData = await this.findAll({candidateId});
             // const candidateScheduledData = await this.scheduledModel.find({ candidateId: candidateId });
             return candidateScheduledData;
         } catch (error: any) {

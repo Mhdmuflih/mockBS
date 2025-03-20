@@ -19,7 +19,7 @@ export class interviewerSlotRepository extends BaseRepository<InterviewerSlot> i
 
             return await this.createData({
                 interviewerId: new Types.ObjectId(interviewerId),
-                stack:formData.stack,
+                stack: formData.stack,
                 slots: formData.slots
             } as Partial<IInterviewerSlot>)
 
@@ -57,7 +57,7 @@ export class interviewerSlotRepository extends BaseRepository<InterviewerSlot> i
                 },
                 { new: true }
             );
-            
+
             return updatedData;
         } catch (error: any) {
             console.log(error.message);
@@ -71,6 +71,17 @@ export class interviewerSlotRepository extends BaseRepository<InterviewerSlot> i
             return slotData;
         } catch (error: any) {
             console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async getAllSlots(interviewerId: string, page: number, limit: number, search: string): Promise<{ total: number, data: IInterviewerSlot[] }> {
+        try {
+            const slots = await this.findWithPagination({ interviewerId }, page, limit, search);
+            return slots
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

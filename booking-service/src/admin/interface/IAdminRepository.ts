@@ -1,5 +1,5 @@
 import { ISchedule } from "src/interface/interface";
 
 export interface IAdminRepository {
-    getInterviews(): Promise<ISchedule[]>;
+    getInterviews(page: number, limit: number, search?: string): Promise<{total: number, data:ISchedule[]}>;
 }

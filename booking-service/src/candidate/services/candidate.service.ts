@@ -47,7 +47,7 @@ export class CandidateService implements ICandidateService {
   async scheduleInterview(scheduleData: any): Promise<void> {
     try {
       const existingScheudledData = await this.scheduleRepository.findScheduleInterview(scheduleData.scheduledId);
-      if(existingScheudledData) {
+      if (existingScheudledData) {
         throw new Error("already booked interview ");
       }
       await this.scheduleRepository.scheduleInterview(scheduleData.candidateId, scheduleData);
@@ -59,10 +59,16 @@ export class CandidateService implements ICandidateService {
     }
   }
 
-  async scheduledInterviews(candidateId: string): Promise<ISchedule[]> {
+  async scheduledInterviews(candidateId: string, page: number, limit: number, search: string): Promise<{ scheduledInterview: ISchedule[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      return await this.scheduleRepository.candidateSceduledInterviews(candidateId);
-    } catch (error: any) {
+      const scheduledInterview = await this.scheduleRepository.candidateSceduledInterviews(candidateId, page, limit, search);
+      return {
+        scheduledInterview: scheduledInterview.data,
+        totalRecords: scheduledInterview.total,
+        totalPages: Math.ceil(scheduledInterview.total / limit),
+        currentPage: page
+      }
+    } catch(error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }

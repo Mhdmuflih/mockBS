@@ -85,20 +85,31 @@ export class InterviewerService implements IInterviewerSlotService {
   }
 
 
-  async getSlot(interviewerId: string): Promise<IInterviewerSlot[]> {
+  async getSlot(interviewerId: string, page: number, limit: number, search?: string): Promise<{getSlotData: IInterviewerSlot[], totalRecords: number, totalPages:number, currentPage: number}> {
     try {
-      const getSlotData = await this.interviewerSlotRepository.getSlot(interviewerId);
+      const getSlotData = await this.interviewerSlotRepository.getAllSlots(interviewerId, page, limit, search);
       // console.log(getSlotData[0].slots, 'this is get slot data')
-      return getSlotData;
+      return {
+        getSlotData: getSlotData.data,
+        totalRecords: getSlotData.total,
+        totalPages: Math.ceil(getSlotData.total / limit),
+        currentPage:page        
+      };
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async getSheduledInterviews(interviewerId: string): Promise<ISchedule[]> {
+  async getSheduledInterviews(interviewerId: string, page: number, limit: number, search: string): Promise<{scheduledData:ISchedule[], totalRecords: number, totalPages: number, currentPage: number}> {
     try {
-      return await this.interviewerScheduledRepository.scheduledInterviews(interviewerId);
+      const scheduledData =  await this.interviewerScheduledRepository.scheduledInterviews(interviewerId, page, limit, search);
+      return {
+        scheduledData: scheduledData.data,
+        totalRecords: scheduledData.total,
+        totalPages: Math.ceil(scheduledData.total / limit),
+        currentPage:page        
+      };
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Query, Headers, HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Query, Headers, HttpException, HttpStatus, Inject, Search } from '@nestjs/common';
 import { CandidateService } from '../services/candidate.service';
 import { ICandidateController } from '../interface/ICandidateController';
 import { ClientKafka, EventPattern, GrpcMethod, MessagePattern, Payload, RpcException } from '@nestjs/microservices';
@@ -36,10 +36,15 @@ export class CandidateController implements ICandidateController {
 
 
   @Get('scheduled-interviews')
-  async scheduledInterviews(@Headers('x-user-id') candidateId: string): Promise<{success: boolean; message: string; scheduledData: ISchedule[]}> {
+  async scheduledInterviews(
+    @Headers('x-user-id') candidateId: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('search') search?: string
+): Promise<{success: boolean; message: string; scheduledData: { scheduledInterview: ISchedule[], totalRecords: number, totalPages: number, currentPage: number }}> {
     try {
-      const data = await this.candidateService.scheduledInterviews(candidateId);
-      console.log(data, 'this is schedule data');
+      console.log(page, limit, search, candidateId, 'ith okke ivide nddoo')
+      const data = await this.candidateService.scheduledInterviews(candidateId, page, limit, search);
       return { success: true, message: "candidate Scheduled interviews", scheduledData: data };
     } catch (error: any) {
       console.log(error.message);

@@ -193,9 +193,11 @@ export const addSlotInterviewer = async (formData: any) => {
     }
 }
 
-export const getSlotData = async () => {
+export const getSlotData = async (page: number, limit: number, search?: string) => {
     try {
-        const response = await ProtectedAPI.get('/booking-service/interviewer/slot');
+        const response = await ProtectedAPI.get('/booking-service/interviewer/slot', {
+            params:{page, limit, search}
+        });
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);
@@ -203,9 +205,11 @@ export const getSlotData = async () => {
     }
 }
 
-export const getInterviewerScheduledInterviews = async () => {
+export const getInterviewerScheduledInterviews = async (page: number, limit: number, search: string) => {
     try {
-        const response = await ProtectedAPI.get('/booking-service/interviewer/scheduled-interviews');
+        const response = await ProtectedAPI.get('/booking-service/interviewer/scheduled-interviews', {
+            params:{page, limit, search}
+        });
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);

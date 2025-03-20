@@ -25,6 +25,7 @@ export interface IInterviewer {
     university?: string;
     organization?: string;
     introduction?: string;
+    profileURL?: string
 }
 
 export interface IAdmin {

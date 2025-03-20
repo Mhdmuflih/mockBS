@@ -7,9 +7,9 @@ interface TableProps {
     actions?: (row: any) => React.ReactNode;
     searchQuery?: string;
     setSearchQuery?: (query: string) => void;
-    totalPages?:any
-    currentPage?:any
-    handleChange?:any
+    totalPages?: number
+    currentPage?: number
+    handleChange?: any
 }
 
 const Table: React.FC<TableProps> = ({ columns, data, actions, searchQuery, setSearchQuery, totalPages, currentPage, handleChange }) => {
@@ -23,8 +23,9 @@ const Table: React.FC<TableProps> = ({ columns, data, actions, searchQuery, setS
                     placeholder="Search..."
                     className="px-3 py-2 rounded-md bg-black text-white w-64"
                     value={searchQuery}
-                // onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => setSearchQuery && setSearchQuery(e.target.value)} // Ensure setSearchQuery is used
                 />
+
             </div>
             {/* Table Header */}
             <div className={`grid grid-cols-${columns.length} gap-4 bg-black text-white p-3 rounded-md`}>
@@ -55,6 +56,8 @@ const Table: React.FC<TableProps> = ({ columns, data, actions, searchQuery, setS
                     <div className="text-white text-center">No data available</div>
                 )}
             </div>
+
+            {/* pagination */}
             <div className="flex justify-center items-center mt-4 pb-2">
                 <Pagination
                     count={totalPages}

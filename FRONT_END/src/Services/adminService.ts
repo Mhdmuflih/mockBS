@@ -35,11 +35,11 @@ ProtectedAPI.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem("adminRefreshToken");
-                const response: any = await axios.post("http://localhost:8000/auth-service/admin/refresh-token", {refreshToken});
+                const response: any = await axios.post("http://localhost:8000/auth-service/admin/refresh-token", { refreshToken });
 
                 if (response.data.success) {
                     store.dispatch(loginSuccess({
-                        isLoggedIn: true, 
+                        isLoggedIn: true,
                         storedData: response.data.adminData,
                         token: response.data.token,
                         refreshToken: response.data.refreshToken
@@ -82,7 +82,7 @@ ProtectedAPI.interceptors.response.use(
 // );
 
 
-export const fetchApprovalData = async (page: number = 1, limit: number = 4, search?: string) => {
+export const fetchApprovalData = async (page: number, limit: number, search?: string) => {
     try {
         const response = await ProtectedAPI.get(`/user-service/admin/approval`, {
             params: { page, limit, search }, // Sending pagination parameters
@@ -118,9 +118,11 @@ export const approveInterviewerData = async (id: string) => {
 }
 
 
-export const fetchCandidateData = async () => {
+export const fetchCandidateData = async (page: number, limit: number, search?: string) => {
     try {
-        const response = await ProtectedAPI.get('/user-service/admin/candidates');
+        const response = await ProtectedAPI.get('/user-service/admin/candidates', {
+            params: { page, limit, search }
+        });
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);
@@ -149,9 +151,11 @@ export const fetchCandidatesDetails = async (id: string) => {
     }
 }
 
-export const fetchInterviewerData = async () => {
+export const fetchInterviewerData = async (page: number, limit: number, search?: string) => {
     try {
-        const response = await ProtectedAPI.get('/user-service/admin/interviewers');
+        const response = await ProtectedAPI.get('/user-service/admin/interviewers', {
+            params: { page, limit, search }
+        });
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);
@@ -190,9 +194,11 @@ export const fetchStackList = async () => {
 }
 
 
-export const fetchInterviewList = async () => {
+export const fetchInterviewList = async (page: number, limit: number, search: string) => {
     try {
-        const response = await ProtectedAPI.get('/booking-service/admin/interviews');
+        const response = await ProtectedAPI.get('/booking-service/admin/interviews', {
+            params:{page, limit, search}
+        });
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);
@@ -202,7 +208,7 @@ export const fetchInterviewList = async () => {
 
 export const fetchInterviewerAndCandidate = async (ids: { candidateId: string; interviewerId: string }) => {
     try {
-        const response = await ProtectedAPI.get('/user-service/admin/interview-details', {params: ids});
+        const response = await ProtectedAPI.get('/user-service/admin/interview-details', { params: ids });
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);

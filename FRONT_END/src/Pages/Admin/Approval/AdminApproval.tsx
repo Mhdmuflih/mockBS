@@ -12,13 +12,13 @@ import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 const AdminApproval = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    const [searchQuery, setSearchQuery] = useState("");
     const navigate = useNavigate();
+    
     const [approvalData, setApprovalData] = useState<any[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const itemsPerPage = 5;
+    const limit = 5;
 
     useEffect(() => {
 
@@ -28,13 +28,11 @@ const AdminApproval = () => {
 
         const takeApprovalDetails = async () => {
             try {
-                const response: any = await fetchApprovalData(currentPage, itemsPerPage);
-                console.log("API Response:", response); // Debugging: Check if data comes as expected
-
+                const response: any = await fetchApprovalData(currentPage, limit, searchQuery);
                 if (response.success) {
-                    console.log("Approval data fetched successfully");
-                    console.log(response.approvalData.approvalData, "This is the approval data");
-                    console.log(response.approvalData.totalPages, 'this is total pages')
+                    // console.log("Approval data fetched successfully");
+                    // console.log(response.approvalData.approvalData, "This is the approval data");
+                    // console.log(response.approvalData.totalPages, 'this is total pages')
                     setApprovalData(response.approvalData.approvalData);
                     setTotalPages(response.approvalData.totalPages || 1);
                 } else {
@@ -47,19 +45,11 @@ const AdminApproval = () => {
             }
         };
         takeApprovalDetails();
-    }, [currentPage]);  // Now, it will re-run when currentPage changes
+    }, [searchQuery, currentPage]);  // Now, it will re-run when currentPage changes
 
     if (isLoading) {
-        return <AdminSideLoading  />
+        return <AdminSideLoading />
     }
-
-    const handleSearch = (e: any) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-        fetchApprovalData(1, query);  // Fetch results from backend
-    };
-
-
 
     const handleToDetails = (id: string) => {
         try {
@@ -74,27 +64,6 @@ const AdminApproval = () => {
         data.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         data.mobile.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-
-    // Pagination logic
-    // const totalPages = Math.ceil(approvalData.length / itemsPerPage);
-    // const paginatedData = approvalData.slice(
-    //     (currentPage - 1) * itemsPerPage,
-    //     currentPage * itemsPerPage
-    // );
-
-
-    // const handleNextPage = () => {
-    //     if (currentPage < totalPages) {
-    //         setCurrentPage(currentPage + 1);
-    //     }
-    // };
-
-    // const handlePrevPage = () => {
-    //     if (currentPage > 1) {
-    //         setCurrentPage(currentPage - 1);
-    //     }
-    // };
 
     const handleChange = (_: unknown, value: number) => {
         setCurrentPage(value);
@@ -112,7 +81,10 @@ const AdminApproval = () => {
                             placeholder="Search..."
                             className="px-3 py-2 rounded-md w-full bg-black text-white"
                             value={searchQuery}
-                            onChange={(e) => handleSearch(e)}
+                            onChange={(event) => {
+                                setSearchQuery(event.target.value)
+                                setCurrentPage(1)
+                            }}
                         />
 
                         <div className="mt-2 grid grid-cols-[1fr_2fr_2fr_1fr] gap-x-6 bg-black text-white p-4 rounded-md">

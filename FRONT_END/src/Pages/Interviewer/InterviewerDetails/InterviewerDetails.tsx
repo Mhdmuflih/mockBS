@@ -15,8 +15,8 @@ const InterviewerDetails = () => {
     const interviewerData = useSelector((state: any) => state.interviewerAuth.storedData);
 
     const [formData, setFomrData] = useState({
-        experience: "",
-        designation: "",
+        yearOfExperience: "",
+        currentDesignation: "",
         organization: "",
         university: "",
         introduction: "",
@@ -62,8 +62,8 @@ const InterviewerDetails = () => {
         try {
             const form = new FormData();
             form.append("email", email);
-            form.append("experience", formData.experience);
-            form.append("designation", formData.designation);
+            form.append("experience", formData.yearOfExperience);
+            form.append("designation", formData.currentDesignation);
             form.append("organization", formData.organization);
             form.append("university", formData.university);
             form.append("introduction", formData.introduction);
@@ -139,7 +139,7 @@ const InterviewerDetails = () => {
                                     id="yearOfExpr"
                                     name="experience"
                                     placeholder="Year of Experience"
-                                    value={formData.experience}
+                                    value={formData.yearOfExperience}
                                     onChange={handleTakeInput}
                                     className="w-[654px] p-2 text-sm rounded-md bg-[#181A22] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
                                 />
@@ -161,7 +161,7 @@ const InterviewerDetails = () => {
                                         id="designation"
                                         name="designation"
                                         placeholder="Designation"
-                                        value={formData.designation}
+                                        value={formData.currentDesignation}
                                         onChange={handleTakeInput}
                                         className="w-[300px] p-2 ml-10 text-sm rounded-md bg-[#181A22] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
                                     />

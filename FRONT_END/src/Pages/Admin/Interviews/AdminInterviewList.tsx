@@ -8,25 +8,30 @@ import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 const AdminInterviewList = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const navigate = useNavigate();
 
     const [interviewData, setInterviewData] = useState<any[]>([]);
-    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 5;
 
     useEffect(() => {
 
-        setTimeout(()=> {
+        setTimeout(() => {
             setIsLoading(false);
-        },2000);
+        }, 2000);
 
         const fetchInterviewsData = async () => {
             try {
-                const response: any = await fetchInterviewList();
+                const response: any = await fetchInterviewList(currentPage, limit, searchQuery);
                 if (response.success) {
                     console.log("interview's data fetched successfully");
                     console.log(response.interviewData, 'tbis is for the interviewData');
+                    console.log(response.interviewData.totalPages, 'tbis is for the interviewData');
 
-                    const formattedData = response.interviewData.map((item: any, index: number) => ({
-                        serial: index + 1,
+                    const formattedData = response.interviewData.interviews.map((item: any, index: number) => ({
+                        serial: (currentPage - 1) * limit + index + 1,
                         technology: item.scheduledSlot.technology || "N/A",
                         date: item.scheduledSlot?.date || "N/A", // Corrected date from scheduledSlot.date
                         time: item.scheduledSlot ? `${item.scheduledSlot.from} - ${item.scheduledSlot.to}` : "N/A", // Concatenating from and to
@@ -36,6 +41,7 @@ const AdminInterviewList = () => {
                         candidateId: item.candidateId
                     }));
                     setInterviewData(formattedData);
+                    setTotalPages(response.interviewData.totalPages)
                 } else {
                     console.log("Failed to fetch interveiw data");
                 }
@@ -44,16 +50,19 @@ const AdminInterviewList = () => {
             }
         }
         fetchInterviewsData();
-    }, []);
+    }, [searchQuery, currentPage]);
 
-    if(isLoading) {
+    if (isLoading) {
         return <div><AdminSideLoading /></div>
     }
 
-    const handleToDetails = (scheduleId: string, candidateId: string, interviewerId: string ) => {
+    const handleToDetails = (scheduleId: string, candidateId: string, interviewerId: string) => {
         navigate(`/admin/interviews/${scheduleId}`, { state: { candidateId: candidateId, interviewerId: interviewerId } })
     }
 
+    const handleChange = (_: unknown, value: number) => {
+        setCurrentPage(value);
+    };
 
     const interviewColumns = [
         { key: "serial", label: "SlNo" },
@@ -73,6 +82,11 @@ const AdminInterviewList = () => {
 
                         <Table
                             columns={interviewColumns}
+                            handleChange={handleChange}
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            searchQuery={searchQuery}
+                            setSearchQuery={setSearchQuery}
                             data={interviewData.map((data) => ({
                                 serial: data.serial,
                                 technology: data.technology || "N/A",

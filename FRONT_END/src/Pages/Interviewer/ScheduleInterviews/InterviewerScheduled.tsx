@@ -11,6 +11,11 @@ const InterviewerScheduled = () => {
     const navigate = useNavigate();
 
     const [scheduledData, setScheduledData] = useState<any[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPage, setTotalPages] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
+    const limit = 5;
+
 
     useEffect(() => {
 
@@ -20,10 +25,10 @@ const InterviewerScheduled = () => {
 
         const fetchInterviewerScheduledInterviews = async () => {
             try {
-                const response: any = await getInterviewerScheduledInterviews();
+                const response: any = await getInterviewerScheduledInterviews(currentPage, limit, searchQuery);
                 if (response.success) {
-                    console.log(response.sheduledData, 'this is for the scheudled Data')
-                    const formattedData = response.sheduledData.map((scheduled: any) => ({
+                    console.log(response.sheduledData.totalPages, 'this is for the scheudled Data')
+                    const formattedData = response.sheduledData.scheduledData.map((scheduled: any) => ({
                         stack: scheduled.scheduledSlot.stack,
                         technology: scheduled.scheduledSlot.technology,
                         date: scheduled.scheduledSlot.date,
@@ -36,6 +41,7 @@ const InterviewerScheduled = () => {
                         _id: scheduled._id
                     }));
                     setScheduledData(formattedData);
+                    setTotalPages(response.sheduledData.totalPages)
                 } else {
                     console.log("not ok not ok");
                 }
@@ -44,11 +50,19 @@ const InterviewerScheduled = () => {
             }
         }
         fetchInterviewerScheduledInterviews();
-    }, []);
+    }, [searchQuery, currentPage]);
 
     if (isLoading) {
         return <div><PageLoading /></div>
     }
+
+    const handleToDetails = (id: string, detailsData: any) => {
+        navigate(`/interviewer/scheduled/${id}`, { state: { detailsData: detailsData } });
+    }
+
+    const handleChange = (_: unknown, value: number) => {
+        setCurrentPage(value);
+    };
 
     const scheduledTable = [
         { key: "stack", label: "Stack" },
@@ -60,17 +74,17 @@ const InterviewerScheduled = () => {
         { key: "details", label: "Details" },
     ];
 
-
-    const handleToDetails = (id: string, detailsData: any) => {
-        navigate(`/interviewer/scheduled/${id}`, { state: { detailsData: detailsData } });
-    }
-
     return (
         <>
             <SideBar heading="Scheduled Interviews" subHeading="See information about all interviews">
-                <div className="bg-[#30323A] ml-1 p-3 rounded-b-lg shadow-md h-[69vh] ">
+                <div className="bg-[#30323A] ml-1 rounded-b-lg shadow-md h-[69vh] ">
                     <Table
                         columns={scheduledTable}
+                        handleChange={handleChange}
+                        currentPage={currentPage}
+                        totalPages={totalPage}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
                         data={scheduledData.map((data) => ({
                             stack: data.stack,
                             technology: data.technology,

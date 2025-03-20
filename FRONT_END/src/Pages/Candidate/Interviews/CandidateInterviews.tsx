@@ -3,13 +3,18 @@ import SideBar from "../../../components/Candidate/SideBar"
 import { getCandidateScheduledInterviews } from "../../../Services/candidateService";
 import { useNavigate } from "react-router-dom";
 import PageLoading from "../../../components/PageLoading";
+import { Pagination } from "@mui/material";
 
 const CandidateInterviews = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
     const navigate = useNavigate();
+
     const [scheduledData, setScheduledData] = useState<any[]>([])
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
+    const limit = 5;
 
 
     useEffect(() => {
@@ -20,11 +25,14 @@ const CandidateInterviews = () => {
 
         const fetchCandidateScheduledInterviews = async () => {
             try {
-                const response: any = await getCandidateScheduledInterviews();
+                const response: any = await getCandidateScheduledInterviews(currentPage, limit, searchQuery);
                 if (response.success) {
-                    console.log(response.scheduledData, ' this is for the scheduled data for the interviewer');
+                    // console.log(response.scheduledData, ' this is for the scheduled data for the interviewer');
+                    // console.log(response.scheduledData.totalPages
+                    //     , ' this is for the scheduled data for the interviewer');
 
-                    setScheduledData(response.scheduledData);
+                    setScheduledData(response.scheduledData.scheduledInterview);
+                    setTotalPages(response.scheduledData.totalPages)
                 } else {
                     console.log("not ok not ok")
                 }
@@ -33,7 +41,7 @@ const CandidateInterviews = () => {
             }
         }
         fetchCandidateScheduledInterviews();
-    }, []);
+    }, [searchQuery, currentPage]);
 
     if (isLoading) {
         return <div><PageLoading /></div>
@@ -42,6 +50,10 @@ const CandidateInterviews = () => {
     const handleToDetails = (id: string, detailsData: any) => {
         navigate(`/candidate/outsourced-interviews/${id}`, { state: { detailsData: detailsData } });
     }
+
+    const handleChange = (_: unknown, value: number) => {
+        setCurrentPage(value);
+    };
 
     return (
         <>
@@ -53,9 +65,12 @@ const CandidateInterviews = () => {
                             <input
                                 type="text"
                                 placeholder="Search..."
-                                className="px-3 py-2 rounded-md w-full bg-white text-white"
-                            // value={searchQuery}
-                            // onChange={(e) => handleSearch(e)}
+                                className="px-3 py-2 rounded-md w-full bg-white text-black"
+                                value={searchQuery}
+                                onChange={(event) => {
+                                    setSearchQuery(event.target.value);
+                                    setCurrentPage(1);
+                                }}
                             />
 
                             <div className="mt-2 grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-x-7 bg-white text-black p-4 rounded-md">
@@ -100,7 +115,29 @@ const CandidateInterviews = () => {
                                     <div className="text-white text-center">No data available</div>
                                 )}
                             </div>
+
                         </div>
+                    </div>
+                    {/* Fixed Pagination */}
+                    <div className="flex justify-center items-center mt-4 pb-2">
+                        <Pagination
+                            count={totalPages}
+                            page={currentPage}
+                            onChange={handleChange}
+                            sx={{
+                                "& .MuiPaginationItem-root": {
+                                    color: "#FFCC00",  // Text color
+                                },
+                                "& .MuiPaginationItem-root.Mui-selected": {
+                                    backgroundColor: "#FFCC00", // Selected page background color
+                                    color: "#000",  // Selected page text color
+                                },
+                                "& .MuiPaginationItem-root:hover": {
+                                    backgroundColor: "#FFD633", // Lighter yellow on hover
+                                    color: "#000"
+                                }
+                            }}
+                        />
                     </div>
                 </div>
             </SideBar>

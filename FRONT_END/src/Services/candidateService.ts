@@ -202,9 +202,11 @@ export const bookingInterviewer = async (slotData: any) => {
 }
 
 
-export const getCandidateScheduledInterviews = async () => {
+export const getCandidateScheduledInterviews = async (page: number, limit: number, search?: string) => {
     try {
-        const response = await ProtectedAPI.get('/booking-service/candidate/scheduled-interviews');
+        const response = await ProtectedAPI.get('/booking-service/candidate/scheduled-interviews', {
+            params: {page, limit, search}
+        });
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);

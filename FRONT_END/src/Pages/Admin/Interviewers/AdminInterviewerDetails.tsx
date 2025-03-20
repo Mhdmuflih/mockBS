@@ -4,6 +4,7 @@ import { fetchInterviewerDetails } from "../../../Services/adminService";
 import SideBar from "../../../components/Admin/SideBar";
 import { TiArrowBack } from "react-icons/ti";
 import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+import { IInterviewer } from "../../../Interface/SliceInterface";
 
 const AdminInterviewerDetails = () => {
 
@@ -11,7 +12,7 @@ const AdminInterviewerDetails = () => {
 
     const navigate = useNavigate();
     const { id } = useParams(); // Access dynamic id from URL
-    const [interviewerDetails, setInterviewerDetails] = useState<any>(null);
+    const [interviewerDetails, setInterviewerDetails] = useState<IInterviewer | null>(null);
 
     useEffect(() => {
 
@@ -59,7 +60,7 @@ const AdminInterviewerDetails = () => {
                     <div>
                         <TiArrowBack className="text-white text-2xl cursor-pointer" onClick={() => navigate('/admin/interviewers')} />
                     </div>
-                    <h2 className="text-white text-xl font-semibold mb-4">Candidate Details</h2>
+                    <h2 className="text-white text-xl font-semibold mb-4">Interviewers Details</h2>
 
 
                     {/* Displaying Candidate Details */}

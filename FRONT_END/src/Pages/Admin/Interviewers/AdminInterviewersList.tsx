@@ -19,14 +19,14 @@ import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 const AdminInterviewersList = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    const [searchQuery, setSearchQuery] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    
     const [approvalData, setApprovalData] = useState<any[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    // const [totalPages, setTotalPages] = useState(1);
-    const itemsPerPage = 4;
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 5;
 
     useEffect(() => {
 
@@ -36,10 +36,11 @@ const AdminInterviewersList = () => {
 
         const takeApprovalDetails = async () => {
             try {
-                const response: any = await fetchInterviewerData();
+                const response: any = await fetchInterviewerData(currentPage, limit, searchQuery);
                 if (response.success) {
-                    console.log("Approval data fetched successfully");
-                    setApprovalData(response.interviewerData);
+                    // console.log(response.interviewerData,"Approval data fetched successfully");
+                    setApprovalData(response.interviewerData.interviewersData);
+                    setTotalPages(response.interviewerData.totalPages)
                 } else {
                     console.log("Failed to fetch approval data");
                 }
@@ -48,26 +49,11 @@ const AdminInterviewersList = () => {
             }
         };
         takeApprovalDetails();
-    }, []);
+    }, [searchQuery, currentPage]);
 
     if(isLoading) {
         return <div><AdminSideLoading /></div>
     }
-
-    // Pagination logic
-    const totalPages = Math.ceil(approvalData.length / itemsPerPage);
-    // const paginatedData = approvalData.slice(
-    //     (currentPage - 1) * itemsPerPage,
-    //     currentPage * itemsPerPage
-    // );
-
-    const handleNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-    };
-
-    const handlePreviousPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
-    };
 
     const handleToDetails = (id: string) => {
         navigate(`/admin/interviewer/${id}`);
@@ -116,11 +102,6 @@ const AdminInterviewersList = () => {
         }
     };
 
-    // const handleSearch = (e: any) => {
-    //     const query = e.target.value;
-    //     setSearchQuery(query);
-    // };
-
     const handleChange = (_: unknown, value: number) => {
         setCurrentPage(value);
     };
@@ -142,13 +123,7 @@ const AdminInterviewersList = () => {
                 <Toaster position="top-right" reverseOrder={false} />
 
 
-                {/* <input
-                    type="text"
-                    placeholder="Search..."
-                    className="px-3 py-2 rounded-md w-full bg-black text-white"
-                    value={searchQuery}
-                    onChange={(e) => handleSearch(e)}
-                /> */}
+ 
                 <div>
 
                     <Table
@@ -156,9 +131,11 @@ const AdminInterviewersList = () => {
                         handleChange={handleChange}
                         currentPage={currentPage}
                         totalPages={totalPages}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
                         data={approvalData.map((data, index) => ({
                             serial: (
-                                <h2 className="mr-3">{index + 1}</h2>
+                                <h2 className="mr-3">{(currentPage - 1) * limit + index + 1}</h2>
                             ),
                             name: (
 
@@ -197,31 +174,8 @@ const AdminInterviewersList = () => {
                                 </button>
                             ),
                         }))}
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
                     />
 
-                </div>
-
-                {/* Pagination Controls */}
-                <div className="flex justify-center items-center mt-4">
-                    <button
-                        className="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600 mr-2 disabled:opacity-50"
-                        onClick={handlePreviousPage}
-                        disabled={currentPage === 1}
-                    >
-                        Previous
-                    </button>
-                    <span className="text-white">
-                        Page {currentPage} of {totalPages}
-                    </span>
-                    <button
-                        className="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600 ml-2 disabled:opacity-50"
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                    >
-                        Next
-                    </button>
                 </div>
             </SideBar>
         </div>

@@ -22,8 +22,9 @@ const AdminStackList = lazy(() => import('../Pages/Admin/Stack/AdminStackList'))
 const AdminAddStack = lazy(() => import('../Pages/Admin/Stack/AdminAddStack'));
 const AdminInterviewerDetails = lazy(() => import('../Pages/Admin/Interviewers/AdminInterviewerDetails'));
 const AdminInterviewList = lazy(() => import('../Pages/Admin/Interviews/AdminInterviewList'));
-const AdminCommunityList = lazy(() => import('../Pages/Admin/Communities/AdminCommunityList'));
 const AdminInterviewDetails = lazy(() => import('../Pages/Admin/Interviews/AdminInterviewDetails'));
+const AdminCommunityList = lazy(() => import('../Pages/Admin/Communities/AdminCommunityList'));
+const AdminPaymentDetails = lazy(()=> import("../Pages/Admin/PaymentDetails/AdminPaymentDetails"));
 // ---------------------------------------------------------------------------------------------------------------------
 // import AdminSignup from '../Pages/Admin/Signup/AdminSignup';
 // import AdminLogin from '../Pages/Admin/Login/AdminLogin';
@@ -76,6 +77,8 @@ const AdminRoutes = () => {
                         <Route path='/add-stack' element={<AdminAddStack />}></Route>
 
                         <Route path='/communities' element={<AdminCommunityList />}></Route>
+
+                        <Route path='/payment-details' element={<AdminPaymentDetails />}></Route>
                     </Route>
 
                     {/* Page Not Found */}

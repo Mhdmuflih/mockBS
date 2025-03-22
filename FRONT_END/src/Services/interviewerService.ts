@@ -37,7 +37,7 @@ ProtectedAPI.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem("interviewerRefreshToken");
-                const response: any = await axios.post("http://localhost:8000/auth-service/interviewer/refresh-token", {refreshToken});
+                const response: any = await axios.post("http://localhost:8000/auth-service/interviewer/refresh-token", { refreshToken });
 
                 if (response.data.success) {
                     store.dispatch(loginSuccess({
@@ -185,7 +185,7 @@ export const getCandidateDetails = async (candidateId: string) => {
 
 export const addSlotInterviewer = async (formData: any) => {
     try {
-        const response = await ProtectedAPI.post('/booking-service/interviewer/slot',formData);
+        const response = await ProtectedAPI.post('/booking-service/interviewer/slot', formData);
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);
@@ -196,7 +196,7 @@ export const addSlotInterviewer = async (formData: any) => {
 export const getSlotData = async (page: number, limit: number, search?: string) => {
     try {
         const response = await ProtectedAPI.get('/booking-service/interviewer/slot', {
-            params:{page, limit, search}
+            params: { page, limit, search }
         });
         return response.data;
     } catch (error: any) {
@@ -208,7 +208,7 @@ export const getSlotData = async (page: number, limit: number, search?: string) 
 export const getInterviewerScheduledInterviews = async (page: number, limit: number, search: string) => {
     try {
         const response = await ProtectedAPI.get('/booking-service/interviewer/scheduled-interviews', {
-            params:{page, limit, search}
+            params: { page, limit, search }
         });
         return response.data;
     } catch (error: any) {
@@ -228,6 +228,18 @@ export const getPaymentData = async () => {
     try {
         const response = await ProtectedAPI.get("/payment-service/interviewer/payment");
         return response.data;
+    } catch (error: any) {
+        console.error("fetch payment Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch payement process.");
+    }
+}
+
+export const wallterWithdraw = async (amount: number) => {
+    try {
+        const response = await ProtectedAPI.post("/payment-service/interviewer/wallet-withdraw",
+            { amount }, // Pass amount as data payload
+            { headers: { "Content-Type": "application/json" } } // Ensure proper headers
+        ); return response.data;
     } catch (error: any) {
         console.error("fetch payment Error:", error.response?.data || error.message);
         throw new Error(error.response?.data?.message || "An error occurred during the fetch payement process.");

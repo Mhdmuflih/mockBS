@@ -74,12 +74,13 @@ const SearchedInterviewerDetails = () => {
         try {
 
             // console.log(scheduledData, 'this is scheduled data for the booking');
-            // console.log(interviewerId, 'this is scheduled data for the booking');
+            // console.log(interviewer, 'this is scheduled data for the booking');
             const data = {
                 slotId: scheduledData.slotId,
                 scheduleId: scheduledData.scheduleId,
                 amount: scheduledData.price,
                 interviewerId: interviewerId,
+                interviewerName: interviewer.name,
                 scheduleData: scheduledData
             }
             const paymentResponse: any = await paymentForBooking(data);
@@ -102,7 +103,7 @@ const SearchedInterviewerDetails = () => {
     return (
         <SideBar heading="Book Your Slot">
 
-            <Toaster position="top-right" reverseOrder={false} />
+                <Toaster position="top-right" reverseOrder={false} />
 
             <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-auto min-h-[439px]">
                 <div className="flex flex-col lg:flex-row justify-between gap-4">

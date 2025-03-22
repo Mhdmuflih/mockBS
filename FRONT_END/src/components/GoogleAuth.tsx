@@ -27,7 +27,8 @@ const GoogleAuth: React.FC = () => {
                 dispatch(loginSuccess({
                     token: response.token,
                     storedData: response.candidateData,
-                    isLoggedIn: true
+                    refreshToken: response.refreshToken,
+                    isLoggedIn: true,
                 }));
                 dispatch(setProfileImage(
                     {profileURL: response.candidateData.profileURL}

@@ -179,6 +179,21 @@ const SideBar = (props: sideBarProps) => {
                                     <span >Communities</span>
                                 </div>
                             </li>
+                            <li>
+                                <div
+                                    className={`flex items-center space-x-3 text-white p-1 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
+                                        ${activePath === "/admin/payment-details" ? "bg-[#999999]" : ""}`}
+                                    onClick={() => {
+                                        setActivePath("/admin/payment-details");
+                                        navigate("/admin/payment-details");
+                                    }}
+                                >
+                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
+                                        <RiUserCommunityFill />
+                                    </span>
+                                    <span >Payment</span>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     {/* New div outside sidebar but positioned at the bottom */}

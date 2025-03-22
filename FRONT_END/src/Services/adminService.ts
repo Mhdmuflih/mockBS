@@ -215,3 +215,27 @@ export const fetchInterviewerAndCandidate = async (ids: { candidateId: string; i
         throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
     }
 };
+
+
+
+export const interviewerPayment = async (page: number, limit: number, search: string) => {
+    try {
+        const response = await ProtectedAPI.get("/payment-service/admin/payment-details", {
+            params:{page, limit, search}
+        });
+        return response.data
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
+    }
+}
+
+export const PayToInterviewer = async (id: string) => {
+    try {
+        const response = await ProtectedAPI.post('/payment-service/admin/pay-to-interviewer', {id});
+        return response.data
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
+    }
+}

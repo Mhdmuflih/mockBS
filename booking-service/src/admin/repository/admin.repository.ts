@@ -12,15 +12,15 @@ export class AdminRepository extends BaseRepository<Scheduled> implements IAdmin
         super(shceduleModel)
     }
 
-    async getInterviews(page: number, limit: number, search?: string): Promise<{total: number, data: ISchedule[]}> {
-        try {
-            const interviewData = await this.findWithPagination({}, page, limit, search);
-            // const interviewData = await this.findAll()
-            // const interviewData = await this.shceduleModel.find().exec();
-            return interviewData;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async getInterviews(page: number, limit: number, search?: string): Promise<{total: number, data: ISchedule[]}> {
+    //     try {
+    //         const interviewData = await this.findWithPagination({}, page, limit, search);
+    //         // const interviewData = await this.findAll()
+    //         // const interviewData = await this.shceduleModel.find().exec();
+    //         return interviewData;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 }

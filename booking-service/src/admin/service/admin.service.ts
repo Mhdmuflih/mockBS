@@ -9,7 +9,8 @@ export class AdminService implements IAdminService {
 
     async getInterview(page: number, limit: number, search?: string): Promise<{interviews:ISchedule[], totalRecords: number, totalPages: number, currentPage: number}> {
         try {
-            const interviews = await this.adminRepository.getInterviews(page, limit, search);
+            // const interviews = await this.adminRepository.getInterviews(page, limit, search);
+            const interviews = await this.adminRepository.findWithPagination({}, page, limit, search);
             return {
                 interviews: interviews.data,
                 totalRecords: interviews.total,

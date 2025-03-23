@@ -12,14 +12,14 @@ export class ScheduleRepository extends BaseRepository<Scheduled> implements IIn
         super(scheduledModal)
     }
 
-    async scheduledInterviews(interviewerId: string, page: number, limit: number, search: string): Promise<{total: number, data:ISchedule[]}> {
-        try {
-            const scheduleData = await this.findWithPagination({interviewerId}, page, limit, search)
-            // const scheduleData = await this.scheduledModal.find({interviewerId: interviewerId});
-            return scheduleData;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async scheduledInterviews(interviewerId: string, page: number, limit: number, search: string): Promise<{total: number, data:ISchedule[]}> {
+    //     try {
+    //         const scheduleData = await this.findWithPagination({interviewerId}, page, limit, search)
+    //         // const scheduleData = await this.scheduledModal.find({interviewerId: interviewerId});
+    //         return scheduleData;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 }

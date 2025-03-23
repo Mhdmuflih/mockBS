@@ -5,6 +5,7 @@ import { ScheduleRepository } from '../repository/schedule.repositor';
 import { ICandidateService } from '../interface/ICandidateService';
 import { ClientKafka } from '@nestjs/microservices';
 import { ISchedule } from 'src/interface/interface';
+import { IInterviewer } from '../interface/interface';
 
 @Injectable()
 export class CandidateService implements ICandidateService {
@@ -16,7 +17,7 @@ export class CandidateService implements ICandidateService {
 
   // grpc data send
   // =============================
-  async getMatchedSlot(tech: string): Promise<any> {
+  async getMatchedSlot(tech: string): Promise<IInterviewer[]> {
     try {
       const getMatchedSlot = await this.slotRepository.getMatchSlot(tech);
       const interviewerIds = getMatchedSlot.map(slot => slot.interviewerId.toString());
@@ -46,7 +47,8 @@ export class CandidateService implements ICandidateService {
 
   async scheduleInterview(scheduleData: any): Promise<void> {
     try {
-      const existingScheudledData = await this.scheduleRepository.findScheduleInterview(scheduleData.scheduledId);
+      const existingScheudledData = await this.scheduleRepository.findOne(scheduleData.scheduleId);
+      // const existingScheudledData = await this.scheduleRepository.findScheduleInterview(scheduleData.scheduledId);
       if (existingScheudledData) {
         throw new Error("already booked interview ");
       }
@@ -61,7 +63,8 @@ export class CandidateService implements ICandidateService {
 
   async scheduledInterviews(candidateId: string, page: number, limit: number, search: string): Promise<{ scheduledInterview: ISchedule[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      const scheduledInterview = await this.scheduleRepository.candidateSceduledInterviews(candidateId, page, limit, search);
+      const scheduledInterview = await this.scheduleRepository.findWithPagination({candidateId}, page, limit, search);
+      // const scheduledInterview = await this.scheduleRepository.candidateSceduledInterviews(candidateId, page, limit, search);
       return {
         scheduledInterview: scheduledInterview.data,
         totalRecords: scheduledInterview.total,

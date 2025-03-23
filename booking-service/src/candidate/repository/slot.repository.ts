@@ -95,5 +95,4 @@ export class SlotRepository extends BaseRepository<InterviewerSlot> implements I
         }
     }
 
-
 }

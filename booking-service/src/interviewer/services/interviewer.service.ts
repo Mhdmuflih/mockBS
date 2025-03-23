@@ -87,7 +87,8 @@ export class InterviewerService implements IInterviewerSlotService {
 
   async getSlot(interviewerId: string, page: number, limit: number, search?: string): Promise<{getSlotData: IInterviewerSlot[], totalRecords: number, totalPages:number, currentPage: number}> {
     try {
-      const getSlotData = await this.interviewerSlotRepository.getAllSlots(interviewerId, page, limit, search);
+      const getSlotData = await this.interviewerSlotRepository.findWithPagination({interviewerId}, page, limit, search);
+      // const getSlotData = await this.interviewerSlotRepository.getAllSlots(interviewerId, page, limit, search);
       // console.log(getSlotData[0].slots, 'this is get slot data')
       return {
         getSlotData: getSlotData.data,
@@ -103,7 +104,8 @@ export class InterviewerService implements IInterviewerSlotService {
 
   async getSheduledInterviews(interviewerId: string, page: number, limit: number, search: string): Promise<{scheduledData:ISchedule[], totalRecords: number, totalPages: number, currentPage: number}> {
     try {
-      const scheduledData =  await this.interviewerScheduledRepository.scheduledInterviews(interviewerId, page, limit, search);
+      const scheduledData = await this.interviewerScheduledRepository.findWithPagination({interviewerId}, page, limit, search);
+      // const scheduledData =  await this.interviewerScheduledRepository.scheduledInterviews(interviewerId, page, limit, search);
       return {
         scheduledData: scheduledData.data,
         totalRecords: scheduledData.total,

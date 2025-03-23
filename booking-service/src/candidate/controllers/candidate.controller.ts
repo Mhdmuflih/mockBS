@@ -4,6 +4,7 @@ import { ICandidateController } from '../interface/ICandidateController';
 import { ClientKafka, EventPattern, GrpcMethod, MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 import { IInterviewerSlot, ISchedule } from 'src/interface/interface';
+import { IInterviewer } from '../interface/interface';
 
 
 @Controller('candidate')
@@ -13,9 +14,9 @@ export class CandidateController implements ICandidateController {
   ) { }
 
   @Get('match-interviewer/:tech')
-  async getSlotMatchedInterviewer(@Param('tech') tech: string): Promise<{success:boolean; message: string; matchedData: any}> {
+  async getSlotMatchedInterviewer(@Param('tech') tech: string): Promise<{success:boolean; message: string; matchedData: IInterviewer[]}> {
     try {
-      const matchedData = await this.candidateService.getMatchedSlot(tech);
+      const matchedData: IInterviewer[] = await this.candidateService.getMatchedSlot(tech);
       return { success: true, message: "matched Slot data", matchedData: matchedData };
     } catch (error: any) {
       console.log(error.message);
@@ -24,9 +25,10 @@ export class CandidateController implements ICandidateController {
   }
 
   @Get('/interviewer-slot-details/:interviewerId')
-  async getinterviewerSlotDetails(@Param('interviewerId') interviewerId: string, @Query('selectedTech') tech: string): Promise<{success: boolean; message: string; slotData: IInterviewerSlot, interviewerData: any}> {
+  async getinterviewerSlotDetails(@Param('interviewerId') interviewerId: string, @Query('selectedTech') tech: string): Promise<{success: boolean; message: string; slotData: IInterviewerSlot, interviewerData: IInterviewer[]}> {
     try {
       const interviewerSlotData: any = await this.candidateService.getinterviewerSlotDetails(interviewerId, tech);
+      console.log(interviewerSlotData, 'this is interviewerSlot data')
       return { success: true, message: "slot interviewer Data", slotData: interviewerSlotData[0], interviewerData: interviewerSlotData[1].interviewers[0] };
     } catch (error: any) {
       console.log(error.message);
@@ -43,7 +45,6 @@ export class CandidateController implements ICandidateController {
     @Query('search') search?: string
 ): Promise<{success: boolean; message: string; scheduledData: { scheduledInterview: ISchedule[], totalRecords: number, totalPages: number, currentPage: number }}> {
     try {
-      console.log(page, limit, search, candidateId, 'ith okke ivide nddoo')
       const data = await this.candidateService.scheduledInterviews(candidateId, page, limit, search);
       return { success: true, message: "candidate Scheduled interviews", scheduledData: data };
     } catch (error: any) {

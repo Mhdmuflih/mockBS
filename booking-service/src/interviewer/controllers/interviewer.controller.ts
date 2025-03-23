@@ -10,7 +10,6 @@ export class InterviewerSlotController implements IInterviewerSlotController {
   @Post('slot')
   async addSlot(@Headers('x-user-id') interviewerId: string, @Body() formData: any): Promise<{ success: boolean; message: string; }> {
     try {
-      console.log(formData, 'this is formData');
       await this.interviewerService.addSlot(interviewerId, formData);
       return { success: true, message: "slot added successfully." };
     } catch (error: any) {

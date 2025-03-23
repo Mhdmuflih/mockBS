@@ -75,14 +75,14 @@ export class interviewerSlotRepository extends BaseRepository<InterviewerSlot> i
         }
     }
 
-    async getAllSlots(interviewerId: string, page: number, limit: number, search: string): Promise<{ total: number, data: IInterviewerSlot[] }> {
-        try {
-            const slots = await this.findWithPagination({ interviewerId }, page, limit, search);
-            return slots
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async getAllSlots(interviewerId: string, page: number, limit: number, search: string): Promise<{ total: number, data: IInterviewerSlot[] }> {
+    //     try {
+    //         const slots = await this.findWithPagination({ interviewerId }, page, limit, search);
+    //         return slots
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
 }

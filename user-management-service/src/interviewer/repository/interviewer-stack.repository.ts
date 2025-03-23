@@ -12,13 +12,13 @@ export class InterviewerStackRepository extends BaseRepository<Stack> implements
         super(stackModel);
     }
 
-    async fetchStack(): Promise<StackResponseDto[]> {
-        try {
-            const stack = await this.findAll();
-            return stack;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async fetchStack(): Promise<StackResponseDto[]> {
+    //     try {
+    //         const stack = await this.findAll();
+    //         return stack;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 }

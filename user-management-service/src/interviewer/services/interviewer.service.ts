@@ -28,7 +28,9 @@ export class InterviewerService implements IInterviewerService {
                 throw new BadRequestException('User ID is missing from the request');
             }
 
-            const interviewer = await this.interviewerRepository.findOne(userId);
+            // const interviewer = await this.interviewerRepository.findOne(userId);
+
+            const interviewer = await this.interviewerRepository.findOneById(userId);
 
             if (!interviewer) {
                 throw new Error('Interviewer not found');
@@ -65,7 +67,8 @@ export class InterviewerService implements IInterviewerService {
                 throw new BadRequestException('formData or userId is missing');
             }
 
-            const interviewer = await this.interviewerRepository.findOne(userId);
+            // const interviewer = await this.interviewerRepository.findOne(userId);
+            const interviewer = await this.interviewerRepository.findOneById(userId);
             if (!interviewer) {
                 throw new NotFoundException('Interviewer not found');
             }
@@ -100,7 +103,8 @@ export class InterviewerService implements IInterviewerService {
 
     async changePassword(userId: string, formData: ChagnePasswordDTO): Promise<void> {
         try {
-            const interviewer = await this.interviewerRepository.findOne(userId);
+            // const interviewer = await this.interviewerRepository.findOne(userId);
+            const interviewer = await this.interviewerRepository.findOneById(userId);
             if (!interviewer) {
                 throw new Error('interviewer not found.');
             }
@@ -131,7 +135,8 @@ export class InterviewerService implements IInterviewerService {
 
     async fetchStack(): Promise<StackResponseDto[]> {
         try {
-            return await this.interviewerStackRepository.fetchStack();
+            return await this.interviewerStackRepository.findAll();
+            // return await this.interviewerStackRepository.fetchStack();
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -140,7 +145,8 @@ export class InterviewerService implements IInterviewerService {
 
     async getCandidate(candidateId: string): Promise<ICandidate> {
         try {
-            return await this.interviewerCandidateRepository.getCandidate(candidateId);
+            return await this.interviewerCandidateRepository.findOneById(candidateId);
+            // return await this.interviewerCandidateRepository.getCandidate(candidateId);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

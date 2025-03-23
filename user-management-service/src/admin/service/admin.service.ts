@@ -16,7 +16,8 @@ export class AdminService implements IAdminService {
 
   async findAllApproval(page: number, limit: number, search?: string): Promise<{ approvalData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      const approvalData = await this.adminInterviewerRepository.findAllApproval(page, limit, search);
+      // const approvalData = await this.adminInterviewerRepository.findAllApproval(page, limit, search);
+      const approvalData = await this.adminInterviewerRepository.findWithPagination({ isApproved: false, isDetails: true }, page, limit, search)
       return {
         approvalData: approvalData.data,
         totalRecords: approvalData.total,
@@ -31,7 +32,8 @@ export class AdminService implements IAdminService {
 
   async findOne(id: string): Promise<IInterviewer> {
     try {
-      const getApprovalDetails = await this.adminInterviewerRepository.findOne(id);
+      // const getApprovalDetails = await this.adminInterviewerRepository.findOne(id);
+      const getApprovalDetails = await this.adminInterviewerRepository.findOneById(id);
       return getApprovalDetails
     } catch (error: any) {
       console.log(error.message);
@@ -50,7 +52,8 @@ export class AdminService implements IAdminService {
 
   async getAllCandidate(page: number, limit: number, search: string): Promise<{candidatesData: ICandidate[]; totalRecords: number, totalPages: number, currentPage: number}> {
     try {
-      const candidatesData = await this.adminCandidateRepository.getAllCandidate(page, limit, search);
+      const candidatesData = await this.adminCandidateRepository.findWithPagination({}, page, limit, search);
+      // const candidatesData = await this.adminCandidateRepository.getAllCandidate(page, limit, search);
       return {
         candidatesData: candidatesData.data,
         totalRecords: candidatesData.total,
@@ -66,7 +69,8 @@ export class AdminService implements IAdminService {
   async getcandidateDetails(id: string): Promise<ICandidate> {
     try {
       // const candidateDetails = await this.adminRepository.getcandidateDetails(id);
-      const candidateDetails = await this.adminCandidateRepository.getcandidateDetails(id);
+      // const candidateDetails = await this.adminCandidateRepository.getcandidateDetails(id);
+      const candidateDetails = await this.adminCandidateRepository.findOneById(id);
       return candidateDetails;
     } catch (error: any) {
       console.log(error.message);
@@ -90,7 +94,8 @@ export class AdminService implements IAdminService {
 
   async getAllInterviewers(page: number, limit: number, search?: string): Promise<{ interviewersData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      const interviewersData = await this.adminInterviewerRepository.getAllInterviewers(page, limit, search);
+      // const interviewersData = await this.adminInterviewerRepository.getAllInterviewers(page, limit, search);
+      const interviewersData = await this.adminInterviewerRepository.findWithPagination({ isApproved: true }, page, limit, search);
       return {
         interviewersData: interviewersData.data,
         totalRecords: interviewersData.total,
@@ -147,9 +152,11 @@ export class AdminService implements IAdminService {
   async getInterviewsDetailsData(ids: { candidateId: string, interviewerId: string }): Promise<[IInterviewer, ICandidate]> {
     try {
       // console.log(ids, "this is for the service in admin")
-      const interviewerDetails = await this.adminInterviewerRepository.findOne(ids.interviewerId);
+      // const interviewerDetails = await this.adminInterviewerRepository.findOne(ids.interviewerId);
+      const interviewerDetails = await this.adminInterviewerRepository.findOneById(ids.interviewerId);
       // const candidateDetails = await this.adminRepository.getcandidateDetails(ids.candidateId);
-      const candidateDetails = await this.adminCandidateRepository.getcandidateDetails(ids.candidateId);
+      // const candidateDetails = await this.adminCandidateRepository.getcandidateDetails(ids.candidateId);
+      const candidateDetails = await this.adminCandidateRepository.findOneById(ids.candidateId);
 
       // console.log(interviewerDetails, candidateDetails, 'this is for the interviewer and candidate data');
       return [interviewerDetails, candidateDetails]

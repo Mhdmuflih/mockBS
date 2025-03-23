@@ -12,14 +12,14 @@ export class CandidateInterviewerRepository extends BaseRepository<Interviewer> 
         super(interviewerModel);
     }
 
-    async findInterviewer(interviewerId: string): Promise<IInterviewer | null> {
-        try {
-            const interviewer = await this.findOneById(interviewerId);
-            // const interviewer = await this.interviewerModel.findOne({ _id: interviewerId });
-            return interviewer;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async findInterviewer(interviewerId: string): Promise<IInterviewer | null> {
+    //     try {
+    //         const interviewer = await this.findOneById(interviewerId);
+    //         // const interviewer = await this.interviewerModel.findOne({ _id: interviewerId });
+    //         return interviewer;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 }

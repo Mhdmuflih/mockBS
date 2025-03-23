@@ -58,16 +58,16 @@ export class InterviewerRepository extends BaseRepository<Interviewer> implement
     //     }
     // }
 
-    async findOne(userId: string): Promise<InterviewerDataDto | null> {
-        try {
-            const interviewer = await this.findOneById(userId);
-            // const interviewer = await this.interviewerModel.findOne({ _id: userId }).exec();
-            return interviewer;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async findOne(userId: string): Promise<InterviewerDataDto | null> {
+    //     try {
+    //         const interviewer = await this.findOneById(userId);
+    //         // const interviewer = await this.interviewerModel.findOne({ _id: userId }).exec();
+    //         return interviewer;
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
     async updateInterviewerData(userId: string, formData: UpdateInterviewerDto, fileName: string): Promise<UpdateInterviewerDto | null> {
         try {

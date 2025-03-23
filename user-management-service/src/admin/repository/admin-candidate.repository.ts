@@ -11,30 +11,7 @@ export class AdminCandidateRepository extends BaseRepository<Candidate> implemen
     constructor(@InjectModel(Candidate.name) private readonly candidateModel: Model<Candidate>) {
         super(candidateModel);
     }
-
-    async getAllCandidate(page: number, limit: number, search?: string): Promise<{total: number, data: ICandidate[]}> {
-        try {
-            const candidatesData = await this.findWithPagination({}, page, limit, search);
-            // const candidatesData = await this.findAll();
-            // const candidatesData = await this.candidateModel.find().exec();
-            return candidatesData;
-        } catch (error: any) {
-            console.log(error.message)
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    async getcandidateDetails(id: string): Promise<ICandidate> {
-        try {
-            const candidateDetails = await this.findOneById(id);
-            // const candidateDetails = await this.candidateModel.findById({ _id: id });
-            return candidateDetails;
-        } catch (error: any) {
-            console.log(error.message)
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
+    
     async candidateAction(id: string): Promise<ICandidate> {
         try {
             const candidate = await  this.findOneById(id);
@@ -57,5 +34,4 @@ export class AdminCandidateRepository extends BaseRepository<Candidate> implemen
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

@@ -101,7 +101,8 @@ export class CandidateService implements ICandidateService {
 
     async getStack(): Promise<StackResponseDto[]> {
         try {
-            return await this.candidateStackRepository.getStack();
+            return await this.candidateStackRepository.findAll();
+            // return await this.candidateStackRepository.getStack();
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -110,7 +111,8 @@ export class CandidateService implements ICandidateService {
 
     async getInterviewer(interviewerId: string): Promise<IInterviewer | null> {
         try {
-            return await this.candidateInterviewerRepository.findInterviewer(interviewerId);
+            return await this.candidateInterviewerRepository.findOneById(interviewerId);
+            // return await this.candidateInterviewerRepository.findInterviewer(interviewerId);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

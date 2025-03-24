@@ -15,7 +15,7 @@ export class CandidateService implements ICandidateService {
     this.stripe = new Stripe("sk_test_51QvsEdGUzdkKqzcdinByZpi9wyrb6JfwF0AVaNBOGGBLernXeTVszLCIFd19AFzPBMMqtkjLhnflACczbZtowhfW00AhK9XPQ0");
   }
 
-  async paymentForBooking(candidateId: string, data: any): Promise<any> {
+  async paymentForBooking(candidateId: string, data: any): Promise<Stripe.Checkout.Session> {
     try {
 
       const existingPayment = await this.candidateRepository.findPayment(candidateId, data);
@@ -58,6 +58,7 @@ export class CandidateService implements ICandidateService {
         slotId: data.slotId,
         candidateId: candidateId,
         interviewerId: data.interviewerId,
+        interviewerName: data.interviewerName,
         scheduleId: data.scheduleId,
         amount: data.amount,
         status: 'pending',  // Payment status to be updated later
@@ -105,7 +106,7 @@ export class CandidateService implements ICandidateService {
 
 
       const response = await sendBookingData(bookingData);
-      console.log(response, 'this is for the response of the booking in grpc');
+      // console.log(response, 'this is for the response of the booking in grpc');
 
       await this.candidateRepository.verifyPayment(sessionId);
 

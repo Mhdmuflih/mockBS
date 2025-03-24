@@ -4,7 +4,7 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 export type PaymentDocument = Payment & Document;
 
 @Schema({ timestamps: true })
-export class Payment {
+export class Payment extends Document {
     @Prop({ type: MongooseSchema.Types.ObjectId, required: true }) // Ensure correct model name
     slotId: Types.ObjectId;
 
@@ -16,6 +16,9 @@ export class Payment {
 
     @Prop({ type: MongooseSchema.Types.ObjectId, required: true }) // Ensure correct model name
     interviewerId: Types.ObjectId;
+
+    @Prop({type: String, required: true})
+    interviewerName: string
 
     @Prop({
         type:
@@ -42,7 +45,7 @@ export class Payment {
     @Prop({ type: Number, required: true })
     amount: number;
 
-    @Prop({ type: String, required: true, enum: ['pending', 'completed', 'failed'] })
+    @Prop({ type: String, required: true, enum: ['pending', 'completed', 'failed', 'admin send'] })
     status: string;
 
     @Prop({ type: String, required: true, enum: ['credit_card', 'debit_card', 'paypal', 'bank_transfer'] })

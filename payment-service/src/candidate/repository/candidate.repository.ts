@@ -4,12 +4,16 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Payment } from "../model/payment.schema";
 import { Model } from "mongoose";
 import { Cron } from '@nestjs/schedule';
+import { BaseRepository } from "src/repository/baseRepository";
+import { IPayment } from "../interface/Interface";
 
 @Injectable()
-export class CandidateRepository implements ICandidateRepository {
+export class CandidateRepository extends BaseRepository<Payment> implements ICandidateRepository {
     constructor(
         @InjectModel(Payment.name) private readonly paymentModel: Model<Payment>
-    ) { }
+    ) {
+        super(paymentModel)
+     }
 
     async autoDeleteExpiredPayments(data: any) {
         await this.paymentModel.deleteOne({
@@ -29,6 +33,7 @@ export class CandidateRepository implements ICandidateRepository {
                 candidateId: candidateId,
                 scheduleId: data.scheduleId,
                 interviewerId: data.interviewerId,
+                interviewerName: data.interviewerName,
                 amount: data.amount,
                 scheduleData: {
                     stack: data.scheduleData.stack,
@@ -65,7 +70,7 @@ export class CandidateRepository implements ICandidateRepository {
         }
     }
 
-    async existingPaymentData(data: any) {
+    async existingPaymentData(data: any): Promise<any> {
         try {
             const existing = await this.paymentModel.findOne({
                 scheduleId: data.scheduleId,

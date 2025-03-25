@@ -90,7 +90,7 @@ const AdminAddStack = () => {
 
                     <Toaster position="top-right" reverseOrder={false} />
 
-                    <div className="bg-[#30323A] ml-1 p-4 shadow-md mt-2 h-[475px] overflow-auto">
+                    <div className="bg-[#30323A]  p-4 shadow-md h-screen overflow-auto">
 
                         <div className="flex justify-center mt-16">
                             <div className="bg-white p-10">

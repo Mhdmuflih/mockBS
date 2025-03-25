@@ -9,7 +9,7 @@ import logo from "../../assets/Creative Logo Templates.jpeg"
 
 
 import { RxDashboard } from "react-icons/rx";
-import { FcApproval } from "react-icons/fc";
+import { FcApproval, FcMoneyTransfer } from "react-icons/fc";
 import { FaUsersGear } from "react-icons/fa6";
 import { SiGooglemeet } from "react-icons/si";
 import { BsStack } from "react-icons/bs";
@@ -30,6 +30,7 @@ const SideBar = (props: sideBarProps) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const [isOpen, setIsOpen] = useState(false);
     const { isLoggedIn } = useSelector((state: any) => state.adminAuth);
 
     useEffect(() => {
@@ -57,17 +58,26 @@ const SideBar = (props: sideBarProps) => {
 
     return (
         <>
-            <div className="bg-black h-screen flex">
-                <div className=" bg-[#30323A] h-[450px] w-52 p-4 ml-1 mt-2 rounded-xl">
-                    <div className=" w-14 ml-16 mt-2">
-                        <img onClick={handleToLogo} src={logo} alt="Company Logo" className="h-12 mr-4 hover:cursor-pointer" /> 
+            <div className="flex flex-1">
+
+                {/* Side Bar */}
+                <div
+                    className={` p-4 bg-gray-800 transition-all duration-300 ${isOpen ? 'w-52' : 'w-20'}`}
+                    onMouseOver={() => setIsOpen(true)}
+                    onMouseLeave={() => setIsOpen(false)}
+                >
+                    {/* Profile Image */}
+                    <div className="flex flex-col items-center mt-3" onClick={() => setIsOpen(true)}>
+                        <img onClick={handleToLogo} src={logo} alt="Company Logo" className={` transition-all ${isOpen ? 'rounded-2xl w-24 h-24' : ' rounded-full w-12 h-12'}`}
+                        />
                     </div>
+
                     <h2 className="text-center font-bold mt-1 text-white">mock BS</h2>
 
                     {/* side bar start */}
 
                     <div className="pt-2">
-                        <ul className="space-y-4">
+                        <ul className={`mt-7 ${isOpen ? 'space-y-3' : 'space-y-5'}`}>
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-1 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
@@ -75,12 +85,13 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/admin/dashboard");
                                         navigate("/admin/dashboard");
+                                        setIsOpen(true);
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <RxDashboard />
                                     </span>
-                                    <span >Dashboard</span>
+                                    {isOpen && <span >Dashboard</span>}
                                 </div>
                             </li>
 
@@ -91,12 +102,13 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/admin/approval");
                                         navigate("/admin/approval");
+                                        setIsOpen(true);
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <FcApproval />
                                     </span>
-                                    <span >Approval</span>
+                                    {isOpen && <span >Approval</span>}
                                 </div>
                             </li>
 
@@ -107,12 +119,13 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/admin/interviewers");
                                         navigate("/admin/interviewers");
+                                        setIsOpen(true);
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <FaUsersGear />
                                     </span>
-                                    <span >All Interviewers</span>
+                                    {isOpen && <span >All Interviewers</span>}
                                 </div>
                             </li>
 
@@ -123,12 +136,13 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/admin/candidates");
                                         navigate("/admin/candidates");
+                                        setIsOpen(true);
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <FaUsers />
                                     </span>
-                                    <span >Candidates</span>
+                                    {isOpen && <span >Candidates</span>}
                                 </div>
                             </li>
 
@@ -139,12 +153,13 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/admin/interviews");
                                         navigate("/admin/interviews");
+                                        setIsOpen(true);
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <SiGooglemeet />
                                     </span>
-                                    <span >Interviews</span>
+                                    {isOpen && <span >Interviews</span>}
                                 </div>
                             </li>
 
@@ -155,12 +170,13 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/admin/stack");
                                         navigate("/admin/stack");
+                                        setIsOpen(true);
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <BsStack />
                                     </span>
-                                    <span >Stack</span>
+                                    {isOpen && <span >Stack</span>}
                                 </div>
                             </li>
 
@@ -171,12 +187,13 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/admin/communitiess");
                                         navigate("/admin/communities");
+                                        setIsOpen(true);
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <RiUserCommunityFill />
                                     </span>
-                                    <span >Communities</span>
+                                    {isOpen && <span >Communities</span>}
                                 </div>
                             </li>
                             <li>
@@ -186,19 +203,16 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/admin/payment-details");
                                         navigate("/admin/payment-details");
+                                        setIsOpen(true);
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
-                                        <RiUserCommunityFill />
+                                        <FcMoneyTransfer />
                                     </span>
-                                    <span >Payment</span>
+                                    {isOpen && <span >Payment</span>}
                                 </div>
                             </li>
-                        </ul>
-                    </div>
-                    {/* New div outside sidebar but positioned at the bottom */}
-                    <div className="absolute bottom-4 left-1 w-52 p-4 bg-[#30323A] text-white text-center rounded-xl">
-                        <ul className="space-y-2">
+
                             <li>
                                 <div
                                     className={`flex items-center space-x-3 text-white p-1 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group 
@@ -206,28 +220,33 @@ const SideBar = (props: sideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/admin/profile");
                                         navigate("/admin/profile");
+                                        setIsOpen(true);
                                     }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <FaHome />
                                     </span>
-                                    <span >Admin</span>
+                                    {isOpen && <span >Admin</span>}
                                 </div>
                             </li>
 
                             <li>
                                 <div className={`flex items-center space-x-3 text-white p-1 bg-[#FF3B30] rounded-lg cursor-pointer hover:bg-[#912626] transition-all duration-300 group 
                                 ${activePath === "/admin/home" ? "bg-white text-black" : ""}`}
-                                    onClick={handleToLogout}
+                                    onClick={() => {
+                                        handleToLogout
+                                        setIsOpen(true);
+                                    }}
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200 ml-3">
                                         <RiLogoutCircleFill />
                                     </span>
-                                    <span>Logout</span>
+                                    {isOpen && <span>Logout</span>}
                                 </div>
                             </li>
                         </ul>
                     </div>
+
                 </div>
             </div>
 

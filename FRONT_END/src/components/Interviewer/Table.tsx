@@ -14,7 +14,7 @@ interface TableProps {
 
 const Table: React.FC<TableProps> = ({ columns, searchQuery, setSearchQuery, data, actions, totalPages, currentPage, handleChange }) => {
     return (
-        <div className="bg-[#30323A] ml-1 p-2 shadow-md max-h-[80vh] overflow-auto">
+        <div className="bg-[#30323A] p-4 shadow-md h-screen">
 
             {/* Search Bar */}
             <div className="mb-1 flex justify-end">

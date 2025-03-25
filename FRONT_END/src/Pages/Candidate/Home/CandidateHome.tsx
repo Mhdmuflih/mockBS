@@ -3,11 +3,11 @@ import SideBar from "../../../components/Candidate/SideBar";
 import { getExpertInterviewerList, GetStack } from "../../../Services/candidateService";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import PageLoading from "../../../components/PageLoading";
+// import PageLoading from "../../../components/PageLoading";
 
 const CandidateHome = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const [stacks, setStacks] = useState<any>([]);
@@ -19,9 +19,9 @@ const CandidateHome = () => {
 
     useEffect(() => {
 
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        //     setIsLoading(false);
+        // }, 2000);
 
         const paymentStatus = localStorage.getItem("paymentStatus");
 
@@ -45,9 +45,9 @@ const CandidateHome = () => {
         fetchStack();
     }, []);
 
-    if(isLoading) {
-        return <div><PageLoading /></div>
-    }
+    // if(isLoading) {
+    //     return <div><PageLoading /></div>
+    // }
 
     const handleStackClick = (stack: any) => {
         setSelectedStack(stack);
@@ -93,10 +93,9 @@ const CandidateHome = () => {
         <div>
 
             <Toaster position="top-right" reverseOrder={false} />
-
-
+            
             <SideBar heading="Request Interviews">
-                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[439px] w-[1050px]">
+                <div className="bg-gray-200 p-4 shadow-md h-screen">
                     <div className="mt-1">
                         <label htmlFor="search" className="sr-only">Search</label>
                         <div className="relative">
@@ -106,7 +105,7 @@ const CandidateHome = () => {
                                 placeholder="Search here..."
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
-                                className="w-full p-2 pl-10 text-sm rounded-md bg-[#181A22] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                className="w-full p-2 pl-10 text-sm rounded-md bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
                             />
                         </div>
                     </div>
@@ -116,7 +115,7 @@ const CandidateHome = () => {
                             {filteredStacks.map((stack: any) => (
                                 <div
                                     key={stack.stackName}
-                                    className="bg-white w-full text-center p-3 rounded-md hover:cursor-pointer hover:bg-[#999999] hover:text-white"
+                                    className="bg-white w-full text-center p-3 rounded-md hover:cursor-pointer hover:bg-gray-800 hover:text-white"
                                     onClick={() => handleStackClick(stack)}
                                 >
                                     <h1 className="font-bold">{stack.stackName}</h1>
@@ -130,7 +129,7 @@ const CandidateHome = () => {
                             {filteredTechnologies.map((tech: any) => (
                                 <div
                                     key={tech}
-                                    className="bg-white w-full text-center p-3 rounded-md hover:cursor-pointer hover:bg-[#999999] hover:text-white"
+                                    className="bg-white w-full text-center p-3 rounded-md hover:cursor-pointer hover:bg-gray-800 hover:text-white"
                                     onClick={() => handleTechClick(tech)}
                                 >
                                     <h1 className="font-bold">{tech}</h1>
@@ -141,7 +140,7 @@ const CandidateHome = () => {
 
                     {tech && interviewers.length === 0 ? (
                         <div className="mt-7 text-white text-center">
-                            <p className="text-gray-400">No interviewers available for {tech} at the moment.</p>
+                            <p className="text-gray-800">No interviewers available for {tech} at the moment.</p>
                         </div>
                     ) : interviewers.length > 0 ? (
                         <div className="mt-7 w-full">
@@ -149,14 +148,14 @@ const CandidateHome = () => {
                                 {filteredInterviewers.map((interviewer: any, index: number) => (
                                     <li
                                         key={index}
-                                        className="p-2 border border-gray-700 rounded-md mt-2 w-full hover:bg-slate-500 hover:cursor-pointer duration-500"
+                                        className="p-2 bg-gray-800 border border-gray-700 rounded-md mt-2 w-full hover:bg-slate-500 hover:cursor-pointer duration-500"
                                         onClick={() => handleToNavigateInterviewerDetails(interviewer.id)}
                                     >
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-8">
                                             <img
                                                 src={interviewer.profileURL}
                                                 alt={interviewer.name}
-                                                className="w-10 h-10 rounded-full"
+                                                className="w-10 h-10 rounded-full ml-5"
                                             />
                                             <div>
                                                 <h3 className="font-bold">{interviewer.name}</h3>

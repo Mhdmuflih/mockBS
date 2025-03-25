@@ -2,12 +2,12 @@ import { useEffect, useState } from "react"
 import SideBar from "../../../components/Candidate/SideBar"
 import { getCandidateScheduledInterviews } from "../../../Services/candidateService";
 import { useNavigate } from "react-router-dom";
-import PageLoading from "../../../components/PageLoading";
+// import PageLoading from "../../../components/PageLoading";
 import { Pagination } from "@mui/material";
 
 const CandidateInterviews = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
 
     const [scheduledData, setScheduledData] = useState<any[]>([])
@@ -19,9 +19,9 @@ const CandidateInterviews = () => {
 
     useEffect(() => {
 
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        //     setIsLoading(false);
+        // }, 2000);
 
         const fetchCandidateScheduledInterviews = async () => {
             try {
@@ -43,9 +43,9 @@ const CandidateInterviews = () => {
         fetchCandidateScheduledInterviews();
     }, [searchQuery, currentPage]);
 
-    if (isLoading) {
-        return <div><PageLoading /></div>
-    }
+    // if (isLoading) {
+    //     return <div><PageLoading /></div>
+    // }
 
     const handleToDetails = (id: string, detailsData: any) => {
         navigate(`/candidate/outsourced-interviews/${id}`, { state: { detailsData: detailsData } });
@@ -58,7 +58,7 @@ const CandidateInterviews = () => {
     return (
         <>
             <SideBar heading="Outsourced Interviews" subHeading="Find expert interviewers to take interviews on your behalf" >
-                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[413px]">
+                <div className="bg-gray-200 p-4 shadow-md h-screen">
                     <div className="ml-7 w-[990px]">
                         {/* Search and Data List */}
                         <div>

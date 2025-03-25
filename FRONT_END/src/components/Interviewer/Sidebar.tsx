@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import TopBar from "../TopBar";
+// import TopBar from "../TopBar";
 import { ReactNode, useEffect, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { FaCheckToSlot } from "react-icons/fa6";
@@ -27,9 +27,7 @@ const SideBar = (props: IsideBarProps) => {
     const location = useLocation();
     const dispatch = useDispatch();
     const [profileImage, setProfileImage] = useState();
-
-
-
+    const [isOpen, setIsOpen] = useState(false);
     const { isLoggedIn, profileURL } = useSelector((state: any) => state.interviewerAuth);
 
     useEffect(() => {
@@ -56,18 +54,27 @@ const SideBar = (props: IsideBarProps) => {
 
     return (
         <>
-            <TopBar />
+            {/* <TopBar /> */}
 
-            <div className="flex">
+            <div className="flex flex-1">
 
                 {/* Side Bar */}
-                <div className="sidebar bg-[#30323A] h-[500px] w-52 p-4 ml-3 mt-3 rounded-2xl">
-                    <div className="bg-white  w-24 h-24 ml-10 mt-5">
-                        <img src={props.checkApproved == false ? profileImageDemo : profileImage} alt="" className="h-24 w-24" />
+                <div
+                    className={` p-4 bg-gray-800 transition-all duration-300 ${isOpen ? 'w-52' : 'w-20'}`}
+                    onMouseOver={() => setIsOpen(true)}
+                    onMouseLeave={() => setIsOpen(false)}
+                >
+                     {/* Profile Image */}
+                     <div className="flex flex-col items-center mt-3" onClick={() => setIsOpen(true)}>
+                        <img
+                            src={profileImage ? profileImage : profileImageDemo}
+                            alt="Profile"
+                            className={` transition-all ${isOpen ? 'rounded-2xl w-24 h-24' : ' rounded-full w-12 h-12'}`}
+                        />
                     </div>
 
                     <div className="pt-2">
-                        <ul className="space-y-5">
+                    <ul className={`mt-7 ${isOpen? 'space-y-5' : 'space-y-10'}`}>
 
                             <li>
                                 <div
@@ -76,12 +83,14 @@ const SideBar = (props: IsideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/interviewer/profile");
                                         navigate("/interviewer/profile");
+                                        setIsOpen(true);
                                     }}
                                 >
-                                    <span className="group-hover:scale-110 transition-transform duration-200">
+                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-1">
                                         <CgProfile />
                                     </span>
-                                    <span>Profile</span>
+                                    {isOpen && <span>Profile</span>}
+                                    
                                 </div>
                             </li>
 
@@ -90,15 +99,15 @@ const SideBar = (props: IsideBarProps) => {
                                     className={`${props.checkApproved === false ? "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50 flex items-center space-x-3  p-2  rounded-lg  transition-all duration-300 group" : "flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group"} 
                                         ${activePath === "/interviewer/slot" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
-                                            setActivePath("/interviewer/slot");
-                                            navigate("/interviewer/slot");
-                                        
+                                        setActivePath("/interviewer/slot");
+                                        navigate("/interviewer/slot");
+                                        setIsOpen(true);
                                     }}
                                 >
-                                    <span className="group-hover:scale-110 transition-transform duration-200">
+                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-1">
                                         <FaCheckToSlot />
                                     </span>
-                                    <span>Slots</span>
+                                    {isOpen && <span>Slots</span>}
                                 </div>
                             </li>
 
@@ -107,15 +116,15 @@ const SideBar = (props: IsideBarProps) => {
                                     className={`${props.checkApproved === false ? "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50 flex items-center space-x-3  p-2  rounded-lg  transition-all duration-300 group" : "flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group"} 
                                 ${activePath === "/interviewer/scheduled" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
-                                            setActivePath("/interviewer/scheduled");
-                                            navigate("/interviewer/scheduled");
-                                        
+                                        setActivePath("/interviewer/scheduled");
+                                        navigate("/interviewer/scheduled");
+                                        setIsOpen(true)
                                     }}
                                 >
-                                    <span className="group-hover:scale-110 transition-transform duration-200">
+                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-1">
                                         <RiCalendarScheduleFill />
                                     </span>
-                                    <span>Scheduled</span>
+                                    { isOpen && <span>Scheduled</span>}
                                 </div>
                             </li>
 
@@ -124,16 +133,15 @@ const SideBar = (props: IsideBarProps) => {
                                     className={`${props.checkApproved === false ? "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50 flex items-center space-x-3  p-2  rounded-lg  transition-all duration-300 group" : "flex items-center space-x-3 text-white p-2 bg-[#000000] rounded-lg cursor-pointer hover:bg-[#999999] transition-all duration-300 group"} 
                                 ${activePath === "/interviewer/payment" ? "bg-[#999999]" : ""}`}
                                     onClick={() => {
-
-                                            setActivePath("/interviewer/payment");
-                                            navigate("/interviewer/payment");
-                                        
+                                        setActivePath("/interviewer/payment");
+                                        navigate("/interviewer/payment");
+                                        setIsOpen(true);
                                     }}
                                 >
-                                    <span className="group-hover:scale-110 transition-transform duration-200">
+                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-1">
                                         <FcMoneyTransfer />
                                     </span>
-                                    <span>Payments</span>
+                                    { isOpen && <span>Payments</span>}
                                 </div>
                             </li>
 
@@ -146,12 +154,13 @@ const SideBar = (props: IsideBarProps) => {
                                     onClick={() => {
                                         setActivePath("/interviewer/password");
                                         navigate("/interviewer/password");
+                                        setIsOpen(true);
                                     }}
                                 >
-                                    <span className="group-hover:scale-110 transition-transform duration-200">
+                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-1">
                                         <GoShieldLock />
                                     </span>
-                                    <span>Change Password</span>
+                                    {isOpen && <span>Change Password</span>}
                                 </div>
                             </li>
 
@@ -159,12 +168,15 @@ const SideBar = (props: IsideBarProps) => {
                                 <div
                                     className={`flex items-center space-x-3 text-white p-2 bg-[#FF3B30] rounded-lg cursor-pointer hover:bg-[#912626] transition-all duration-300 group 
                                 ${activePath === "candidate/home" ? "bg-[#999999]" : ""}`}
-                                    onClick={handleToLogout}
+                                    onClick={() => {
+                                        handleToLogout
+                                        setIsOpen(true);
+                                    }}
                                 >
-                                    <span className="group-hover:scale-110 transition-transform duration-200">
+                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-1">
                                         <RiLogoutCircleFill />
                                     </span>
-                                    <span>Logout</span>
+                                    {isOpen && <span>Logout</span>}
                                 </div>
                             </li>
                         </ul>

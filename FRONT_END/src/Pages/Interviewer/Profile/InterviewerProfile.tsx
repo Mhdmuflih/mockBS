@@ -136,7 +136,7 @@ const InterviewerProfile = () => {
         <SideBar heading="Profile" checkApproved={interviewer.isApproved}>
             <Toaster position="top-right" reverseOrder={false} />
 
-            <div className="bg-[#30323A] ml-1 p-3 rounded-b-lg shadow-md max-h-[73vh] overflow-y-auto">
+            <div className="bg-gray-200 p-4 shadow-md h-screen">
                 {!interviewer.isApproved ? (
                     <h1 className="text-[#FF0000] font-extrabold text-lg">Access pending admin approval!</h1>
                 ) : (

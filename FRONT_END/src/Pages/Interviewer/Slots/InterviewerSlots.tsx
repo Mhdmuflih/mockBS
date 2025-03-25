@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import SideBar from "../../../components/Interviewer/Sidebar";
 import Table from "../../../components/Interviewer/Table";
 import { getSlotData } from "../../../Services/interviewerService";
-import PageLoading from "../../../components/PageLoading";
+// import PageLoading from "../../../components/PageLoading";
 
 const InterviewerSlots = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const [slotData, setSlotData] = useState<any[]>([]);  // Change state to hold an array
     const [currentPage, setCurrentPage] = useState(1);
@@ -16,9 +16,9 @@ const InterviewerSlots = () => {
 
     useEffect(() => {
 
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        //     setIsLoading(false);
+        // }, 2000);
 
         const fetchSlotData = async () => {
             try {
@@ -56,9 +56,9 @@ const InterviewerSlots = () => {
         fetchSlotData();
     }, [searchQuery, currentPage]);
 
-    if (isLoading) {
-        return <div><PageLoading /></div>
-    }
+    // if (isLoading) {
+    //     return <div><PageLoading /></div>
+    // }
 
 
     const handleChange = (_: unknown, value: number) => {
@@ -80,7 +80,7 @@ const InterviewerSlots = () => {
         <div>
             <SideBar heading="Slots List" addButton="Add Slot" subHeading="See information about all time slots" >
 
-                <div className="bg-[#30323A] ml-1  rounded-b-lg shadow-md h-[69vh] ">
+                <div>
                     <Table
                         columns={slotTable}
                         data={slotData}

@@ -6,12 +6,12 @@ import profileImage from "../../../assets/profile image.jpg";
 
 // import Typography from '@mui/material/Typography';
 import Pagination from '@mui/material/Pagination';
-import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 // import Stack from '@mui/material/Stack';
 
 const AdminApproval = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     
     const [approvalData, setApprovalData] = useState<any[]>([]);
@@ -22,9 +22,9 @@ const AdminApproval = () => {
 
     useEffect(() => {
 
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        //     setIsLoading(false);
+        // }, 2000);
 
         const takeApprovalDetails = async () => {
             try {
@@ -47,9 +47,9 @@ const AdminApproval = () => {
         takeApprovalDetails();
     }, [searchQuery, currentPage]);  // Now, it will re-run when currentPage changes
 
-    if (isLoading) {
-        return <AdminSideLoading />
-    }
+    // if (isLoading) {
+    //     return <AdminSideLoading />
+    // }
 
     const handleToDetails = (id: string) => {
         try {
@@ -73,7 +73,7 @@ const AdminApproval = () => {
         <div className="flex">
             {/* Sidebar */}
             <SideBar heading="Approval">
-                <div className="bg-[#30323A] ml-1 p-2 shadow-md mt-2 h-[476px] flex flex-col justify-between">
+                <div className="bg-[#30323A] p-2 shadow-md min-h-screen flex flex-col justify-between">
                     {/* Search and Data List */}
                     <div>
                         <input
@@ -122,7 +122,7 @@ const AdminApproval = () => {
                     </div>
 
                     {/* Fixed Pagination */}
-                    <div className="flex justify-center items-center mt-4 pb-2">
+                    <div className="flex justify-center items-center mb-32">
                         <Pagination
                             count={totalPages}
                             page={currentPage}

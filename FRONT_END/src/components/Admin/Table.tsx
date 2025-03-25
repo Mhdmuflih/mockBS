@@ -14,7 +14,7 @@ interface TableProps {
 
 const Table: React.FC<TableProps> = ({ columns, data, actions, searchQuery, setSearchQuery, totalPages, currentPage, handleChange }) => {
     return (
-        <div className="bg-[#30323A] ml-1 p-2 shadow-md mt-2 max-h-[80vh] overflow-auto">
+        <div className="bg-[#30323A] p-2 shadow-md h-screen overflow-auto">
 
             {/* Search Bar */}
             <div className="mb-1 flex justify-end">
@@ -58,7 +58,7 @@ const Table: React.FC<TableProps> = ({ columns, data, actions, searchQuery, setS
             </div>
 
             {/* pagination */}
-            <div className="flex justify-center items-center mt-4 pb-2">
+            <div className="flex justify-center items-center mt-10 ">
                 <Pagination
                     count={totalPages}
                     page={currentPage}

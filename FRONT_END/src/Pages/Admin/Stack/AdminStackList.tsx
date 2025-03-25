@@ -3,20 +3,20 @@ import { useEffect, useState } from "react";
 import { IoAddCircle } from "react-icons/io5";
 import SideBar from "../../../components/Admin/SideBar";
 import { fetchStackList } from "../../../Services/adminService";
-import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminStackList = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const [stackList, setStackList] = useState<any[]>([]);
 
     useEffect(() => {
 
-        setTimeout(()=> {
-            setIsLoading(false);
-        },2000);
+        // setTimeout(()=> {
+        //     setIsLoading(false);
+        // },2000);
 
         const fetchStackData = async () => {
             try {
@@ -34,9 +34,9 @@ const AdminStackList = () => {
         fetchStackData();
     }, []);
 
-    if(isLoading) {
-        return <div><AdminSideLoading /></div>
-    }
+    // if(isLoading) {
+    //     return <div><AdminSideLoading /></div>
+    // }
 
     const handleToAddStack = () => {
         navigate('/admin/add-stack');
@@ -45,7 +45,7 @@ const AdminStackList = () => {
     return (
         <div className="flex">
             <SideBar heading="Stack">
-                <div className="bg-[#30323A] ml-1 p-4 shadow-md mt-2 h-[475px] overflow-auto">
+                <div className="bg-[#30323A]  p-4 shadow-md h-screen overflow-auto">
                     <div className="flex justify-end items-center space-x-3 p-1 rounded-lg cursor-pointer transition-all duration-300 group">
                         <span className="group-hover:scale-110 transition-transform duration-200 absolute mr-24">
                             <IoAddCircle />

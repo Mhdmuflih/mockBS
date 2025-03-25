@@ -10,12 +10,12 @@ import Table from "../../../components/Admin/Table";
 import toast from "react-hot-toast"
 import { Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
-import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 
 const AdminCandidatesList = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -27,9 +27,9 @@ const AdminCandidatesList = () => {
 
     useEffect(() => {
 
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        //     setIsLoading(false);
+        // }, 2000);
 
         const takeApprovalDetails = async () => {
             try {
@@ -48,9 +48,9 @@ const AdminCandidatesList = () => {
         takeApprovalDetails();
     }, [searchQuery, currentPage]);
 
-    if (isLoading) {
-        return <div><AdminSideLoading /></div>
-    }
+    // if (isLoading) {
+    //     return <div><AdminSideLoading /></div>
+    // }
 
     const handleToDetails = (id: string) => {
         navigate(`/admin/candidate/${id}`);

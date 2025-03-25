@@ -2,11 +2,11 @@ import { IPassword } from "../Interface/Interface";
 
 const Password = (props: IPassword) => {
     return (
-        <div>
+        <div className="mt-10 ml-20">
             <form className="space-y-2" onSubmit={props.handleToSubmit}>
                 <div className="pt-3 flex flex-col items-center relative">
                     <div>
-                        <label className="text-white"> Current Password: </label>
+                        {/* <label className="text-gray-800"> Current Password: </label> */}
                         <input
                             type="password"
                             id="currentPassword"
@@ -25,7 +25,7 @@ const Password = (props: IPassword) => {
                 </div>
                 <div className="pt-3 flex flex-col items-center relative">
                     <div>
-                        <label className="text-white"> Change Password: </label>
+                        {/* <label className="text-gray-800"> Change Password: </label> */}
                         <input
                             type="password"
                             id="changePassword"
@@ -44,7 +44,7 @@ const Password = (props: IPassword) => {
                 </div>
                 <div className="pt-3 flex flex-col items-center relative">
                     <div>
-                        <label className="text-white"> Confirm Password: </label>
+                        {/* <label className="text-gray-800"> Confirm Password: </label> */}
                         <input
                             type="password"
                             id="confirmPassword"

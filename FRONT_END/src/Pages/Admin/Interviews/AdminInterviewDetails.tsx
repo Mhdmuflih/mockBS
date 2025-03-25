@@ -3,14 +3,12 @@ import SideBar from "../../../components/Admin/SideBar";
 import { useEffect, useState } from "react";
 import { fetchInterviewerAndCandidate } from "../../../Services/adminService";
 import { TiArrowBack } from "react-icons/ti";
-import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminInterviewDetails = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
-
     const location = useLocation();
     const [interviewerData, setInterviewerData] = useState<{ name: string, email: string, mobile: string, profileURL: string }>({
         name: "",
@@ -28,9 +26,9 @@ const AdminInterviewDetails = () => {
 
     useEffect(() => {
 
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        //     setIsLoading(false);
+        // }, 2000);
 
         const { candidateId, interviewerId }: { candidateId: string, interviewerId: string } = location.state;
         console.log(candidateId, interviewerId, 'this is that candidate and interviewer id');
@@ -68,15 +66,15 @@ const AdminInterviewDetails = () => {
         fetchInterviewerAndCandidateData();
     }, []);
 
-    if(isLoading) {
-        return <div><AdminSideLoading /></div>
-    }
+    // if(isLoading) {
+    //     return <div><AdminSideLoading /></div>
+    // }
 
     return (
         <>
             <div className="flex">
                 <SideBar heading="Interview Details">
-                    <div className="bg-[#30323A] ml-1 p-4 shadow-md mt-2 h-[476px]">
+                    <div className="bg-[#30323A]  p-4 shadow-md h-screen">
                         <div>
                             <TiArrowBack className="text-white text-2xl cursor-pointer" onClick={() => navigate('/admin/interviews')} />
                         </div>

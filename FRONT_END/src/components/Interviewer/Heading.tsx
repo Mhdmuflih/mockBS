@@ -19,27 +19,30 @@ const Heading = (props: IheadingProps) => {
     return (
         <>
             {/* Main Content */}
-            <div className="flex-1 flex flex-col">
-                {/* Heading Section */}
-                <div className="bg-[#181A22] mt-3 ml-1 rounded-t-lg p-5 flex justify-between w-[1050px]">
-                    <div>
-                        <h1 className="text-2xl font-bold text-white">{props.heading}</h1>
-                        <h3 className="text-white font-extralight">{props.subHeading}</h3>
-                    </div>
-                    {props.addButton ? (
-                        <>
-                            <div>
-                                <button className="text-black bg-white p-2 rounded-xl" onClick={handleToAddSlot}> {props.addButton} </button>
-                            </div>
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                </div>
+            <div className="w-full">
+                <div className="flex-1 flex flex-col w-full"> {/* Add w-full here */}
 
-                {/* Content Section */}
-                <div className="flex-1 w-[1054px]">
-                    {props.children}
+                    {/* Heading Section */}
+                    <div className="bg-gray-800 p-6 flex justify-between w-full">
+                        <div>
+                            <h1 className="text-2xl font-bold text-white">{props.heading}</h1>
+                            <h3 className="text-white font-extralight">{props.subHeading}</h3>
+                        </div>
+                        {props.addButton ? (
+                            <>
+                                <div>
+                                    <button className="text-black bg-white p-2 rounded-xl" onClick={handleToAddSlot}> {props.addButton} </button>
+                                </div>
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                    </div>
+
+                    {/* Content Section */}
+                    <div className="flex-1 w-full h-screen">
+                        {props.children}
+                    </div>
                 </div>
             </div>
         </>

@@ -63,8 +63,8 @@ const InterviewerProfileChangePassword = () => {
             <Toaster position="top-right" reverseOrder={false} />
 
             <SideBar heading="Change Password">
-                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[426px]">
-                    <div className="flex space-x-28 ml-7 mt- w-[980px]">
+                <div className="bg-[#30323A] p-4 shadow-md h-screen">
+                    <div className="flex space-x-28 ml-7 w-[990px]">
                         <Password
                             errors={errors}
                             formData={formData}

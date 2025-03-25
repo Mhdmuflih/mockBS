@@ -3,11 +3,11 @@ import SideBar from "../../../components/Admin/SideBar";
 import Table from "../../../components/Admin/Table";
 import { fetchInterviewList } from "../../../Services/adminService";
 import { useNavigate } from "react-router-dom";
-import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminInterviewList = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
 
     const [interviewData, setInterviewData] = useState<any[]>([]);
@@ -18,9 +18,9 @@ const AdminInterviewList = () => {
 
     useEffect(() => {
 
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        //     setIsLoading(false);
+        // }, 2000);
 
         const fetchInterviewsData = async () => {
             try {
@@ -52,9 +52,9 @@ const AdminInterviewList = () => {
         fetchInterviewsData();
     }, [searchQuery, currentPage]);
 
-    if (isLoading) {
-        return <div><AdminSideLoading /></div>
-    }
+    // if (isLoading) {
+    //     return <div><AdminSideLoading /></div>
+    // }
 
     const handleToDetails = (scheduleId: string, candidateId: string, interviewerId: string) => {
         navigate(`/admin/interviews/${scheduleId}`, { state: { candidateId: candidateId, interviewerId: interviewerId } })
@@ -78,7 +78,6 @@ const AdminInterviewList = () => {
             <div className="flex">
 
                 <SideBar heading="Interviews" >
-                    <div className="bg-[#30323A] ml-1 p-4 shadow-md mt-2 h-[476px]">
 
                         <Table
                             columns={interviewColumns}
@@ -101,7 +100,6 @@ const AdminInterviewList = () => {
                                 ),
                             }))}
                         />
-                    </div>
                 </SideBar>
             </div>
         </>

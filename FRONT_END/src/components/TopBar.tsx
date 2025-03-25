@@ -10,7 +10,7 @@ const TopBar = () => {
     }
 
     return (
-        <div className="bg-[#30323A] w-full p-2">
+        <div className="bg-gray-800 w-full p-2">
             <img onClick={navigateToHomePage} src={logo} alt="Company Logo" className="h-10 w-14 mr-4 ml-3 hover:cursor-pointer" />
         </div>
     )

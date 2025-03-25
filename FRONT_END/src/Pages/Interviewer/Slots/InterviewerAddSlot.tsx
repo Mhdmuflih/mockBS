@@ -135,7 +135,7 @@ const InterviewerAddSlot = () => {
 
                 <Toaster position="top-right" reverseOrder={false} />
 
-                <div className="bg-[#30323A] ml-1 p-6 rounded-b-lg shadow-md h-[73vh] overflow-y-auto">
+                <div className="bg-[#30323A] p-4 shadow-md h-screen overflow-y-auto">
                     <div>
                         <TiArrowBack className="text-white text-2xl cursor-pointer" onClick={() => navigate('/interviewer/slot')} />
                     </div>

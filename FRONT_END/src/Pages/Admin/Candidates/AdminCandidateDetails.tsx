@@ -3,11 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchCandidatesDetails } from "../../../Services/adminService";
 import SideBar from "../../../components/Admin/SideBar";
 import { TiArrowBack } from "react-icons/ti";
-import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminCandidateDetails = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     const { id } = useParams(); // Access dynamic id from URL
@@ -15,9 +15,9 @@ const AdminCandidateDetails = () => {
 
     useEffect(() => {
 
-        setTimeout(()=> {
-            setIsLoading(false);
-        },2000);
+        // setTimeout(()=> {
+        //     setIsLoading(false);
+        // },2000);
 
         const fetchDetails = async () => {
             if (!id) {
@@ -45,9 +45,9 @@ const AdminCandidateDetails = () => {
         fetchDetails();
     }, [id]);
 
-    if (isLoading) {
-        return <div><AdminSideLoading /></div>; // Show loading state while data is being fetched
-    }
+    // if (isLoading) {
+    //     return <div><AdminSideLoading /></div>; // Show loading state while data is being fetched
+    // }
 
     if (!candidateDetails) {
         return <div>No details found for the selected candidate.</div>;
@@ -57,7 +57,7 @@ const AdminCandidateDetails = () => {
         <div className="flex">
             {/* Sidebar */}
             <SideBar heading="Details">
-                <div className="bg-[#30323A] ml-1 p-4 shadow-md mt-2 h-[476px]">
+                <div className="bg-[#30323A] p-4 shadow-md h-screen">
                 <div>
                     <TiArrowBack className="text-white text-2xl cursor-pointer" onClick={() => navigate('/admin/candidates')} />
                 </div>

@@ -112,12 +112,13 @@ const CandidateProfile = () => {
     return (
         <div>
             <Toaster position="top-right" reverseOrder={false} />
+            
             <SideBar heading="Profile">
-                <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[439px] relative">
+                <div className="bg-gray-200 p-4 shadow-md h-screen">
                     <form onSubmit={handleToSubmit}>
-                        <div className="flex space-x-28 ml-7 w-[990px] relative">
+                        <div className="flex space-x-28 ml-14 w-[990px] relative">
                             <div
-                                className="relative w-24 h-24 rounded-full cursor-pointer"
+                                className="relative mt-10 w-24 h-24 rounded-full cursor-pointer"
                                 onMouseEnter={() => setIsHovered(true)}
                                 onMouseLeave={() => setIsHovered(false)}
                             >
@@ -140,10 +141,10 @@ const CandidateProfile = () => {
                         </div>
 
                         {/* Dynamic Editable Fields */}
-                        <div className="mt-10 space-y-4">
+                        <div className="mt-10 space-y-4 ml-10">
                             {["name", "mobile"].map((field) => (
                                 <div key={field} className="flex items-center">
-                                    <h2 className="text-white font-medium w-28">{field.charAt(0).toUpperCase() + field.slice(1)}:</h2>
+                                    <h2 className="text-gray-800 font-medium w-28">{field.charAt(0).toUpperCase() + field.slice(1)}:</h2>
                                     {editMode[field] ? (
                                         <input
                                             type={field === "email" ? "email" : "text"}
@@ -155,7 +156,7 @@ const CandidateProfile = () => {
 
                                         
                                     ) : (
-                                        <h1 className="text-white font-semibold ml-4">{candidateData[field as keyof typeof candidateData] || "Loading..."}</h1>
+                                        <h1 className="text-gray-800 font-semibold ml-4">{candidateData[field as keyof typeof candidateData] || "Loading..."}</h1>
                                     )}
                                     <button
                                         type="button"

@@ -25,7 +25,7 @@ const Home = () => {
 
             {/* top bar */}
 
-            <div className="bg-[#30323A] w-full p-1 flex justify-between items-center fixed top-0 left-0 shadow-md z-50">
+            <div className="bg-gray-800 w-full p-1 flex justify-between items-center fixed top-0 left-0 shadow-md z-50">
                 <div>
                     <img onClick={navigateToHomePage} src={logo} alt="Company Logo" className="h-10 w-14 mr-4 ml-3 hover:cursor-pointer" />
                 </div>

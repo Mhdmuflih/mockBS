@@ -3,11 +3,11 @@ import SideBar from "../../../components/Interviewer/Sidebar";
 import Table from "../../../components/Interviewer/Table";
 import { getInterviewerScheduledInterviews } from "../../../Services/interviewerService";
 import { useNavigate } from "react-router-dom";
-import PageLoading from "../../../components/PageLoading";
+// import PageLoading from "../../../components/PageLoading";
 
 const InterviewerScheduled = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
 
     const [scheduledData, setScheduledData] = useState<any[]>([]);
@@ -19,9 +19,9 @@ const InterviewerScheduled = () => {
 
     useEffect(() => {
 
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        //     setIsLoading(false);
+        // }, 2000);
 
         const fetchInterviewerScheduledInterviews = async () => {
             try {
@@ -52,9 +52,9 @@ const InterviewerScheduled = () => {
         fetchInterviewerScheduledInterviews();
     }, [searchQuery, currentPage]);
 
-    if (isLoading) {
-        return <div><PageLoading /></div>
-    }
+    // if (isLoading) {
+    //     return <div><PageLoading /></div>
+    // }
 
     const handleToDetails = (id: string, detailsData: any) => {
         navigate(`/interviewer/scheduled/${id}`, { state: { detailsData: detailsData } });
@@ -77,7 +77,7 @@ const InterviewerScheduled = () => {
     return (
         <>
             <SideBar heading="Scheduled Interviews" subHeading="See information about all interviews">
-                <div className="bg-[#30323A] ml-1 rounded-b-lg shadow-md h-[69vh] ">
+                <div>
                     <Table
                         columns={scheduledTable}
                         handleChange={handleChange}

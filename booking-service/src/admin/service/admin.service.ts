@@ -7,7 +7,7 @@ import { ISchedule } from "src/interface/interface";
 export class AdminService implements IAdminService {
     constructor(private readonly adminRepository: AdminRepository) { }
 
-    async getInterview(page: number, limit: number, search?: string): Promise<{interviews:ISchedule[], totalRecords: number, totalPages: number, currentPage: number}> {
+    async getInterview(page: number, limit: number, search?: string): Promise<{ interviews: ISchedule[], totalRecords: number, totalPages: number, currentPage: number }> {
         try {
             // const interviews = await this.adminRepository.getInterviews(page, limit, search);
             const interviews = await this.adminRepository.findWithPagination({}, page, limit, search);
@@ -15,8 +15,19 @@ export class AdminService implements IAdminService {
                 interviews: interviews.data,
                 totalRecords: interviews.total,
                 totalPages: Math.ceil(interviews.total / limit),
-                currentPage:page
+                currentPage: page
             };
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async getDashboradData(): Promise<{ interview: number }> {
+        try {
+            const interview = await this.adminRepository.findInterviewCount();
+            console.log(interview, 'this is interview count');
+            return { interview: interview };
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

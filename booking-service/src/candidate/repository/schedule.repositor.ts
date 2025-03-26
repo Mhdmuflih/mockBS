@@ -58,15 +58,15 @@ export class ScheduleRepository extends BaseRepository<Scheduled> implements ICa
         }
     }
 
-    // async findScheduleInterview(scheduledId: string): Promise<ISchedule> {
-    //     try {
-    //         return await this.findOne(scheduledId);
-    //         // return await this.scheduledModel.findOne({ scheduleId: scheduledId });
-    //     } catch (error: any) {
-    //         console.log(error.message);
-    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
+    async findScheduleInterview(scheduledId: string): Promise<ISchedule> {
+        try {
+            return await this.findOne(scheduledId);
+            // return await this.scheduledModel.findOne({ scheduleId: scheduledId });
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     // async candidateSceduledInterviews(candidateId: string, page: number, limit: number, search: string): Promise<{ total: number, data: ISchedule[] }> {
     //     try {

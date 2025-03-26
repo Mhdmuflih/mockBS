@@ -146,4 +146,16 @@ export class AdminController implements IAdminController {
     }
   }
 
+  @Get('/dashboard')
+  async getDashboard(): Promise<{candidate: number, interviewer: number}> {
+    try {
+      const dashboardData = await this.adminService.getDashboradData();
+      console.log(dashboardData, 'this is dashboard data');
+      return dashboardData
+    } catch (error: any) {
+      console.log(error.message);
+      throw new BadRequestException(error.message || 'An error occurred');
+    }
+  }
+
 }

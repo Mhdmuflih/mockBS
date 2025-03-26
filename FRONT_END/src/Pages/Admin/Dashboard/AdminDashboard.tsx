@@ -1,39 +1,72 @@
-// import { useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { logout } from "../../../Store/Slice/AdminSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SideBar from "../../../components/Admin/SideBar";
-// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+import { fetchInterview, fetchPayment, fetchUsers } from "../../../Services/adminService";
 
 const AdminDashboard = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    // const dispatch = useDispatch();
-    // const navigate = useNavigate();
-    // const { isLoggedIn } = useSelector((state: any) => state.adminAuth);
+    const [countData, setCountData] = useState<{candidateCount: number, interviewerCount: number, profit: number, interview: number} | null>(null);
 
     useEffect(() => {
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
+        const fetchDatas = async() => {
+            try {
+                const usersResponse: any = await fetchUsers();
+                const paymentResponse: any = await fetchPayment();
+                const interviewResponse: any = await fetchInterview();
+                if(!usersResponse || !paymentResponse || ! interviewResponse) {
+                    throw new Error("data fetch have some issue");
+                }
+                console.log(usersResponse, "user response");
+                console.log(paymentResponse, "payment response");
+                console.log(interviewResponse, "interview response");
+
+                const formattedData = {
+                    candidateCount: usersResponse.candidate,
+                    interviewerCount: usersResponse.interviewer,
+                    profit: paymentResponse.totalAmount,
+                    interview: interviewResponse.interview, 
+                }
+                setCountData(formattedData);
+            } catch (error: any) {
+                console.log(error.message);
+            }
+        }
+        fetchDatas();
     }, []);
-
-    // const handleToLogout = () => {
-    //     dispatch(logout());
-    //     navigate('/admin/login');
-    // };
-
-    // if(isLoading) {
-    //     return <div><AdminSideLoading /></div>
-    // }
 
     return (
         <div className="flex">
             {/* Sidebar */}
             <SideBar heading="Dashboard" >
                 <div className="bg-[#30323A]  p-4 shadow-md h-screen">
+
+                    <div className="flex justify-around mt-10">
+                        <div className="bg-white w-32 h-32 rounded-3xl">
+                            <h1 className="mt-4 ml-1 font-medium text-center">Total Interivewer</h1>
+                            {countData && <>{countData.interviewerCount}</>}
+                        </div>
+                        <div className="bg-white w-32 h-32 rounded-3xl">
+                            <h1 className="mt-4 ml-1 font-medium text-center">Total Candidate</h1>
+                            {countData && <>{countData.candidateCount}</>}
+                        </div>
+                        <div className="bg-white w-32 h-32 rounded-3xl">
+                            <h1 className="mt-4 ml-1 font-medium text-center">Scheduled Interivewer</h1>
+                            {countData && <>{countData.interview}</>}
+                        </div>
+                    </div>
+
+
+                    <div className="flex justify-around mt-10">
+                        <div className="bg-white w-32 h-32 rounded-3xl">
+                            <h1 className="mt-4 ml-1 font-medium text-center">Profit</h1>
+                            {countData && <>{countData.profit}</>}
+                        </div>
+                        <div className="bg-white w-32 h-32 rounded-3xl">
+                            <h1 className="mt-4 ml-1 font-medium text-center"></h1>
+                        </div>
+                        <div className="bg-white w-32 h-32 rounded-3xl">
+                            <h1 className="mt-4 ml-1 font-medium text-center"></h1>
+                        </div>
+                    </div>
 
                 </div>
             </SideBar>

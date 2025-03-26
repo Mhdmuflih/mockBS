@@ -165,4 +165,16 @@ export class AdminService implements IAdminService {
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+
+  async getDashboradData(): Promise<{candidate:number, interviewer:number}> {
+    try {
+      const candidate = await this.adminCandidateRepository.findCandidateCount();
+      const interviewer = await this.adminInterviewerRepository.findInterviewerCount();
+      return {candidate, interviewer};
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

@@ -23,7 +23,7 @@ export class CandidateController implements ICandidateController {
   }
 
   @Post('verify-payment')
-  async verifyPayment(@Body() sessionId: {sessionId: string}): Promise<IPayment> {
+  async verifyPayment(@Body() sessionId: {sessionId: string}): Promise<any> {
     try {
       // console.log(sessionId.sessionId, 'this is session id');
       const updatePayment = await this.candidateService.verifyPayment(sessionId.sessionId)

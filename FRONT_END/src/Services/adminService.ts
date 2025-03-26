@@ -239,3 +239,35 @@ export const PayToInterviewer = async (id: string) => {
         throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
     }
 }
+
+
+
+
+// dashboard 
+export const fetchUsers = async() => {
+    try {
+        const response = await ProtectedAPI.get('/user-service/admin/dashboard');
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
+    }
+}
+export const fetchPayment = async() => {
+    try {
+        const response = await ProtectedAPI.get('/payment-service/admin/dashboard');
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
+    }
+}
+export const fetchInterview = async() => {
+    try {
+        const response = await ProtectedAPI.get('/booking-service/admin/dashboard');
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
+    }
+}

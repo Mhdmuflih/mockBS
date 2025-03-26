@@ -23,4 +23,15 @@ export class AdminRepository extends BaseRepository<Scheduled> implements IAdmin
     //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     //     }
     // }
+
+    async findInterviewCount(): Promise<number> {
+        try {
+            const interview = await this.shceduleModel.countDocuments();
+            console.log(interview, 'this is interview');
+            return interview;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -47,8 +47,8 @@ export class CandidateService implements ICandidateService {
 
   async scheduleInterview(scheduleData: any): Promise<void> {
     try {
-      const existingScheudledData = await this.scheduleRepository.findOne(scheduleData.scheduleId);
-      // const existingScheudledData = await this.scheduleRepository.findScheduleInterview(scheduleData.scheduledId);
+      // const existingScheudledData = await this.scheduleRepository.findOne(scheduleData.scheduleId);
+      const existingScheudledData = await this.scheduleRepository.findScheduleInterview(scheduleData.scheduledId);
       if (existingScheudledData) {
         throw new Error("already booked interview ");
       }

@@ -82,7 +82,7 @@ export class CandidateService implements ICandidateService {
     try {
 
       const verifyPaymetData = await this.candidateRepository.findPaymentData(sessionId);
-
+      console.log(verifyPaymetData, 'this is verify payment data');
       if (!verifyPaymetData.scheduleData || verifyPaymetData.status == "completed") {
         console.log("Payment successful, no need to proceed with booking.");
         return { success: true, message: "Payment verified, but no schedule data found." }; // Return early
@@ -106,7 +106,7 @@ export class CandidateService implements ICandidateService {
 
 
       const response = await sendBookingData(bookingData);
-      // console.log(response, 'this is for the response of the booking in grpc');
+      console.log(response, 'this is for the response of the booking in grpc');
 
       await this.candidateRepository.verifyPayment(sessionId);
 

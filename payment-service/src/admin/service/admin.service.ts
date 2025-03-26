@@ -5,6 +5,7 @@ import { AdminInterviewerWallet } from '../repository/admin-interviewer-wallet.r
 import Stripe from 'stripe';
 import mongoose from 'mongoose';
 import { IPayment, IWallet } from 'src/candidate/interface/Interface';
+import { TotalAmountResult } from '../interface/interface';
 
 @Injectable()
 export class AdminService implements IAdminService {
@@ -18,7 +19,7 @@ export class AdminService implements IAdminService {
 
     }
 
-    async interviewerPayment(page: number, limit: number, search: string): Promise<{interviewerPaymentData: any, totalRecords: number, totalPages: number, currentPage: number}> {
+    async interviewerPayment(page: number, limit: number, search: string): Promise<{ interviewerPaymentData: any, totalRecords: number, totalPages: number, currentPage: number }> {
         try {
             const interviewerPaymentData = await this.adminRepository.getInterviewerPaymentHistory(page, limit, search);
             return {
@@ -37,7 +38,7 @@ export class AdminService implements IAdminService {
         try {
 
             const paymentData: any = await this.adminRepository.findOneById(id);
-            console.log(paymentData,'this is payment data');
+            console.log(paymentData, 'this is payment data');
 
             if (!paymentData) {
                 throw new Error('Payment record not found');
@@ -109,6 +110,16 @@ export class AdminService implements IAdminService {
 
             // const interviewerPayedData = await this.adminWalletRepository.payToInterviewer(id);
             // console.log(interviewerPayedData,'kjlasdhfljasdfj');
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async getDashboradData(): Promise<{paymentProfit: number}> {
+        try {
+            const paymentData: any = await this.adminRepository.findTotalAmount();
+            return paymentData;
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

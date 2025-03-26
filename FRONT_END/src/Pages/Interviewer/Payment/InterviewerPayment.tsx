@@ -62,6 +62,10 @@ const InterviewerPayment = () => {
         setIsModal(false);
     };
 
+    if(!walletData) {
+        return <div>Loading....</div>
+    }
+
     return (
         <SideBar heading="Payment" subHeading="Track your earnings and manage your finances">
             <Toaster position="top-right" reverseOrder={false} />
@@ -99,7 +103,7 @@ const InterviewerPayment = () => {
                                         {data.description}
                                     </td>
                                     <td className={`p-3  ${data.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                        ${data.amount}
+                                        {data.amount}
                                     </td>
                                 </tr>
                             ))}

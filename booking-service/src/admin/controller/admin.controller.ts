@@ -21,4 +21,15 @@ export class AdminController implements IAdminController {
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Get('/dashboard')
+  async getDashboard(): Promise<{interview: number}> {
+    try {
+      const dashboardData = await this.adminService.getDashboradData();
+      return dashboardData
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

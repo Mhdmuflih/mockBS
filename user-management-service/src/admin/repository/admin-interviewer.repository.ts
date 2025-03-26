@@ -25,7 +25,7 @@ export class AdminInterviewerRepository extends BaseRepository<Interviewer> impl
     async interviewerAction(id: string): Promise<IInterviewer> {
         try {
             const interviewer = await this.findOneById(id);
-            
+
             if (!interviewer) {
                 throw new BadRequestException('Interviewer not found!');
             }
@@ -38,6 +38,16 @@ export class AdminInterviewerRepository extends BaseRepository<Interviewer> impl
 
             return updatedInterviewer;
 
+        } catch (error: any) {
+            console.log(error.message)
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async findInterviewerCount(): Promise<number> {
+        try {
+            const interviewer = await this.interviewerModel.countDocuments();
+            return interviewer;
         } catch (error: any) {
             console.log(error.message)
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

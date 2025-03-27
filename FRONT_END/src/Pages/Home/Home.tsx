@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/Creative Logo Templates.jpeg";
 import mainLapLogo from '../../assets/main.png';
+import landingFirst from "../../assets/executives-ready-meeting-removebg-preview.png";
 import landingMain from '../../assets/landing page image.jpeg';
+import sky from "../../assets/fantastic-blue-sky.jpg"
 // import landing from '../../assets/landing.jpeg';
 
 const Home = () => {
@@ -25,32 +27,46 @@ const Home = () => {
 
             {/* top bar */}
 
-            <div className="bg-gray-800 w-full p-1 flex justify-between items-center fixed top-0 left-0 shadow-md z-50">
-                <div>
-                    <img onClick={navigateToHomePage} src={logo} alt="Company Logo" className="h-10 w-14 mr-4 ml-3 hover:cursor-pointer" />
+            <div className=" w-full p-1 flex justify-between items-center fixed top-0 left-0 shadow-md bg-white z-50">
+                <div className="flex">
+                    <img onClick={navigateToHomePage} src={logo} alt="Company Logo" className="h-10 w-14 mr-4 ml-3 shadow-md rounded-xl hover:cursor-pointer" />
+                    <h1 className="mt-2 font-semibold text-[#0d97ff]">mock BS</h1>
                 </div>
 
                 <div className="mx-5 mt-2 pb-1">
-                    <button onClick={navigateToSignup} type="submit" className="text-white bg-[#171616] px-4 py-2 mr-4 rounded-3xl hover:bg-white hover:text-black">Sign Up</button>
-                    <button onClick={navigateToLogin} type="submit" className="text-white bg-[#171616] px-4 py-2 rounded-3xl hover:bg-white hover:text-black">Login</button>
+                    <button onClick={navigateToSignup} type="submit" className="text-white bg-[#0d97ff] px-4 py-2 mr-4 rounded-3xl hover:bg-[#a0d9ef] hover:text-black duration-700">Sign Up</button>
+                    <button onClick={navigateToLogin} type="submit" className="text-white bg-[#0d97ff] px-4 py-2 rounded-3xl hover:bg-[#a0d9ef] hover:text-black duration-700">Login</button>
                 </div>
             </div>
 
             {/* 1 part */}
+            {/* <div
+                style={{ backgroundImage: `url(${sky})` }}
+                className="h-screen bg-cover bg-center flex justify-between flex-col md:flex-row"
+            ></div> */}
 
-            <div className="flex justify-between mt-20 flex-col md:flex-row ">
-                <div className="mt-20 ml-52">
-                    <h1 className="text-black font-bold font-serif text-[27px]">Ace Your Dream Job Interviews</h1>
-                    <h1 className="text-[#32ADE6] font-bold font-serif text-[27px]">with Confidence</h1>
+            <div
+                style={{ backgroundImage: `url(${sky}) ` }}
+                className="flex justify-between flex-col md:flex-row  h-screen bg-no-repeat ">
+                <div className="mt-40 ml-32 ">
+                    <h1 className="text-black font-bold font-serif text-6xl">Every mock interview </h1>
+                    <h1 className="font-bold font-serif text-5xl">brings you one step closer to </h1>
+                    <h1 className="font-bold font-serif text-5xl">your dream job.</h1>
 
-                    <p className="text-black text-xs mt-3 font-semibold">Practice mock interviews with industry experts and receive personalized</p>
-                    <p className="text-black text-xs mt-1 font-semibold">feedback to boost your skills and confidence.</p>
+                    <div className="mt-10 text-xl font-extralight">
+                        <p className="text-black">Enhance your skills with mock interviews led by industry experts, </p>
+                        <p className="text-black  ">and receive personalized feedback to boost your confidence.</p>
+                    </div>
 
-                    <button onClick={navigateToSignup} type="submit" className="bg-[#32ADE6] px-4 py-3 rounded-2xl font-serif mt-10 hover:bg-[#30323A] hover:text-white" >Get Started Now</button>
+                    <button onClick={navigateToSignup} type="submit" className="bg-[#0d97ff] px-4 py-3 rounded-2xl font-serif mt-10 hover:bg-[#30323A] hover:text-white" >Get Started Now</button>
                 </div>
 
-                <div className="mr-10">
+                {/* <div className="mr-10 mt-32">
                     <img src={mainLapLogo} alt="Main Lap Logo" className="h-[380px]" />
+                </div> */}
+
+                <div className=" w-96 rounded-es-[200px]">
+                    <img src={landingFirst} alt="" className="mt-[330px] " />
                 </div>
             </div>
 

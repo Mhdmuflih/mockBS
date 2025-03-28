@@ -30,7 +30,7 @@ async function Server() {
   }
 
   try {
-    const connect = await mongoose.connect(mongoURL, { dbName: 'Auth' });
+    const connect = await mongoose.connect(mongoURL, { dbName: 'Payment' });
     console.log(`✅ MongoDB connected successfully at host: ${connect.connection.host}`);
   } catch (error: any) {
     console.error('❌ Failed to connect to MongoDB:', error.message);

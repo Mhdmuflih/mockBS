@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateInterviewerDto } from '../dto/create-interviewer.dto';
-import { UpdateInterviewerDto } from '../dto/update-interviewer.dto';
-import { InterviewerRepository } from '../repository/interviewer.repository';
+// import { CreateInterviewerDto } from '../dto/create-interviewer.dto';
+// import { UpdateInterviewerDto } from '../dto/update-interviewer.dto';
+// import { InterviewerRepository } from '../repository/interviewer.repository';
 import { InterviewerWalletRepository } from '../repository/interviewer-wallet.repository';
 import { IPayment, IWallet } from '../interface/interface';
 import { IInterviewerService } from '../interface/IInterviewerService';
@@ -9,7 +9,7 @@ import { IInterviewerService } from '../interface/IInterviewerService';
 @Injectable()
 export class InterviewerService implements IInterviewerService {
   constructor(
-    private readonly interviewerRepository: InterviewerRepository,
+    // private readonly interviewerRepository: InterviewerRepository,
     private readonly interviewerWalletRepository: InterviewerWalletRepository
   ) { }
 

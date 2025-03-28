@@ -5,7 +5,7 @@ import { Payment } from "../model/payment.schema";
 import { Model } from "mongoose";
 import { Cron } from '@nestjs/schedule';
 import { BaseRepository } from "src/repository/baseRepository";
-import { IPayment } from "../interface/Interface";
+import { IPayment, PaymentData } from "../interface/Interface";
 
 @Injectable()
 export class CandidateRepository extends BaseRepository<Payment> implements ICandidateRepository {
@@ -15,7 +15,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
         super(paymentModel)
      }
 
-    async autoDeleteExpiredPayments(data: any) {
+    async autoDeleteExpiredPayments(data: IPayment): Promise<void> {
         await this.paymentModel.deleteOne({
             scheduleId: data.scheduleId,
             status: 'pending',
@@ -24,7 +24,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
     }
     
 
-    async savePayment(candidateId: string, data: any): Promise<any> {
+    async savePayment(candidateId: string, data: any): Promise<IPayment> {
         try {
 
             const paymentData = {
@@ -48,7 +48,6 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
                 paymentMethod: 'credit_card',
             };
 
-            // console.log(paymentData, 'this is payment data')
             const saveData = new this.paymentModel(paymentData);
             return await saveData.save();
         } catch (error: any) {
@@ -57,7 +56,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
         }
     }
 
-    async findPayment(candidateId: string, data: any) {
+    async findPayment(data: PaymentData): Promise<IPayment> {
         try {
             const existing = await this.paymentModel.findOne({
                 scheduleId: data.scheduleId, // Ensure this matches correctly
@@ -70,7 +69,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
         }
     }
 
-    async existingPaymentData(data: any): Promise<any> {
+    async existingPaymentData(data: PaymentData): Promise<IPayment> {
         try {
             const existing = await this.paymentModel.findOne({
                 scheduleId: data.scheduleId,
@@ -83,7 +82,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
         }
     }
 
-    async verifyPayment(transactionId: string): Promise<any> {
+    async verifyPayment(transactionId: string): Promise<IPayment> {
         try {
             const updatePayment =  await this.paymentModel.findOneAndUpdate({ transactionId: transactionId }, { $set: { status: "completed" } }, { new: true })
             return updatePayment;
@@ -93,7 +92,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
         }
     }
 
-    async findPaymentData(transactionId: string): Promise<any> {
+    async findPaymentData(transactionId: string): Promise<IPayment> {
         try {
             const findedData =  await this.paymentModel.findOne({ transactionId: transactionId });
             return findedData;

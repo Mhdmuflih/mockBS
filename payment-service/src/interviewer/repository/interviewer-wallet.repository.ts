@@ -4,6 +4,7 @@ import { Model } from "mongoose";
 import { Wallet } from "src/admin/model/wallet";
 import { BaseRepository } from "src/repository/baseRepository";
 import { IInterviewerWalletRepository } from "../interface/IInterviewerWalletRepository";
+import { IWallet } from "../interface/interface";
 
 @Injectable()
 export class InterviewerWalletRepository extends BaseRepository<Wallet> implements IInterviewerWalletRepository {
@@ -11,16 +12,18 @@ export class InterviewerWalletRepository extends BaseRepository<Wallet> implemen
         super(walletModel);
     }
 
-    async getWalletHistoryData(interviewerId: string): Promise<any> {
+    async getWalletHistoryData(interviewerId: string): Promise<IWallet> {
         try {
-            return await this.walletModel.findOne({ interviewerId: interviewerId }).exec();
+            const wallet =  await this.walletModel.findOne({ interviewerId: interviewerId }).exec();
+            console.log(wallet, 'this is wallet in repo')
+            return wallet
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async walletWithdraw(interviewerId: string, amount: number): Promise<any> {
+    async walletWithdraw(interviewerId: string, amount: number): Promise<IWallet> {
         try {
             const walletData = await this.walletModel.findOne({ interviewerId: interviewerId });
             walletData.balance -= amount;

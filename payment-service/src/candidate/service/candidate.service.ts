@@ -4,6 +4,8 @@ import { CandidateRepository } from '../repository/candidate.repository';
 import Stripe from 'stripe';
 import { ClientKafka, ClientProxy } from '@nestjs/microservices';
 import { sendBookingData } from 'src/gRPC/booking.client';
+import { PaymentData } from '../interface/Interface';
+import { CandidateInterviewerWalletRepository } from '../repository/candidate-interviewer-wallet.repository';
 
 @Injectable()
 export class CandidateService implements ICandidateService {
@@ -11,14 +13,15 @@ export class CandidateService implements ICandidateService {
 
   constructor(
     private readonly candidateRepository: CandidateRepository,
+    private readonly candidateInterviewerWalletRepository: CandidateInterviewerWalletRepository,
   ) {
     this.stripe = new Stripe("sk_test_51QvsEdGUzdkKqzcdinByZpi9wyrb6JfwF0AVaNBOGGBLernXeTVszLCIFd19AFzPBMMqtkjLhnflACczbZtowhfW00AhK9XPQ0");
   }
 
-  async paymentForBooking(candidateId: string, data: any): Promise<Stripe.Checkout.Session> {
+  async paymentForBooking(candidateId: string, data: PaymentData): Promise<Stripe.Checkout.Session> {
     try {
 
-      const existingPayment = await this.candidateRepository.findPayment(candidateId, data);
+      const existingPayment = await this.candidateRepository.findPayment(data);
       if (existingPayment !== null) {
         const deleteData: any = await this.candidateRepository.autoDeleteExpiredPayments(existingPayment);
         if (deleteData === undefined) {
@@ -51,7 +54,6 @@ export class CandidateService implements ICandidateService {
         cancel_url: `http://localhost:5173/candidate/payment-status?status=cancelled`
       });
 
-      // console.log(data.scheduleData, 'Stripe session created');
 
       // Save only session ID for later confirmation
       const paymentData = {
@@ -69,8 +71,7 @@ export class CandidateService implements ICandidateService {
 
 
 
-      const saveData = await this.candidateRepository.savePayment(candidateId, paymentData);
-      // console.log(saveData, 'this is save data')
+      await this.candidateRepository.savePayment(candidateId, paymentData);
       return session;  // Return session to frontend
     } catch (error: any) {
       console.log(error.message);
@@ -78,7 +79,7 @@ export class CandidateService implements ICandidateService {
     }
   }
 
-  async verifyPayment(sessionId: string): Promise<any> {
+  async verifyPayment(sessionId: string): Promise<{ success: boolean, message: string } | void> {
     try {
 
       const verifyPaymetData = await this.candidateRepository.findPaymentData(sessionId);
@@ -106,9 +107,33 @@ export class CandidateService implements ICandidateService {
 
 
       const response = await sendBookingData(bookingData);
-      console.log(response, 'this is for the response of the booking in grpc');
+      // console.log(response, 'this is for the response of the booking in grpc');
 
-      await this.candidateRepository.verifyPayment(sessionId);
+      const verifyData = await this.candidateRepository.verifyPayment(sessionId);
+      if (!verifyData) {
+        throw new Error("slot booking payment is not verified!");
+      }
+
+      const walletData: any = {
+        interviewerId: verifyData.interviewerId,
+        balance: Math.round((verifyData.amount - (verifyData.amount * 0.1))),
+        walletHistory: [
+          {
+            date: new Date(),
+            description: "credit",
+            amount: Math.round((verifyData.amount - (verifyData.amount * 0.1))),
+          }
+        ]
+      }
+      
+      const existingWallet = await this.candidateInterviewerWalletRepository.findExistingWallet(verifyData.interviewerId);
+
+      if (existingWallet) {
+        await this.candidateInterviewerWalletRepository.updateWallet(walletData);
+      } else {
+        await this.candidateInterviewerWalletRepository.createWallet(walletData);
+      }
+
 
     } catch (error: any) {
       console.log(error.message);

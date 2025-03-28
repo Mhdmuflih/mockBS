@@ -24,17 +24,6 @@ export class AdminController implements IAdminController {
     }
   }
 
-  @Post('/pay-to-interviewer')
-  async payToInterviewer(@Body() body: { id: string }) {
-    try {
-      await this.adminService.payToInterviewer(body.id);
-      return { success: true, message: "Payment successful completed!" };
-    } catch (error: any) {
-      console.log(error.message);
-      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
   @Get('/dashboard')
   async getDashboard(): Promise<{paymentProfit: number}> {
     try {

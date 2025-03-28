@@ -12,24 +12,14 @@ export class AdminRepository extends BaseRepository<Payment> implements IAdminRe
         super(paymentModel)
     }
 
-    async getInterviewerPaymentHistory(page: number, limit: number, search: string): Promise<any> {
-        try {
-            return this.findWithPagination({ status: "completed" }, page, limit, search);
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    async updateStatus(id: string): Promise<any> {
-        try {
-            const updateData = await this.paymentModel.findOneAndUpdate({ _id: id }, { $set: { status: "admin send" } }, { new: true });
-            return updateData;
-        } catch (error: any) {
-            console.log(error.message);
-            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // async getInterviewerPaymentHistory(page: number, limit: number, search: string): Promise<any> {
+    //     try {
+    //         return this.findWithPagination({ status: "completed" }, page, limit, search);
+    //     } catch (error: any) {
+    //         console.log(error.message);
+    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
 
     async findTotalAmount(): Promise<{totalAmount: number}> {

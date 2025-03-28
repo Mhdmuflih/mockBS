@@ -1,5 +1,10 @@
+import { IPayment, PaymentData } from "./Interface";
+
 export interface ICandidateRepository {
-    savePayment(candidateId: string, data: any): Promise<any>;
-    findPaymentData(sessionId: string): Promise<any>;
-    verifyPayment(sessionId: string): Promise<any>;
+    autoDeleteExpiredPayments(data: IPayment): Promise<void>
+    savePayment(candidateId: string, data: any): Promise<IPayment>;
+    findPayment(data: PaymentData): Promise<IPayment>;
+    existingPaymentData(data: PaymentData): Promise<IPayment>;
+    findPaymentData(sessionId: string): Promise<IPayment>;
+    verifyPayment(sessionId: string): Promise<IPayment>;
 }

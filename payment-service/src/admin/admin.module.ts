@@ -4,7 +4,6 @@ import { AdminController } from './controller/admin.controller';
 import { AdminRepository } from './repository/admin-payment.respository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Payment, PaymentSchema } from 'src/candidate/model/payment.schema';
-import { AdminInterviewerWallet } from './repository/admin-interviewer-wallet.repository';
 import { Wallet, WalletSchema } from './model/wallet';
 
 @Module({
@@ -13,6 +12,6 @@ import { Wallet, WalletSchema } from './model/wallet';
     MongooseModule.forFeature([{ name: Wallet.name, schema: WalletSchema }]),
   ],
   controllers: [AdminController],
-  providers: [AdminService, AdminRepository, AdminInterviewerWallet],
+  providers: [AdminService, AdminRepository],
 })
 export class AdminModule { }

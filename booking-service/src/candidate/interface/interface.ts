@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export interface IInterviewer extends Document {
     OTP?: number;
     name: string;

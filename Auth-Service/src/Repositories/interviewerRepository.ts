@@ -3,7 +3,7 @@ import Interviewer, { IInterviewer } from "../Models/interviewerModel";
 import otpModel, { IOtp } from "../Models/otpModel";
 import { BaseRepository } from "./baseRepository";
 
-class InterviewerRepository extends BaseRepository<any> implements IInterviewerRepository {
+class InterviewerRepository extends BaseRepository<IInterviewer> implements IInterviewerRepository {
     constructor() {
         super(Interviewer);
     }

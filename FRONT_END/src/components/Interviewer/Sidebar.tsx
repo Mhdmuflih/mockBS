@@ -166,14 +166,10 @@ const SideBar = (props: IsideBarProps) => {
 
                             <li>
                                 <div
-                                    className={`flex items-center space-x-3 text-white p-2 bg-[#FF3B30] rounded-lg cursor-pointer hover:bg-[#912626] transition-all duration-300 group 
-                                ${activePath === "candidate/home" ? "bg-[#999999]" : ""}`}
-                                    onClick={() => {
-                                        handleToLogout
-                                        setIsOpen(true);
-                                    }}
+                                    className={`flex items-center space-x-3 text-white p-1 bg-[#FF3B30] rounded-lg cursor-pointer hover:bg-[#912626] transition-all duration-300 group`}
+                                    onClick={handleToLogout}
                                 >
-                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-1">
+                                    <span className="group-hover:scale-110 transition-transform duration-200 ml-2">
                                         <RiLogoutCircleFill />
                                     </span>
                                     {isOpen && <span>Logout</span>}

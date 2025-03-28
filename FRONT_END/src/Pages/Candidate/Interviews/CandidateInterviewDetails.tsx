@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getInterviewerDetails } from "../../../Services/candidateService";
+import { fetchFeedBack, getInterviewerDetails } from "../../../Services/candidateService";
 import backgroundImage from "../../../assets/interivewsDetails background image.jpeg";
 // import PageLoading from "../../../components/PageLoading";
 
@@ -11,6 +11,9 @@ const CandidateInterviewDetails = () => {
     const location = useLocation();
     const [detailsData, setDetailsData] = useState<any>(null);
     const [isModal, setIsModal] = useState(false);
+
+    const [feedbackData, setFeedbackData] = useState<any>(null);
+    const [isFetchingFeedback, setIsFetchingFeedback] = useState(false);
 
     useEffect(() => {
         // setTimeout(() => {
@@ -32,6 +35,7 @@ const CandidateInterviewDetails = () => {
 
         const fetchInterviewerDetails = async () => {
             try {
+                console.log(detailsData, 'this is detials data')
                 const response: any = await getInterviewerDetails(interviewerId);
                 if (response.success) {
                     setDetailsData({
@@ -54,9 +58,32 @@ const CandidateInterviewDetails = () => {
         navigate(`/candidate/video-call/${scheduleId}`);
     };
 
-    const handleToAddFeedback = () => {
-        setIsModal(true);
-    }
+
+
+    const handleToViewFeedback = async () => {
+        setIsFetchingFeedback(true);
+        try {
+            const slotId = detailsData?.slotData?._id; // Ensure slotId is extracted properly
+            const scheduledId = detailsData.slotData.scheduleId; // Ensure scheduledId is extracted properly
+
+            if (!slotId || !scheduledId) {
+                console.error("Missing slotId or scheduledId");
+                return;
+            }
+            const response: any = await fetchFeedBack(slotId, scheduledId);
+            if (response.success) {
+                setFeedbackData(response.feedbackData);
+                setIsModal(true); // Show modal only after fetching data
+            } else {
+                console.log("Failed to fetch feedback");
+            }
+        } catch (error: any) {
+            console.error("Error fetching feedback", error.message);
+        } finally {
+            setIsFetchingFeedback(false);
+        }
+    };
+
 
     const handleCloseModal = () => {
         setIsModal(false);
@@ -77,7 +104,7 @@ const CandidateInterviewDetails = () => {
                                 <p className="text-sm">Designation: <span className="font-bold">{detailsData.interviewerData.currentDesignation}</span></p>
                                 <p className="text-sm">Organization: <span className="font-bold">{detailsData.interviewerData.organization}</span></p>
                                 <div className="mt-5">
-                                    <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToAddFeedback}>add feedback</button>
+                                    <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToViewFeedback}>add feedback</button>
                                 </div>
                             </div>
 
@@ -102,34 +129,32 @@ const CandidateInterviewDetails = () => {
             </div>
 
             {isModal && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-4">
-                        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl text-black">
-                            <h2 className="text-xl font-semibold mb-4 text-center">Interview Feedback</h2>
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-4">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl text-black">
+                        <h2 className="text-xl font-semibold mb-4 text-center">Interview Feedback</h2>
 
+                        {isFetchingFeedback ? (
+                            <p className="text-center text-gray-600">Loading feedback...</p>
+                        ) : (
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {/* Technical Skill */}
                                 <div>
-                                    <h3 className="text-lg font-semibold mb-2">Technical Skill</h3>
-
-                                    <h3 className="text-lg font-semibold mb-2">Problem Solving</h3>
-                                    <h3 className="text-lg font-semibold mb-2">Communication Skill</h3>
+                                    <h3 className="text-lg font-semibold mb-2">Technical Skill: {feedbackData?.technology || "N/A"}</h3>
+                                    <h3 className="text-lg font-semibold mb-2">Problem Solving: {feedbackData?.problemSolving || "N/A"}</h3>
+                                    <h3 className="text-lg font-semibold mb-2">Communication Skill: {feedbackData?.communication || "N/A"}</h3>
+                                    <h3 className="text-lg font-semibold mb-2">Commants : {feedbackData?.commants || "N/A"}</h3>
                                 </div>
                             </div>
+                        )}
 
-                            {/* Additional Comments */}
-                            <div className="mt-4">
-                                <h3 className="text-lg font-semibold mb-2">Additional Comments</h3>
-                            </div>
-
-                            {/* Buttons */}
-                            <div className="flex justify-end mt-6 gap-4">
-                                <button className="bg-gray-500 text-white px-4 py-2 rounded-lg" onClick={handleCloseModal}>
-                                    Cancel
-                                </button>
-                            </div>
+                        <div className="flex justify-end mt-6 gap-4">
+                            <button className="bg-gray-500 text-white px-4 py-2 rounded-lg" onClick={handleCloseModal}>
+                                Cancel
+                            </button>
                         </div>
                     </div>
-                )}
+                </div>
+            )}
+
 
         </SideBar>
     );

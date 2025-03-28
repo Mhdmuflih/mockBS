@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/Creative Logo Templates.jpeg";
-import mainLapLogo from '../../assets/main.png';
+// import mainLapLogo from '../../assets/main.png';
 import landingFirst from "../../assets/executives-ready-meeting-removebg-preview.png";
 import landingMain from '../../assets/landing page image.jpeg';
 import sky from "../../assets/fantastic-blue-sky.jpg"

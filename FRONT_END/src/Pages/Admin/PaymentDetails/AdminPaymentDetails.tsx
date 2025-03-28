@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import SideBar from "../../../components/Admin/SideBar";
-import { interviewerPayment, PayToInterviewer } from "../../../Services/adminService";
+import { interviewerPayment } from "../../../Services/adminService";
 import { Pagination } from "@mui/material";
-import toast, { Toaster } from "react-hot-toast";
-import Swal from "sweetalert2";
+// import toast, { Toaster } from "react-hot-toast";
+// import Swal from "sweetalert2";
 
 const AdminPaymentDetails = () => {
   const [paymentData, setPaymentData] = useState<[] | null>(null);
@@ -27,26 +27,26 @@ const AdminPaymentDetails = () => {
     fetchPaymentDetails();
   }, [searchQuery, currentPage]);
 
-  const handleToPay = async (id: string) => {
-    try {
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You are about to make this payment!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#34C759",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, pay now!",
-      });
+  // const handleToPay = async (id: string) => {
+  //   try {
+  //     const result = await Swal.fire({
+  //       title: "Are you sure?",
+  //       text: "You are about to make this payment!",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#34C759",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, pay now!",
+  //     });
 
-      if (result.isConfirmed) {
-        const response: any = await PayToInterviewer(id);
-        response.success ? toast.success(response.message) : toast.error(response.message);
-      }
-    } catch (error: any) {
-      toast.error(error?.message || "An unexpected error occurred. Please try again later.");
-    }
-  };
+  //     if (result.isConfirmed) {
+  //       const response: any = await PayToInterviewer(id);
+  //       response.success ? toast.success(response.message) : toast.error(response.message);
+  //     }
+  //   } catch (error: any) {
+  //     toast.error(error?.message || "An unexpected error occurred. Please try again later.");
+  //   }
+  // };
 
   const handleChange = (_: unknown, value: number) => {
     setCurrentPage(value);
@@ -55,7 +55,7 @@ const AdminPaymentDetails = () => {
   return (
     <div className="flex ">
       <SideBar heading="Payment Details">
-        <Toaster position="top-right" />
+        {/* <Toaster position="top-right" /> */}
 
         <div className="bg-[#30323A] p-4 shadow-md min-h-screen w-full">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
@@ -82,9 +82,9 @@ const AdminPaymentDetails = () => {
                   <th className="p-2">Technology</th>
                   <th className="p-2">Interviewer</th>
                   <th className="p-2">Total Amount</th>
-                  <th className="p-2">Profit</th>
                   <th className="p-2">Interviewer Amount</th>
-                  <th className="p-2">Payment</th>
+                  <th className="p-2">Profit</th>
+                  {/* <th className="p-2">Payment</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -94,14 +94,14 @@ const AdminPaymentDetails = () => {
                     <td className="p-2">{data.scheduleData.stack}</td>
                     <td className="p-2">{data.scheduleData.technology}</td>
                     <td className="p-2">{data.interviewerName}</td>
-                    <td className="p-2">{data.scheduleData.price}</td>
-                    <td className="p-2">{(data.scheduleData.price * 0.1).toFixed(2)}</td>
-                    <td className="p-2">{(data.scheduleData.price - data.scheduleData.price * 0.1).toFixed(2)}</td>
-                    <td className="p-2">
+                    <td className="p-2 text-yellow-600">{data.scheduleData.price}</td>
+                    <td className="p-2 text-red-600">{(data.scheduleData.price - data.scheduleData.price * 0.1).toFixed(2)}</td>
+                    <td className="p-2 text-green-600">{(data.scheduleData.price * 0.1).toFixed(2)}</td>
+                    {/* <td className="p-2">
                       <button className="bg-white p-2 rounded-full text-[#34C759] hover:bg-[#34C759] hover:text-black duration-700" onClick={() => handleToPay(data._id)}>
                         Pay
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>

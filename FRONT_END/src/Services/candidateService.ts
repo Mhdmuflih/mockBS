@@ -223,3 +223,15 @@ export const getInterviewerDetails = async (interviewerId: string) => {
         throw new Error(error.response?.data?.message || "An error occurred during the login process.");
     }
 }
+
+
+
+export const fetchFeedBack = async (slotId: string, scheduledId: string) => {
+    try {
+        const response = await ProtectedAPI.get('/review-service/candidate/feedback' , {params: {slotId, scheduledId}})
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the login process.");
+    }
+}

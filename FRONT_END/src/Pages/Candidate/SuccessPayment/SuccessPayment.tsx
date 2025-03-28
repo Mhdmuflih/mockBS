@@ -58,7 +58,7 @@ const SuccessPayment = () => {
 
     return (
         <SideBar heading="Success Payment">
-            <div className="bg-[#30323A] ml-1 p-4 rounded-b-lg shadow-md h-[439px] flex justify-center items-center">
+            <div className="bg-[#30323A] p-4 rounded-b-lg shadow-md h-screen flex justify-center items-center">
                 <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md w-full">
                     <svg viewBox="0 0 24 24" className="text-green-600 w-16 h-16 mx-auto my-4">
                         <path fill="currentColor"

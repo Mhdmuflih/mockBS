@@ -1,9 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import SideBar from "../../../components/Interviewer/Sidebar";
 import { useEffect, useState } from "react";
-import { getCandidateDetails } from "../../../Services/interviewerService";
+import { addFeedback, getCandidateDetails } from "../../../Services/interviewerService";
 import backgroundImage from "../../../assets/interivewsDetails background image.jpeg";
-// import PageLoading from "../../../components/PageLoading";
+import toast, { Toaster } from "react-hot-toast";
+import Swal from "sweetalert2";
+// // import PageLoading from "../../../components/PageLoading";
 
 
 const InterviewerInterviewDetails = () => {
@@ -20,7 +22,7 @@ const InterviewerInterviewDetails = () => {
         communication: "",
         comments: "",
     });
-    
+
 
     useEffect(() => {
 
@@ -71,7 +73,7 @@ const InterviewerInterviewDetails = () => {
             [e.target.name]: e.target.value,
         }));
     };
-    
+
 
 
     const handleToJoin = (scheduleId: string) => {
@@ -87,16 +89,38 @@ const InterviewerInterviewDetails = () => {
         setIsModal(false)
     }
 
-    const handleFeedbackSubmit = () => {
-        console.log(feedbackData, 'this is feedback data');
+    const handleFeedbackSubmit = async () => {
+        try {
+            const result = await Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to submit the feedback?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, submit it!",
+                cancelButtonText: "No, cancel",
+            });
+            if (result.isConfirmed) {
+                const response: any = await addFeedback(feedbackData, detailsData);
+                if (response.success) {
+                    setIsModal(false)
+                    toast.success(response.message)
+                }else {
+                    setIsModal(false);
+                    toast.error(response.message);
+                }
+            }
+        } catch (error: any) {
+            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
+        }
     }
 
     return (
         <>
             <SideBar heading="Interview Details">
+                <Toaster position="top-right" />
 
-            <div className={`bg-[#30323A] p-4 shadow-md min-h-screen flex justify-center transition-all duration-300 ${isModal ? "blur-sm" : ""}`}>
-            {detailsData && (
+                <div className={`bg-[#30323A] p-4 shadow-md min-h-screen flex justify-center transition-all duration-300 ${isModal ? "blur-sm" : ""}`}>
+                    {detailsData && (
                         <div className="bg-white p-6 mt-3 rounded-2xl w-full h-[450px] md:max-w-2xl ">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-center">
                                 {/* Interviewer Details */}
@@ -155,7 +179,7 @@ const InterviewerInterviewDetails = () => {
                                         <label className="cursor-pointer"><input type="radio" name="problem" value="Poor" onChange={handleChange} /> Poor</label>
                                         <label className="cursor-pointer"><input type="radio" name="problem" value="Fair" onChange={handleChange} /> Fair</label>
                                         <label className="cursor-pointer"><input type="radio" name="problem" value="Average" onChange={handleChange} /> Average</label>
-                                        <label className="cursor-pointer"><input type="radio" name="problem" value="Good"  onChange={handleChange} /> Good</label>
+                                        <label className="cursor-pointer"><input type="radio" name="problem" value="Good" onChange={handleChange} /> Good</label>
                                     </div>
                                 </div>
 

@@ -245,3 +245,17 @@ export const wallterWithdraw = async (amount: number) => {
         throw new Error(error.response?.data?.message || "An error occurred during the fetch payement process.");
     }
 }
+
+
+// review service
+// ---------------------
+
+export const addFeedback = async (feedbackData: any, detailsData: any) => {
+    try {
+        const response = await ProtectedAPI.post('/review-service/interviewer/feedback', { ...feedbackData, ...detailsData })
+        return response.data
+    } catch (error: any) {
+        console.error("fetch payment Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch payement process.");
+    }
+}

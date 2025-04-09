@@ -10,7 +10,7 @@ class CandidateRepository extends BaseRepository<IFeedback> implements ICandidat
 
     async findTheFeedBackData(slotId: string, scheduledId: string): Promise<any> {
         try {
-            return Feedback.findOne({slotId: slotId, scheduledId: scheduledId}).exec();
+            return await Feedback.findOne({slotId: slotId, scheduledId: scheduledId}).exec();
         } catch (error: any) {
             console.log(error.message);
             throw new Error(`Error create candidate feedback: ${error.message}`);

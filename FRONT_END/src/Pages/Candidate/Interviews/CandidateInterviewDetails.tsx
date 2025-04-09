@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchFeedBack, getInterviewerDetails } from "../../../Services/candidateService";
+import { addInterviewRating, fetchFeedBack, getInterviewerDetails } from "../../../Services/candidateService";
 import backgroundImage from "../../../assets/interivewsDetails background image.jpeg";
+import { FaStar } from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast";
 // import PageLoading from "../../../components/PageLoading";
 
 const CandidateInterviewDetails = () => {
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     const location = useLocation();
     const [detailsData, setDetailsData] = useState<any>(null);
-    const [isModal, setIsModal] = useState(false);
 
+    const [isModal, setIsModal] = useState(false);
     const [feedbackData, setFeedbackData] = useState<any>(null);
     const [isFetchingFeedback, setIsFetchingFeedback] = useState(false);
 
-    useEffect(() => {
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
+    const [isAddRating, setIsAddRating] = useState<boolean>(false);
 
+    useEffect(() => {
         if (!location.state || !location.state.detailsData) {
             console.error("Location state is missing interview details");
             return;
@@ -50,16 +49,13 @@ const CandidateInterviewDetails = () => {
         fetchInterviewerDetails();
     }, []);
 
-    // if (isLoading) {
-    //     return <PageLoading />;
-    // }
-
     const handleToJoin = (scheduleId: string) => {
         navigate(`/candidate/video-call/${scheduleId}`);
     };
 
 
-
+    // view Feedback
+    // ======================================================================================
     const handleToViewFeedback = async () => {
         setIsFetchingFeedback(true);
         try {
@@ -89,9 +85,81 @@ const CandidateInterviewDetails = () => {
         setIsModal(false);
     }
 
+    // Function to dynamically set color based on feedback value
+    const getColor = (value: string | undefined) => {
+        switch (value?.toLowerCase()) {
+            case "poor":
+                return "text-red-600";
+            case "fair":
+                return "text-yellow-600 ";
+            case "average":
+                return "text-blue-600";
+            case "good":
+                return "text-green-600 ";
+            default:
+                return "text-gray-600 ";
+        }
+    };
+    // ======================================================================================
+
+    const [ratings, setRatings] = useState(0);
+    const [comment, setComment] = useState("");
+
+    // Handle rating selection
+    const handleRating = (starCount: number) => {
+        setRatings(starCount);
+    };
+
+    // Handle form submission
+    const handleSubmit = async () => {
+        try {
+            const interviewerId = detailsData.interviewerData._id
+            const scheduledId = detailsData.slotData.scheduleId
+            const slotId = detailsData.slotData._id
+
+            const reviewData = {
+                interviewerId,
+                scheduledId,
+                slotId,
+                ratings,
+                comment
+            }
+
+
+            const response: any = await addInterviewRating(reviewData);
+            if (response.success) {
+                toast.success(response.message);
+            } else {
+                toast.error(response.message);
+            }
+            setIsAddRating(false);
+            setRatings(0);
+            setComment("");
+        } catch (error: any) {
+            console.log(error.message);
+            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
+            onClose();
+
+        }
+
+    };
+
+    const onClose = () => {
+        setIsAddRating(false);
+        setRatings(0);
+        setComment("");
+    }
+
+    const handleToAddRating = async () => {
+        setIsAddRating(true);
+    }
 
     return (
         <SideBar heading="Interview Details">
+
+            <Toaster position="top-right" reverseOrder={false} />
+
+
             <div className="bg-gray-200 p-4 shadow-md min-h-screen flex justify-center">
                 {detailsData && (
                     <div className="bg-white p-6 mt-3 rounded-2xl w-full max-w-4xl">
@@ -103,8 +171,9 @@ const CandidateInterviewDetails = () => {
                                 <p className="text-sm">Experience: <span className="font-bold">{detailsData.interviewerData.yearOfExperience} years</span></p>
                                 <p className="text-sm">Designation: <span className="font-bold">{detailsData.interviewerData.currentDesignation}</span></p>
                                 <p className="text-sm">Organization: <span className="font-bold">{detailsData.interviewerData.organization}</span></p>
-                                <div className="mt-5">
-                                    <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToViewFeedback}>add feedback</button>
+                                <div className="mt-5 space-x-4">
+                                    <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToViewFeedback}>view feedback</button>
+                                    <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToAddRating}>add rating</button>
                                 </div>
                             </div>
 
@@ -121,39 +190,115 @@ const CandidateInterviewDetails = () => {
                             </div>
                         </div>
 
-                        <div className="flex justify-center mt-6">
-                            <button className="bg-[#4B4F60] text-white py-2 px-10 rounded-2xl" onClick={() => handleToJoin(detailsData.slotData.scheduleId)}>JOIN</button>
-                        </div>
+                        {detailsData.slotData.status === "pending" && (
+                            <div className="flex justify-center mt-6">
+                                <button className="bg-[#4B4F60] text-white py-2 px-10 rounded-2xl" onClick={() => handleToJoin(detailsData.slotData.scheduleId)}>JOIN</button>
+                            </div>
+                        )}
+
                     </div>
                 )}
             </div>
 
             {isModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-4">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl text-black">
-                        <h2 className="text-xl font-semibold mb-4 text-center">Interview Feedback</h2>
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-4 transition-opacity duration-300">
+                    <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl text-black transform scale-100 transition-transform duration-300">
+                        <h2 className="text-2xl font-semibold mb-4 text-center text-gray-800">Interview Feedback</h2>
 
                         {isFetchingFeedback ? (
-                            <p className="text-center text-gray-600">Loading feedback...</p>
+                            <p className="text-center text-gray-600 animate-pulse">Loading feedback...</p>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <h3 className="text-lg font-semibold mb-2">Technical Skill: {feedbackData?.technology || "N/A"}</h3>
-                                    <h3 className="text-lg font-semibold mb-2">Problem Solving: {feedbackData?.problemSolving || "N/A"}</h3>
-                                    <h3 className="text-lg font-semibold mb-2">Communication Skill: {feedbackData?.communication || "N/A"}</h3>
-                                    <h3 className="text-lg font-semibold mb-2">Commants : {feedbackData?.commants || "N/A"}</h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-3">
+                                    <div className="p-4 bg-gray-100 rounded-lg">
+                                        <h3 className="text-lg  text-gray-700">Technical Skill</h3>
+                                        <p className={`font-semibold ${getColor(feedbackData?.technology)}`}>
+                                            {feedbackData?.technology || "N/A"}
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-gray-100 rounded-lg">
+                                        <h3 className="text-lg  text-gray-700">Problem Solving</h3>
+                                        <p className={`font-semibold ${getColor(feedbackData?.problemSolving)}`}>
+                                            {feedbackData?.problemSolving || "N/A"}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="p-4 bg-gray-100 rounded-lg">
+                                        <h3 className="text-lg text-gray-700">Communication Skill</h3>
+                                        <p className={`font-semibold ${getColor(feedbackData?.communication)}`}>
+                                            {feedbackData?.communication || "N/A"}
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-gray-100 rounded-lg">
+                                        <h3 className="text-lg font-medium text-gray-700">Comments</h3>
+                                        <p className="text-gray-900 ">{feedbackData?.commants || "N/A"}</p>
+                                    </div>
                                 </div>
                             </div>
                         )}
 
                         <div className="flex justify-end mt-6 gap-4">
-                            <button className="bg-gray-500 text-white px-4 py-2 rounded-lg" onClick={handleCloseModal}>
-                                Cancel
+                            <button
+                                className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg transition duration-200"
+                                onClick={handleCloseModal}
+                            >
+                                Close
                             </button>
                         </div>
                     </div>
                 </div>
             )}
+
+            {isAddRating && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                    <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg transition-all duration-300">
+                        <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">Submit Your Review</h2>
+
+                        {/* Interview Rating Section */}
+                        <div className="mb-4">
+                            <h3 className="text-lg font-semibold text-gray-700">Interview Rating</h3>
+                            <div className="flex gap-1">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <FaStar
+                                        key={star}
+                                        className={`text-2xl cursor-pointer ${ratings >= star ? "text-yellow-400" : "text-gray-300"}`}
+                                        onClick={() => handleRating(star)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+
+                        {/* Comment Section */}
+                        <textarea
+                            className="w-full border rounded-lg p-3 mt-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            rows={4}
+                            placeholder="Write your feedback here..."
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                        />
+
+                        {/* Buttons */}
+                        <div className="flex justify-end mt-6 gap-4">
+                            <button
+                                className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg transition duration-200"
+                                onClick={onClose}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition duration-200"
+                                onClick={handleSubmit}
+                            >
+                                Submit Review
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
 
 
         </SideBar>

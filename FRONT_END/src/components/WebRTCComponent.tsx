@@ -110,7 +110,6 @@
 // export default WebRTCComponent;
 
 
-
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -119,25 +118,23 @@ const socket = io("http://localhost:8000", {
     transports: ["websocket"],
 });
 
-
 const WebRTCComponent = () => {
     const localVideoRef: any = useRef(null);
     const remoteVideoRef: any = useRef(null);
-    const peerConnection: any = useRef(null);
-    // const [roomId, setRoomId] = useState("");
-    const [isInRoom, setIsInRoom] = useState(false);
+    const peerConnection: any = useRef<RTCPeerConnection | null>(null);
+
+    // const [isInRoom, setIsInRoom] = useState(false);
     const [isWaiting, setIsWaiting] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
-    const { scheduleId } = useParams<{ scheduleId: string }>();
-    
-    const navigate = useNavigate();
-    const location  = useLocation();
 
+    const { scheduleId } = useParams<{ scheduleId: string }>();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
+        if (!scheduleId) return;
 
-        console.log(scheduleId, 'scheduleId')
-
+        socket.emit("join-room", { scheduleId });
 
         socket.on("waiting", (message) => {
             console.log("Waiting for another participant...", message);
@@ -147,27 +144,43 @@ const WebRTCComponent = () => {
         socket.on("ready", () => {
             console.log("Both users are in the room. Ready to start call.");
             setIsWaiting(false);
-            startWebRTC();
+            initializePeerConnection();
         });
 
         socket.on("offer", async (data: any) => {
-            await peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.offer));
-            const answer = await peerConnection.current.createAnswer();
-            await peerConnection.current.setLocalDescription(answer);
+            console.log("Received offer:", data);
+            if (!peerConnection.current) initializePeerConnection();
+
+            await peerConnection.current!.setRemoteDescription(new RTCSessionDescription(data.offer));
+            const answer = await peerConnection.current!.createAnswer();
+            await peerConnection.current!.setLocalDescription(answer);
+
             socket.emit("answer", { answer, scheduleId });
         });
 
         socket.on("answer", (data) => {
             console.log("Received Answer", data);
-            peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.answer));
+            if (peerConnection.current) {
+                peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.answer));
+            }
         });
 
         socket.on("ice-candidate", (data) => {
             console.log("Received ICE Candidate", data);
-            peerConnection.current.addIceCandidate(new RTCIceCandidate(data.candidate));
+            if (peerConnection.current) {
+                peerConnection.current.addIceCandidate(new RTCIceCandidate(data.candidate));
+            }
         });
 
         return () => {
+            console.log("Disconnecting user...");
+            socket.emit("leave-room", { scheduleId });
+
+            if (peerConnection.current) {
+                peerConnection.current.close();
+                peerConnection.current = null;
+            }
+
             socket.off("waiting");
             socket.off("ready");
             socket.off("offer");
@@ -176,15 +189,18 @@ const WebRTCComponent = () => {
         };
     }, [scheduleId]);
 
-    const startWebRTC = () => {
+    const initializePeerConnection = () => {
+        if (peerConnection.current) return; // Prevent multiple initializations
+
         peerConnection.current = new RTCPeerConnection({
-            iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+            iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
         });
 
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        navigator.mediaDevices
+            .getUserMedia({ video: true, audio: true })
             .then((stream) => {
                 localVideoRef.current.srcObject = stream;
-                stream.getTracks().forEach(track => peerConnection.current.addTrack(track, stream));
+                stream.getTracks().forEach(track => peerConnection.current!.addTrack(track, stream));
             })
             .catch(error => console.error("Error accessing media devices.", error));
 
@@ -199,66 +215,73 @@ const WebRTCComponent = () => {
         };
     };
 
-    const joinRoom = () => {
-        if (scheduleId) {
-            console.log("Joining room with Schedule ID:", scheduleId);
-            socket.emit("join-room", { scheduleId });
-            setIsInRoom(true);
-        }
-    };
-
     const createOffer = async () => {
-        const offer = await peerConnection.current.createOffer();
-        await peerConnection.current.setLocalDescription(offer);
+        if (!peerConnection.current) initializePeerConnection();
+        const offer = await peerConnection.current!.createOffer();
+        await peerConnection.current!.setLocalDescription(offer);
         console.log("Sending Offer for Schedule ID:", scheduleId);
         socket.emit("offer", { offer, scheduleId });
         setIsConnected(true);
     };
 
     const handleToDisconnect = async () => {
-        socket.emit("leave-room", {scheduleId});
+        socket.emit("leave-room", { scheduleId });
         setIsConnected(false);
-        setIsInRoom(false);
-        if(location.pathname.includes("/interviewer")){
-            navigate(`/interviewer/scheduled`)
-        }else if(location.pathname.includes("/candidate")) {
+        // setIsInRoom(false);
+
+        if (localVideoRef.current) {
+            localVideoRef.current.srcObject.getTracks().forEach((track: any) => track.stop());
+        }
+        if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject.getTracks().forEach((track: any) => track.stop());
+        }
+
+        if (peerConnection.current) {
+            peerConnection.current.close();
+            peerConnection.current = null;
+        }
+
+        if (location.pathname.includes("/interviewer")) {
+            navigate(`/interviewer/scheduled`);
+        } else if (location.pathname.includes("/candidate")) {
             navigate(`/candidate/outsourced-interviews`);
         }
-    }
+    };
 
     return (
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <h2>WebRTC Video Call</h2>
-            {!isInRoom ? (
-                <div>
-                    <button onClick={joinRoom} style={{ padding: "10px", fontSize: "16px", cursor: "pointer" }}>
-                        Join Room
-                    </button>
-                </div>
-            ) : (
-                <>
-                    {isWaiting && <p>Waiting for another user...</p>}
-                    <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
-                        <video ref={localVideoRef} autoPlay playsInline style={{ width: "300px", border: "2px solid black" }} />
-                        <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "300px", border: "2px solid black" }} />
-                    </div>
-                    <div>
-                        <button
-                            onClick={createOffer}
-                            disabled={isConnected || isWaiting}
-                            style={{ marginTop: "10px", padding: "10px", fontSize: "16px", cursor: "pointer", background: "black", color: "white" }}>
-                            Start Call
-                        </button>
-                        <button
-                                onClick={handleToDisconnect}
-                            style={{ marginTop: "10px", padding: "10px", fontSize: "16px", cursor: "pointer", color: "white", background: "red" }}>
-                            Disconnect
-                        </button>
-                    </div>
-                </>
-            )}
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+            {/* <h2 className="text-2xl font-bold mb-4">WebRTC Video Call</h2> */}
+            {isWaiting && <p className="text-gray-600">Waiting for another user...</p>}
+            <div className="flex flex-col md:flex-row justify-center items-center gap-6 p-4 bg-white shadow-lg rounded-lg">
+                <video
+                    ref={localVideoRef}
+                    autoPlay
+                    playsInline
+                    className="w-full md:w-1/2 max-w-xs border-2 border-black rounded-lg"
+                />
+                <video
+                    ref={remoteVideoRef}
+                    autoPlay
+                    playsInline
+                    className="w-full md:w-1/2 max-w-xs border-2 border-black rounded-lg"
+                />
+            </div>
+            <div className="mt-6 flex gap-4">
+                <button
+                    onClick={createOffer}
+                    disabled={isConnected || isWaiting}
+                    className="px-6 py-3 text-lg font-semibold text-white bg-black rounded-lg hover:bg-gray-800 transition disabled:opacity-50"
+                >
+                    Start Call
+                </button>
+                <button
+                    onClick={handleToDisconnect}
+                    className="px-6 py-3 text-lg font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition"
+                >
+                    Disconnect
+                </button>
+            </div>
         </div>
-
     );
 };
 

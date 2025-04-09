@@ -1,28 +1,43 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SideBar from "../../../components/Admin/SideBar";
-// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+import { fetchCommunityList } from "../../../Services/adminService";
 
 const AdminCommunityList = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [communityData, setCommunityData] = useState<any>(null)
 
     useEffect(() => {
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
+        const fetchCommunityData = async () => {
+            const response: any = await fetchCommunityList()
+            if (response.success) {
+                console.log(response.communityData)
+                setCommunityData(response.communityData);
+                console.log("okokokokok");
+            } else {
+                console.log("not ok not ok not ok");
+            }
+        }
+        fetchCommunityData();
     }, []);
 
-    // if (isLoading) {
-    //     return <div><AdminSideLoading /></div>
-    // }
 
     return (
         <>
             <div className="flex">
-
-                <SideBar heading="Communities" >
-                    <div className="bg-[#30323A] p-4 shadow-md h-screen">
-
+                <SideBar heading="Communities">
+                    <div className="bg-[#30323A] p-4 shadow-md h-screen text-white">
+                        <h2 className="text-lg font-bold mb-4">Community List</h2>
+                        {communityData && communityData.length > 0 ? ( // Check if communityData is not null
+                            <ul>
+                                {communityData.map((community: any, index: number) => (
+                                    <li key={index} className="p-2 border-b border-gray-600">
+                                        <span className="font-semibold">{community.name}</span> - {community.members.length}Members
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No communities found.</p>
+                        )}
                     </div>
                 </SideBar>
             </div>

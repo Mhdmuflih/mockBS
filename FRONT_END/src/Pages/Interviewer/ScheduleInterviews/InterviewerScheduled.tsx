@@ -95,7 +95,7 @@ const InterviewerScheduled = () => {
                                 data.status == "pending" ? (
                                     <div className="text-red-600">{data.status}</div>
                                 ) : (
-                                    <div className="text-red-600">{data.status}</div>
+                                    <div className="text-green-600">{data.status}</div>
                                 )
                             ),
                             details: (

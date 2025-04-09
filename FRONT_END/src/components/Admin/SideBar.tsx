@@ -3,7 +3,6 @@ import { FaHome, FaUsers } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import Heading from "./Heading";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../Store/Slice/AdminSlice";
 import logo from "../../assets/Creative Logo Templates.jpeg"
 
 
@@ -14,6 +13,7 @@ import { FaUsersGear } from "react-icons/fa6";
 import { SiGooglemeet } from "react-icons/si";
 import { BsStack } from "react-icons/bs";
 import { RiLogoutCircleFill, RiUserCommunityFill } from "react-icons/ri";
+import { logout } from "../../Store/Slice/AdminSlice";
 
 
 
@@ -58,7 +58,7 @@ const SideBar = (props: sideBarProps) => {
 
     return (
         <>
-            <div className="flex flex-1">
+            <div className="flex flex-1 ">
 
                 {/* Side Bar */}
                 <div
@@ -234,7 +234,7 @@ const SideBar = (props: sideBarProps) => {
                                 <div className={`flex items-center space-x-3 text-white p-1 bg-[#FF3B30] rounded-lg cursor-pointer hover:bg-[#912626] transition-all duration-300 group 
                                 ${activePath === "/admin/home" ? "bg-white text-black" : ""}`}
                                     onClick={() => {
-                                        handleToLogout
+                                        handleToLogout();
                                         setIsOpen(true);
                                     }}
                                 >

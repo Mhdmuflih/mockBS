@@ -10,6 +10,7 @@ import CandidateLoginProtector from "../RouterProtector/CandidateLoginProtector"
 import CandidateRouteProtector from "../RouterProtector/CandidateRouteProtector";
 import Loading from "../components/Loading";
 import PageLoading from "../components/PageLoading";
+
 // -----------------------------------------------------------------------------------------------------
 const CandidateLogin = lazy(() => import("../Pages/Candidate/Login/CandidateLogin"));
 const CandidateSignup = lazy(() => import("../Pages/Candidate/Signup/CandidateSignup"));
@@ -25,6 +26,7 @@ const CandidateAnalytics = lazy(() => import("../Pages/Candidate/Analytics/Candi
 const CandidateChooseCommunity = lazy(() => import("../Pages/Candidate/Community/CandidateChooseCommunity"));
 const CandidateInterviewDetails = lazy(() => import("../Pages/Candidate/Interviews/CandidateInterviewDetails"));
 const SuccessPayment = lazy(() => import("../Pages/Candidate/SuccessPayment/SuccessPayment"));
+const PremiumSuccessPayment = lazy(() => import("../Pages/Candidate/SuccessPayment/PremiumSuccessPayment"));
 const CandidateVideoCall = lazy(() => import("../Pages/Candidate/VideoCall/CandidateVideoCall"));
 const CandidatePageNotFound = lazy(() => import("../Pages/404 Page Not Found/CandidatePageNotFound"));
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -83,6 +85,7 @@ const CandidateRoutes = () => {
                         <Route path="/password" element={<CandidateProfileChangePassword />}></Route>
 
                         <Route path="/payment-status" element={<SuccessPayment />}></Route>
+                        <Route path="/premium-payment-status" element={<PremiumSuccessPayment />}></Route>
                     </Route>
 
                     {/* Page not found */}

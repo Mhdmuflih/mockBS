@@ -230,6 +230,18 @@ export const interviewerPayment = async (page: number, limit: number, search: st
     }
 }
 
+export const getPremiumPaymentList = async () => {
+    try {
+        const response = await ProtectedAPI.get("/payment-service/admin/premium-payment-details",);
+        return response.data
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
+    }
+}
+
+
+
 export const PayToInterviewer = async (id: string) => {
     try {
         const response = await ProtectedAPI.post('/payment-service/admin/pay-to-interviewer', {id});
@@ -262,9 +274,25 @@ export const fetchPayment = async() => {
         throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
     }
 }
+
+
 export const fetchInterview = async() => {
     try {
         const response = await ProtectedAPI.get('/booking-service/admin/dashboard');
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch process.");
+    }
+}
+
+
+// chat service
+// ==================
+
+export const fetchCommunityList = async () => {
+    try {
+        const response = await ProtectedAPI.get('/chat-service/admin/communities');
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);

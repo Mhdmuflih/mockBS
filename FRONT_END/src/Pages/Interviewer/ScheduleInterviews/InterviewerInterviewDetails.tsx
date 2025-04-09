@@ -1,21 +1,18 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import SideBar from "../../../components/Interviewer/Sidebar";
 import { useEffect, useState } from "react";
-import { addFeedback, getCandidateDetails } from "../../../Services/interviewerService";
+import { addFeedback, fetchReviewRating, getCandidateDetails } from "../../../Services/interviewerService";
 import backgroundImage from "../../../assets/interivewsDetails background image.jpeg";
 import toast, { Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
-// // import PageLoading from "../../../components/PageLoading";
-
 
 const InterviewerInterviewDetails = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     const location = useLocation();
     const [detailsData, setDetailsData] = useState<any>(null);
-    const [isModal, setIsModal] = useState(false);
 
+    const [isModal, setIsModal] = useState(false);
     const [feedbackData, setFeedbackData] = useState({
         tech: "",
         problem: "",
@@ -23,12 +20,12 @@ const InterviewerInterviewDetails = () => {
         comments: "",
     });
 
+    const [isViewModal, setIsViewModal] = useState<boolean>(false);
+    const [ratingData, setRatingData] = useState<any>(null);
+    const [isFetchingData, setIsFetchingData] = useState(false);
+
 
     useEffect(() => {
-
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
 
         if (!location.state || !location.state.detailsData) {
             console.error("Location state is missing interview details");
@@ -63,24 +60,19 @@ const InterviewerInterviewDetails = () => {
         fetchCandidateDetails()
     }, []);
 
-    // if (isLoading) {
-    //     return <div><PageLoading /></div>
-    // }
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFeedbackData((prev) => ({
             ...prev,
             [e.target.name]: e.target.value,
         }));
     };
-
-
-
     const handleToJoin = (scheduleId: string) => {
         console.log(scheduleId, 'this is scheduled Id')
         navigate(`/interviewer/video-call/${scheduleId}`);
     }
 
+    // add feedback
+    // =============================================================================
     const handleToAddFeedback = () => {
         setIsModal(true);
     }
@@ -104,7 +96,7 @@ const InterviewerInterviewDetails = () => {
                 if (response.success) {
                     setIsModal(false)
                     toast.success(response.message)
-                }else {
+                } else {
                     setIsModal(false);
                     toast.error(response.message);
                 }
@@ -112,6 +104,38 @@ const InterviewerInterviewDetails = () => {
         } catch (error: any) {
             toast.error(error?.message || "An unexpected error occurred. Please try again later.");
         }
+    }
+    // =============================================================================
+
+    const handleToViewFeedback = async () => {
+        setIsViewModal(true);
+        setIsFetchingData(true);
+        try {
+            console.log(detailsData)
+            const slotId = detailsData?.slotData?._id; // Ensure slotId is extracted properly
+            const scheduledId = detailsData.slotData.scheduledId; // Ensure scheduledId is extracted properly
+
+            if (!slotId || !scheduledId) {
+                console.error("Missing slotId or scheduledId");
+                return;
+            }
+            const response: any = await fetchReviewRating(slotId, scheduledId);
+            if (response.success) {
+                console.log(response.reviewRating, 'this is response of tghe review rating');
+                setRatingData(response.reviewRating)
+                setIsViewModal(true);
+            } else {
+                console.log("Failed to fetch feedback");
+            }
+        } catch (error: any) {
+            console.error("Error fetching feedback", error.message);
+        } finally {
+            setIsFetchingData(false);
+        }
+    }
+
+    const handleClose = () => {
+        setIsViewModal(false);
     }
 
     return (
@@ -131,6 +155,7 @@ const InterviewerInterviewDetails = () => {
                                     <p className="text-sm">Mobile: <span className="font-bold">{detailsData.candidateData.mobile}</span></p>
                                     <div className="mt-5">
                                         <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToAddFeedback}>add feedback</button>
+                                        <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToViewFeedback}>view</button>
                                     </div>
                                 </div>
 
@@ -147,10 +172,11 @@ const InterviewerInterviewDetails = () => {
                                 </div>
                             </div>
 
+                                <div className="flex justify-center md:mt-10">
+                                    <button className="bg-[#4B4F60] text-white py-2 px-32 rounded-2xl" onClick={() => handleToJoin(detailsData.slotData.scheduledId)}>JOIN</button>
+                                </div>
+                        
 
-                            <div className="flex justify-center md:mt-10">
-                                <button className="bg-[#4B4F60] text-white py-2 px-32 rounded-2xl" onClick={() => handleToJoin(detailsData.slotData.scheduledId)}>JOIN</button>
-                            </div>
                         </div>
                     )}
                 </div>
@@ -212,6 +238,55 @@ const InterviewerInterviewDetails = () => {
                             </div>
                         </div>
                     </div>
+                )}
+
+                {isViewModal && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                        <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl transform transition-all duration-300">
+                            {isFetchingData ? (
+                                <p className="text-center text-gray-600 animate-pulse">Loading feedback...</p>
+
+                            ) : (
+                                <>
+                                    {/* Interviewer’s Rating */}
+                                    <div className="mt-4 bg-yellow-50 p-4 rounded-lg border border-yellow-300">
+                                        <h3 className="text-lg font-semibold text-yellow-700">Rating</h3>
+                                        <div className="flex items-center mt-2">
+                                            {ratingData?.ratings ? (
+                                                [...Array(5)].map((_, i) => (
+                                                    <span key={i} className={`text-2xl ${i < ratingData?.ratings ? 'text-yellow-500' : 'text-gray-300'}`}>
+                                                        ★
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <p className="text-gray-700">No rating provided</p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Interviewer’s Feedback */}
+                                    <div className="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-300">
+                                        <h3 className="text-lg font-semibold text-blue-700">Interviewer’s Feedback</h3>
+                                        <p className="text-gray-700 italic mt-2">
+                                            {ratingData?.comment || "No comments provided"}
+                                        </p>
+                                    </div>
+                                </>
+                            )}
+
+
+                            {/* Action Buttons */}
+                            <div className="flex justify-end mt-6 gap-4">
+                                <button
+                                    className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg transition duration-200"
+                                    onClick={handleClose}
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 )}
 
             </SideBar>

@@ -1,27 +1,20 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SideBar from "../../../components/Candidate/SideBar";
 import { useEffect, useRef } from "react";
-import { updatePaymentStatus } from "../../../Services/candidateService";
-// import PageLoading from "../../../components/PageLoading";
+import { updatePremiumPaymentStatus } from "../../../Services/candidateService";
 
-const SuccessPayment = () => {
-
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
+const PremiumSuccessPayment = () => {
 
     const [searchParams] = useSearchParams();
     const sessionId: any = searchParams.get("transaction_id");
     const status: any = searchParams.get("status");
-
-
     const navigate = useNavigate();
+
     const hasFetched = useRef(false); // Prevent multiple API calls
 
+
+
     useEffect(() => {
-
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
-
         console.log(status, 'this is status')
         if (status === "cancelled") {
             localStorage.setItem("paymentStatus", "failed"); // Store failed status
@@ -34,7 +27,7 @@ const SuccessPayment = () => {
 
 
         const checkPaymentStatus = async () => {
-            const response: any = await updatePaymentStatus(sessionId);
+            const response: any = await updatePremiumPaymentStatus(sessionId);
             if (response.success) {
                 console.log("Updated payment status");
             } else {
@@ -44,20 +37,19 @@ const SuccessPayment = () => {
         checkPaymentStatus();
     }, [sessionId, status]); // Only run when sessionId changes
 
-    // if (isLoading) {
-    //     return <div><PageLoading /></div>
-    // }
 
     const handleToHomePage = () => {
         navigate('/candidate/home');
     };
 
     const handleToDetailsPage = () => {
-        navigate('/candidate/outsourced-interviews');
+        navigate('/candidate/community-chat');
     };
 
+
+
     return (
-        <SideBar heading="Success Payment">
+        <SideBar heading="Premium Success Payment">
             <div className="bg-[#30323A] p-4 rounded-b-lg shadow-md h-screen flex justify-center items-center">
                 <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md w-full">
                     <svg viewBox="0 0 24 24" className="text-green-600 w-16 h-16 mx-auto my-4">
@@ -80,14 +72,14 @@ const SuccessPayment = () => {
                                 onClick={handleToDetailsPage}
                                 className="p-2 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg"
                             >
-                                View Details
+                                back To Community
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </SideBar>
-    );
-};
+    )
+}
 
-export default SuccessPayment;
+export default PremiumSuccessPayment;

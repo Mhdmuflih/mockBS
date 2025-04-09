@@ -9,6 +9,7 @@ export interface ICandidate {
     is_Block: boolean;
     is_Verfied: boolean
     profileURL?: string
+    premium?: boolean
 }
 
 export interface IInterviewer {
@@ -41,7 +42,7 @@ export interface IAdmin {
 export interface ReduxInitialStateManage {
     isLoggedIn: boolean;
     storedData?: IInterviewer | ICandidate | IAdmin | null;
-    profileURL?:string;
+    profileURL?: string;
     paymentSessionId?: string | null;
     change?: boolean
 }
@@ -51,6 +52,6 @@ export interface LoginPayload {
     refreshToken: string;
     isLoggedIn: boolean;
     storedData: IAdmin | IInterviewer | ICandidate;
-    image?:string | undefined;
+    image?: string | undefined;
     change?: boolean
 }

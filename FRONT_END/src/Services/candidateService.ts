@@ -36,11 +36,11 @@ ProtectedAPI.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem("candidateRefreshToken");
-                const response: any = await axios.post("http://localhost:8000/auth-service/candidate/refresh-token", {refreshToken});
+                const response: any = await axios.post("http://localhost:8000/auth-service/candidate/refresh-token", { refreshToken });
 
                 if (response.data.success) {
                     store.dispatch(loginSuccess({
-                        isLoggedIn: true, 
+                        isLoggedIn: true,
                         storedData: response.data.candidateData,
                         token: response.data.token,
                         refreshToken: response.data.refreshToken
@@ -205,7 +205,7 @@ export const bookingInterviewer = async (slotData: any) => {
 export const getCandidateScheduledInterviews = async (page: number, limit: number, search?: string) => {
     try {
         const response = await ProtectedAPI.get('/booking-service/candidate/scheduled-interviews', {
-            params: {page, limit, search}
+            params: { page, limit, search }
         });
         return response.data;
     } catch (error: any) {
@@ -226,12 +226,67 @@ export const getInterviewerDetails = async (interviewerId: string) => {
 
 
 
-export const fetchFeedBack = async (slotId: string, scheduledId: string) => {
+export const TakeThePremium = async (premiumData: { amount: number, duration: string }) => {
     try {
-        const response = await ProtectedAPI.get('/review-service/candidate/feedback' , {params: {slotId, scheduledId}})
+        const response = await ProtectedAPI.post('/payment-service/candidate/premium', premiumData);
         return response.data;
     } catch (error: any) {
         console.error("Login Error:", error.response?.data || error.message);
         throw new Error(error.response?.data?.message || "An error occurred during the login process.");
+    }
+}
+
+
+
+export const fetchFeedBack = async (slotId: string, scheduledId: string) => {
+    try {
+        const response = await ProtectedAPI.get('/review-service/candidate/feedback', { params: { slotId, scheduledId } })
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the login process.");
+    }
+}
+
+
+export const addInterviewRating = async (reviewData: {ratings: number, comment: string}) => {
+    try {
+        const response = await ProtectedAPI.post('/review-service/candidate/add-review-rating', reviewData)
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the login process.");
+    }
+}
+
+
+export const updatePremiumPaymentStatus = async (sessionId: string) => {
+    try {
+        const response = await ProtectedAPI.post('/payment-service/candidate/verify-premium-payment', { sessionId });
+        return response.data;
+    } catch (error: any) {
+        console.error("update payment status Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
+    }
+}
+
+
+
+export const fetchScheduledInterviewCount = async () => {
+    try {
+        const response = await ProtectedAPI.get('/booking-service/candidate/interview-counts');
+        return response.data;
+    } catch (error: any) {
+        console.error("update payment status Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
+    }
+}
+export const fetchTotalAmount = async () => {
+    try {
+        const response = await ProtectedAPI.get('/payment-service/candidate/total-amount');
+        return response.data;
+    } catch (error: any) {
+        console.error("update payment status Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
     }
 }

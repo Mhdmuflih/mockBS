@@ -259,3 +259,13 @@ export const addFeedback = async (feedbackData: any, detailsData: any) => {
         throw new Error(error.response?.data?.message || "An error occurred during the fetch payement process.");
     }
 }
+
+export const fetchReviewRating = async (slotId: string, scheduledId: string) => {
+    try {
+        const response = await ProtectedAPI.get('/review-service/interviewer/review-rating', { params: { slotId, scheduledId } })
+        return response.data
+    } catch (error: any) {
+        console.error("fetch payment Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the fetch payement process.");
+    }
+}

@@ -12,6 +12,7 @@ export interface ICandidate extends Document {
     isBlocked?: boolean;
     isVerified?: boolean;
     profileURL?: string
+    premium?: boolean
 }
 
 
@@ -48,6 +49,10 @@ const candidateSchema: Schema = new Schema({
     },
     profileURL: {
         type: String
+    },
+    premium: {
+        type: Boolean,
+        default: false
     },
     expaireAt: {
         type: Date,

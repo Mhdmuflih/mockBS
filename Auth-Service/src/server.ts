@@ -10,6 +10,7 @@ import Admin_Route from "./Routes/adminRoutes";
 import connectDB from "./Config/database";
 import Candidate_Route from "./Routes/candidateRoutes";
 import Interviewer_Route from "./Routes/interviewerRoutes";
+import logger from "./middleware/logger";
 
 // --------------------------------------------------------------------------------
 
@@ -40,6 +41,12 @@ app.use(cookieParser());
 // convert to json format
 app.use(express.json());
 app.use(morgan("tiny"));
+
+// Custom logging middleware
+app.use((req, res, next) => {
+    logger.info(`Incoming request: ${req.method} ${req.url}`);
+    next();
+});
 
 
 // route redition

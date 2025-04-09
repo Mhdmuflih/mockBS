@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { ICandidateRepository } from "../interface/ICandidateRepository";
 import { InjectModel } from "@nestjs/mongoose";
 import { Payment } from "../model/payment.schema";
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { Cron } from '@nestjs/schedule';
 import { BaseRepository } from "src/repository/baseRepository";
 import { IPayment, PaymentData } from "../interface/Interface";
@@ -96,6 +96,19 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
         try {
             const findedData =  await this.paymentModel.findOne({ transactionId: transactionId });
             return findedData;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async getTotalAmount(candidateId: string): Promise<number> {
+        try {
+            const result = await this.paymentModel.aggregate([
+                { $match: { candidateId: new mongoose.Types.ObjectId(candidateId), status: "completed" } },
+                { $group: { _id: null, totalAmount: { $sum: "$amount" } } }
+            ]); 
+            return result.length > 0 ? result[0].totalAmount : 0; 
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

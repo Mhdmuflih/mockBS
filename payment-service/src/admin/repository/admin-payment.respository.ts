@@ -22,11 +22,12 @@ export class AdminRepository extends BaseRepository<Payment> implements IAdminRe
     // }
 
 
-    async findTotalAmount(): Promise<{totalAmount: number}> {
+    async findTotalAmount(): Promise<number> {
         try {
-            const totalAmount: TotalAmountResult[] = await this.paymentModel.aggregate([{"$group": {"_id": null, "totalAmount": {$sum: "$amount"}}}]);
-            console.log(totalAmount,'this is total amount')
-            return {totalAmount: totalAmount[0].totalAmount};
+            const result: TotalAmountResult[] = await this.paymentModel.aggregate([
+                { "$group": { "_id": null, "totalAmount": { $sum: "$amount" } } }
+            ]);
+            return result.length > 0 ? result[0].totalAmount : 0;
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

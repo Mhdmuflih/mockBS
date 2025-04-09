@@ -24,12 +24,23 @@ export class AdminController implements IAdminController {
     }
   }
 
+  @Get('premium-payment-details')
+  async premiumPaymentDetails():Promise<{success: boolean, message: string, premiumData: any}> {
+    try {
+      const premiumData = await this.adminService.getPremiumPaymentData();
+      return {success: true, message: "premium payment data", premiumData: premiumData}
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Get('/dashboard')
-  async getDashboard(): Promise<{paymentProfit: number}> {
+  async getDashboard(): Promise<{success: boolean, message: string, revenue: number, profit: number, profitPremium: number}> {
     try {
       const dashboardData = await this.adminService.getDashboradData();
       console.log(dashboardData, 'this is dashboard data');
-      return dashboardData
+      return {success: true, message: 'admin dashboard', revenue: dashboardData.revenue, profit: dashboardData.profit, profitPremium: dashboardData.profitPremium}
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

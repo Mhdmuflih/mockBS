@@ -6,6 +6,8 @@ import { ClientKafka, ClientProxy } from '@nestjs/microservices';
 import { sendBookingData } from 'src/gRPC/booking.client';
 import { PaymentData } from '../interface/Interface';
 import { CandidateInterviewerWalletRepository } from '../repository/candidate-interviewer-wallet.repository';
+import { CandidatePremiumRepository } from '../repository/candidate-premium.repository';
+import { sendPremiumData } from 'src/gRPC/updateCandidatePremium.client';
 
 @Injectable()
 export class CandidateService implements ICandidateService {
@@ -14,6 +16,7 @@ export class CandidateService implements ICandidateService {
   constructor(
     private readonly candidateRepository: CandidateRepository,
     private readonly candidateInterviewerWalletRepository: CandidateInterviewerWalletRepository,
+    private readonly candidatePremiumRepository: CandidatePremiumRepository
   ) {
     this.stripe = new Stripe("sk_test_51QvsEdGUzdkKqzcdinByZpi9wyrb6JfwF0AVaNBOGGBLernXeTVszLCIFd19AFzPBMMqtkjLhnflACczbZtowhfW00AhK9XPQ0");
   }
@@ -125,7 +128,7 @@ export class CandidateService implements ICandidateService {
           }
         ]
       }
-      
+
       const existingWallet = await this.candidateInterviewerWalletRepository.findExistingWallet(verifyData.interviewerId);
 
       if (existingWallet) {
@@ -135,6 +138,79 @@ export class CandidateService implements ICandidateService {
       }
 
 
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
+  async takeThePremium(candidateId: string, premiumData: { amount: number, duration: string }): Promise<any> {
+    try {
+      console.log(candidateId, premiumData, 'this is candidate service amount of premium');
+
+      const existingData = await this.candidatePremiumRepository.existingPremiumData(candidateId);
+      if(existingData) {
+        console.log(existingData, 'this is existing Data');
+        throw new Error("Alreday existing this Data");
+      }
+
+      const session = await this.stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: "Payment for Premium"
+              },
+
+              unit_amount: Math.round(Number(premiumData.amount) * 100), // Convert price properly
+            },
+            quantity: 1
+          },
+        ],
+         success_url: `http://localhost:5173/candidate/premium-payment-status?transaction_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `http://localhost:5173/candidate/premium-payment-status?status=cancelled`
+      });
+
+      const createPremiumPaymentData = {
+        candidateId: candidateId,
+        amount: premiumData.amount,
+        duration: premiumData.duration,
+        paymentMethod: "card",
+        paymentStatus: "pending",
+        transactionId: session.id
+      }
+
+      const premium = await this.candidatePremiumRepository.createPremium(createPremiumPaymentData);
+      console.log(premium, 'this is premium create with service');
+      return session
+
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async verifyPremiumPayment(candidateId: string, sessionId: string): Promise<void> {
+    try {
+      await this.candidatePremiumRepository.updatePaymentStatus(sessionId);
+
+      const response = await sendPremiumData(candidateId);
+      console.log(response,' this is the reponse');
+
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getCandidateTotalAmount(candidateId: string): Promise<number> {
+    try {
+      const total = await this.candidateRepository.getTotalAmount(candidateId);
+      return total;
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

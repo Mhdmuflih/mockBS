@@ -31,4 +31,39 @@ export class CandidateController implements ICandidateController {
     }
   }
 
+  @Post('/premium')
+  async takeThePremium(@Headers('x-user-id') candidateId: string, @Body() body: { amount: number, duration: string }): Promise<{ success: boolean, message: string, session: Stripe.Checkout.Session }> {
+    try {
+      console.log(candidateId, body, 'this is body data');
+      const premiumPaymentData = await this.candidateService.takeThePremium(candidateId, body);
+      console.log(premiumPaymentData, ' this is data for premium');
+      return { success: true, message: "candidate to take the premium Version", session: premiumPaymentData }
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('verify-premium-payment')
+  async verifyPremiumPayment(@Headers('x-user-id') candidateId: string,@Body() sessionId: { sessionId: string }): Promise<{ success: boolean, message: string }> {
+    try {
+      await this.candidateService.verifyPremiumPayment(candidateId , sessionId.sessionId);
+      return { success: true, message: "Payment status updated" };
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('/total-amount')
+  async getCandidateTotalAmount(@Headers('x-user-id') candidateId: string): Promise<{success: boolean, message: string, totalAmount: number}> {
+    try {
+      const totalAmount = await this.candidateService.getCandidateTotalAmount(candidateId);
+      return {success: true, message: "candidate total payed Data", totalAmount: totalAmount}
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 }

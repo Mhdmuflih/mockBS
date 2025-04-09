@@ -77,4 +77,15 @@ export class CandidateService implements ICandidateService {
     }
   }
 
+  async getInterviewCounts(candidateId: string): Promise<{scheduledInterviewCounts: number, completedInterviewCounts: number}> {
+    try {
+      const scheduledInterviewCounts = await this.scheduleRepository.getScheduledInterviewCount(candidateId);
+      const completedInterviewCounts = await this.scheduleRepository.getCompletedInterviewCount(candidateId);
+      return {scheduledInterviewCounts: scheduledInterviewCounts, completedInterviewCounts: completedInterviewCounts}
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 }

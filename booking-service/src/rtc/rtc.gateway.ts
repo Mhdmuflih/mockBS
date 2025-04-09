@@ -52,44 +52,30 @@ export class WebrtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // User joins a WebRTC room
   @SubscribeMessage('join-room')
-  async handleJoinRoom(@MessageBody() data: RoomData, @ConnectedSocket() socket: Socket) {
-    try {
+async handleJoinRoom(@MessageBody() data: RoomData, @ConnectedSocket() socket: Socket) {
+    const { scheduleId } = data;
 
-      const { scheduleId } = data;
-
-      // const roomdata = await this.scheduleRepository.getTheScheduleData(scheduleId);
-      // console.log(roomdata, 'this is room data');
-      console.log(data, 'this is data');
-
-      if (!rooms[scheduleId]) {
+    if (!rooms[scheduleId]) {
         rooms[scheduleId] = [];
-      }
+    }
 
-      console.log(rooms[scheduleId], 'what is this')
-
-      // Allow only 2 users in the room
-      if (rooms[scheduleId].length < 2) {
-
+    if (!rooms[scheduleId].includes(socket.id)) {
         rooms[scheduleId].push(socket.id);
         socketToRoom[socket.id] = scheduleId;
         socket.join(scheduleId);
-        console.log(rooms[scheduleId], 'what is this')
-        console.log(`User ${socket.id} joined room ${scheduleId} with schedule ID ${scheduleId}`);
-      }
-
-      // If 2 users are present, start WebRTC signaling
-      if (rooms[scheduleId].length === 2) {
-        this.server.to(scheduleId).emit('ready');
-      } else {
-        socket.emit('waiting', 'Waiting for another user to join...');
-      }
-    } catch (error: any) {
-      console.log(error.message);
+        console.log(`User ${socket.id} joined room ${scheduleId}`);
     }
-  }
+
+    if (rooms[scheduleId].length === 2) {
+        this.server.to(scheduleId).emit('ready');
+    } else {
+        socket.emit('waiting', 'Waiting for another user to join...');
+    }
+}
+
 
   @SubscribeMessage('leave-room')
-  handleLeaveRoom(@MessageBody() data: { scheduleId: string }, @ConnectedSocket() socket: Socket) {
+  async handleLeaveRoom(@MessageBody() data: { scheduleId: string }, @ConnectedSocket() socket: Socket) {
       const { scheduleId } = data;
       console.log(`User ${socket.id} is leaving room ${scheduleId}`);
   
@@ -105,6 +91,8 @@ export class WebrtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
   
       delete socketToRoom[socket.id];
+
+      await this.scheduleRepository.updateInterviewStatus(scheduleId);
   }
 
   // Handle WebRTC Offer

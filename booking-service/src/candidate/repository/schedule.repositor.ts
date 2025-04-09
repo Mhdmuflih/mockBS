@@ -68,6 +68,25 @@ export class ScheduleRepository extends BaseRepository<Scheduled> implements ICa
         }
     }
 
+    async getScheduledInterviewCount(candidateId: string): Promise<number> {
+        try {
+            const scheduledInterviewCount = await this.scheduledModel.countDocuments({candidateId: candidateId, status: "pending"}) || 0;
+            return scheduledInterviewCount;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async getCompletedInterviewCount(candidateId: string): Promise<number> {
+        try {
+            const completedInterviewCounts = await this.scheduledModel.countDocuments({candidateId: candidateId, status: "completed"}) || 0;
+            return completedInterviewCounts;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     // async candidateSceduledInterviews(candidateId: string, page: number, limit: number, search: string): Promise<{ total: number, data: ISchedule[] }> {
     //     try {
     //         const candidateScheduledData = await this.findWithPagination({ candidateId }, page, limit, search)

@@ -53,6 +53,17 @@ export class CandidateController implements ICandidateController {
     }
   }
 
+@Get('/interview-counts')
+async getInterviewCounts(@Headers('x-user-id') candidateId: string): Promise<{success: boolean, message: string, counts: { scheduledInterviewCounts: number, completedInterviewCounts: number }}> {
+  try {
+    const counts = await this.candidateService.getInterviewCounts(candidateId);
+    return {success: true, message: "interview counts", counts: counts}
+  } catch (error: any) {
+    console.log(error.message);
+    throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
   // Grpc for the booking schedule data comes in payment service
   // ==============================================================
 

@@ -23,11 +23,12 @@ export class AdminService implements IAdminService {
         }
     }
 
-    async getDashboradData(): Promise<{ interview: number }> {
+    async getDashboradData(): Promise<{ interview: number, completedInterview: number }> {
         try {
             const interview = await this.adminRepository.findInterviewCount();
+            const completedInterviewCount = await this.adminRepository.findCompletedInterviewCount()
             console.log(interview, 'this is interview count');
-            return { interview: interview };
+            return { interview: interview, completedInterview: completedInterviewCount };
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

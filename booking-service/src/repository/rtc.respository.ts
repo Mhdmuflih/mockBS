@@ -18,4 +18,15 @@ export class RTCScheduleRepository {
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    async updateInterviewStatus(scheduleId: string) {
+        try {
+            console.log(scheduleId,'this is schdeule id')
+            const data = await this.scheduleModel.findOneAndUpdate({scheduleId: scheduleId}, {$set:{status: "completed"}});
+            console.log(data, 'for the schedule');
+            return data;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

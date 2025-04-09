@@ -119,4 +119,14 @@ export class CandidateService implements ICandidateService {
         }
     }
 
+    async updateCandidatePremium(candidateId: string): Promise<ICandidate> {
+        try {
+            const candidateData = await this.candidateRepository.update(candidateId, {premium: true});
+            return candidateData;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

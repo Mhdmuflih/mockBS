@@ -27,13 +27,17 @@ import { join } from 'path';
 })
 export class AppModule {
   static grpcOptions(): GrpcOptions {
-    console.log('Resolved protoPath:', __dirname + './proto/interviewer.proto');
+    console.log('Resolved protoPath:', join(__dirname, '..', 'src', 'proto', 'premium.proto'));
+
     return {
       transport: Transport.GRPC,
       options: {
         url: '0.0.0.0:50051',
-        package: 'interviewer', // Package name defined in .proto file
-        protoPath: join(__dirname, '..', 'src', 'proto', 'interviewer.proto'),
+        protoPath: [
+          join(__dirname, '..', 'src', 'proto', 'interviewer.proto'), 
+          join(__dirname, '..', 'src', 'proto', 'premium.proto')
+        ],
+        package: ['interviewer', 'premium'], 
       },
     };
   }

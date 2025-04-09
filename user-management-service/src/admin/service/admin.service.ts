@@ -50,7 +50,7 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getAllCandidate(page: number, limit: number, search: string): Promise<{candidatesData: ICandidate[]; totalRecords: number, totalPages: number, currentPage: number}> {
+  async getAllCandidate(page: number, limit: number, search: string): Promise<{ candidatesData: ICandidate[]; totalRecords: number, totalPages: number, currentPage: number }> {
     try {
       const candidatesData = await this.adminCandidateRepository.findWithPagination({}, page, limit, search);
       // const candidatesData = await this.adminCandidateRepository.getAllCandidate(page, limit, search);
@@ -167,11 +167,13 @@ export class AdminService implements IAdminService {
   }
 
 
-  async getDashboradData(): Promise<{candidate:number, interviewer:number}> {
+  async getDashboradData(): Promise<{ candidate: number, premiumCandidates: number, interviewer: number, unApprovedInterviewer: number }> {
     try {
       const candidate = await this.adminCandidateRepository.findCandidateCount();
+      const premiumCandidates = await this.adminCandidateRepository.findPremiumCandidateCount();
       const interviewer = await this.adminInterviewerRepository.findInterviewerCount();
-      return {candidate, interviewer};
+      const unApprovedInterviewer = await this.adminInterviewerRepository.findUnApprovedInterviewer();
+      return { candidate, premiumCandidates, interviewer, unApprovedInterviewer };
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

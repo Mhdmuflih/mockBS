@@ -12,5 +12,5 @@ export interface IAdminService {
     interviewerAction(id: string): Promise<IInterviewer>;
     addStack(formData: any): Promise<IStack>
     getAllStack(): Promise<IStack[]>;
-    getDashboradData(): Promise<{ candidate: number, interviewer: number }>;
+    getDashboradData(): Promise<{ candidate: number, interviewer: number,unApprovedInterviewer: number }>;
 }

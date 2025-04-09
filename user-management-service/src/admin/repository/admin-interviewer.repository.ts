@@ -46,7 +46,16 @@ export class AdminInterviewerRepository extends BaseRepository<Interviewer> impl
 
     async findInterviewerCount(): Promise<number> {
         try {
-            const interviewer = await this.interviewerModel.countDocuments();
+            const interviewer = await this.interviewerModel.countDocuments({isApproved: true});
+            return interviewer;
+        } catch (error: any) {
+            console.log(error.message)
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async findUnApprovedInterviewer(): Promise<number> {
+        try {
+            const interviewer = await this.interviewerModel.countDocuments({isApproved: false});
             return interviewer;
         } catch (error: any) {
             console.log(error.message)

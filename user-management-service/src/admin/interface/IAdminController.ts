@@ -13,5 +13,5 @@ export interface IAdminController {
     addStack(formData: any): Promise<{ success: boolean; message: string; stackData: IStack }>;
     stackList(): Promise<{ success: boolean; message: string; stackData: IStack[] }>;
     getInterviewDetails(ids: { candidateId: string, interviewerId: string }): Promise<{ success: boolean; message: string; interviewDetailsData: any }>
-    getDashboard(): Promise<{ candidate: number, interviewer: number }>;
+    getDashboard(): Promise<{ success: boolean, message: string, candidate: number, premiumCandidates: number, interviewer: number, unApprovedInterviewer: number }>;
 }

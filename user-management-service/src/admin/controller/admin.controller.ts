@@ -13,7 +13,7 @@ export class AdminController implements IAdminController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search?: string
-  ): Promise<{ success: boolean; message: string; approvalData: {approvalData: IInterviewer[], totalRecords: number, totalPages: number, currentPage:number} }> {
+  ): Promise<{ success: boolean; message: string; approvalData: { approvalData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number } }> {
     try {
       const approvalData = await this.adminService.findAllApproval(page, limit, search);
       // console.log(approvalData, 'this is approval data for the pagination ');
@@ -52,9 +52,9 @@ export class AdminController implements IAdminController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search: string,
-  ): Promise<{ success: boolean; message: string; candidateData: {candidatesData: ICandidate[]; totalRecords: number, totalPages: number, currentPage: number} }> {
+  ): Promise<{ success: boolean; message: string; candidateData: { candidatesData: ICandidate[]; totalRecords: number, totalPages: number, currentPage: number } }> {
     try {
-      const candidatesData = await this.adminService.getAllCandidate(page, limit,search);
+      const candidatesData = await this.adminService.getAllCandidate(page, limit, search);
       return { success: true, message: "interviewerDetails", candidateData: candidatesData };
 
     } catch (error: any) {
@@ -90,7 +90,7 @@ export class AdminController implements IAdminController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search?: string
-  ): Promise<{ success: boolean; message: string; interviewerData: {interviewersData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number} }> {
+  ): Promise<{ success: boolean; message: string; interviewerData: { interviewersData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number } }> {
     try {
       const interviewersData = await this.adminService.getAllInterviewers(page, limit, search);
       return { success: true, message: "interviewerDetails", interviewerData: interviewersData };
@@ -147,11 +147,11 @@ export class AdminController implements IAdminController {
   }
 
   @Get('/dashboard')
-  async getDashboard(): Promise<{candidate: number, interviewer: number}> {
+  async getDashboard(): Promise<{ success: boolean, message: string, candidate: number, premiumCandidates: number, interviewer: number, unApprovedInterviewer: number }> {
     try {
       const dashboardData = await this.adminService.getDashboradData();
       console.log(dashboardData, 'this is dashboard data');
-      return dashboardData
+      return { success: true, message: "dashboard Data", candidate: dashboardData.candidate, premiumCandidates: dashboardData.premiumCandidates, interviewer: dashboardData.interviewer, unApprovedInterviewer: dashboardData.unApprovedInterviewer }
     } catch (error: any) {
       console.log(error.message);
       throw new BadRequestException(error.message || 'An error occurred');

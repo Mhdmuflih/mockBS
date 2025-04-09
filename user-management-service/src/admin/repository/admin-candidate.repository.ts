@@ -44,4 +44,14 @@ export class AdminCandidateRepository extends BaseRepository<Candidate> implemen
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    async findPremiumCandidateCount(): Promise<number> {
+        try {
+            const candidate = await this.candidateModel.countDocuments({premium: true});
+            return candidate;
+        } catch (error: any) {
+            console.log(error.message)
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

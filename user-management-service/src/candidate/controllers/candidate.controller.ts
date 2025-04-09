@@ -7,6 +7,8 @@ import { IInterviewer } from 'src/interviewer/interface/interface';
 import { ChagnePasswordDTO } from '../dtos/change-password.dto';
 import { CandidateDataDto, UpdateCandidateDto } from '../dtos/candidate-data.dto';
 import { GetStackResponseDto, StackResponseDto } from '../dtos/stack-response.dto';
+import { GrpcMethod, RpcException } from '@nestjs/microservices';
+import { status } from '@grpc/grpc-js';
 
 @Controller('candidate')
 export class CandidateController implements ICandidateController {
@@ -105,4 +107,27 @@ export class CandidateController implements ICandidateController {
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+    // gRPC to premium update
+    @GrpcMethod('PremiumService', 'CreatePremium')
+    async getBookingData(data: { candidateId: string }): Promise<any> {
+        try {
+            console.log('Received data:', data); // Debug log
+
+            if (!data || !data.candidateId) {
+                throw new RpcException({ code: status.INVALID_ARGUMENT, message: 'candidateId is required' });
+            }
+
+            const candidateDataUpdate = await this.candidateService.updateCandidatePremium(data.candidateId);
+
+            return { success: true, message: "Updated candidate premium data successfully" };
+        } catch (error: any) {
+            console.error('Error:', error.message);
+            throw new RpcException({ code: status.INTERNAL, message: error.message || 'An error occurred' });
+        }
+    }
+
+
 }

@@ -30,6 +30,9 @@ export class Candidate extends Document {
     @Prop({ type: String })
     profileURL: string
 
+    @Prop({type: Boolean, default: false})
+    premium: boolean
+
     @Prop({ type: Date, default: () => new Date(Date.now() + 2 * 60 * 1000) }) // Corrected typo for 'expaireAt' to 'expireAt'
     expaireAt: Date; // Renamed property to 'expireAt' for better clarity
 }

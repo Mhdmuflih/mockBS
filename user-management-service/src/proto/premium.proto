@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package premium;
+
+service PremiumService {
+  rpc CreatePremium (PremiumRequest) returns (PremiumResponse);
+}
+
+message PremiumRequest  {
+  string candidateId = 1;
+}
+
+
+
+message PremiumResponse {
+  bool success = 1;
+  string message = 2;
+}

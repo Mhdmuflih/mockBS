@@ -2,12 +2,13 @@ import SideBar from "../../../components/Candidate/SideBar";
 import toast, { Toaster } from "react-hot-toast";
 import { fetchCandidateProfileData, TakeThePremium } from "../../../Services/candidateService";
 import { useEffect, useState } from "react";
-import { ICandidate } from "../../../Interface/SliceInterface";
 import { io } from "socket.io-client";
 import { FaCheck, FaCheckDouble, FaUserCircle } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import moment from "moment";
 import { MdModeEditOutline } from "react-icons/md";
+import { ICandidatePremiumApiResponse, ICandidateProfileApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
+import { ICandidate, IGroup, IGroupMessage } from "../../../Interface/candidateInterfaces/interface";
 
 const socket = io('ws://localhost:6060', { transports: ['websocket'] }); // Use correct server URL
 
@@ -16,30 +17,27 @@ const CandidateChooseCommunity = () => {
 
     const [candidateData, setCandidateData] = useState<ICandidate | null>(null)
 
-    const [groupName, setGroupName] = useState("")
-    const [groups, setGroups] = useState<any>([]);
+    const [groupName, setGroupName] = useState<string>("")
+    const [groups, setGroups] = useState<IGroup[]>([]);
     const [selectedGroup, setSelectedGroup] = useState<string>("")
-    const [messages, setMessages] = useState<any>([])
-    const [message, setMessage] = useState("");
-    const [isModal, setIsModal] = useState(false);
-    const [chat, setChat] = useState(false);
+    const [messages, setMessages] = useState<IGroupMessage[]>([])
+    const [message, setMessage] = useState<string>("");
+    const [isModal, setIsModal] = useState<boolean>(false);
+    const [chat, setChat] = useState<boolean>(false);
 
     const [hovered, setHovered] = useState<boolean>(false);
-    // const [isEdit, setIsEdit] = useState<boolean>(false);
-
 
     useEffect(() => {
         const takeProfileData = async () => {
             try {
-                const response: any = await fetchCandidateProfileData();
+                const response: ICandidateProfileApiResponse = await fetchCandidateProfileData();
                 if (response.success) {
                     setCandidateData(response.candidateData);
-                    console.log(response.candidateData, 'this is response');
                 } else {
                     console.log("Failed to fetch candidate profile data.");
                 }
-            } catch (error: any) {
-                console.log("Error fetching data:", error.message);
+            } catch (error: unknown) {
+                error instanceof Error ? toast.error(error.message) : toast.error("An unknown error occurred.");
             }
         };
         takeProfileData();
@@ -47,42 +45,42 @@ const CandidateChooseCommunity = () => {
 
         socket.emit("getGroups");
 
-        socket.on("groupList", (group) => {
+        socket.on("groupList", (group: IGroup[]) => {
             setGroups(group);
         });
 
-        socket.on('groupCreated', (group) => {
-            setGroups((prev: any) => [...prev, group]);
+        socket.on('groupCreated', (group: IGroup) => {
+            setGroups((prev: IGroup[]) => [...prev, group]);
         });
 
-        socket.on("groupCreated", (newGroup) => {
+        socket.on("groupCreated", (newGroup: IGroup) => {
             console.log(`New Group Created: ${newGroup.name}`);
             // setGroups((prevGroups: any) => [...prevGroups, newGroup]);
         });
 
-        socket.on("joinedGroup", (updatedGroup) => {
+        socket.on("joinedGroup", (updatedGroup: IGroup) => {
             console.log("User joined group:", updatedGroup);
-            setGroups((prevGroups: any) => {
-                return prevGroups.map((group: any) =>
+            setGroups((prevGroups: IGroup[]) => {
+                return prevGroups.map((group: IGroup) =>
                     group.name === updatedGroup.name ? updatedGroup : group
                 );
             });
         });
 
-        socket.on("messageHistory", (data) => {
+        socket.on("messageHistory", (data: IGroupMessage[]) => {
             console.log(data);
             setMessages(data);
         })
 
-        socket.on("receiveMessage", (newMessage) => {
+        socket.on("receiveMessage", (newMessage: IGroupMessage) => {
             console.log(message, 'this is that message')
-            setMessages((prevMessages: any) => [...prevMessages, newMessage]);
+            setMessages((prevMessages: IGroupMessage[]) => [...prevMessages, newMessage]);
         });
 
 
         return () => {
             socket.off("groupList");
-            socket.off("groupCreated"); // Clean up listener when component unmounts
+            socket.off("groupCreated");
             socket.off("messageHistory");
             socket.off("receiveMessage");
             socket.off("joinedGroup");
@@ -92,36 +90,33 @@ const CandidateChooseCommunity = () => {
     }, []);
 
 
-    const handleToSubscibe = async (amount: number, duration: string) => {
+    const handleToSubscibe = async (amount: number, duration: string): Promise<void> => {
         try {
             const premiumData = {
                 amount: amount,
                 duration: duration
             }
-            const paymentResponse: any = await TakeThePremium(premiumData);
-            console.log(paymentResponse, 'this is payment reponse');
+            const paymentResponse: ICandidatePremiumApiResponse = await TakeThePremium(premiumData);
             if (paymentResponse.success) {
-                // console.log(paymentResponse.session, 'this is session for the payment');
-                // console.log(paymentResponse.session.url, 'this is session for the payment url');
                 if (paymentResponse?.session?.url) {
                     window.location.href = paymentResponse.session.url;
                 } else {
                     toast.error(paymentResponse.message);
                 }
             } else {
-                console.log("not ok not ok");
+                toast.error("Payemnt is not woriking");
             }
-        } catch (error: any) {
-            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
+        } catch (error: unknown) {
+            error instanceof Error ? toast.error(error.message) : toast.error("An unknown error occurred.");
         }
     }
 
 
-    const handleToCreateCommunity = () => {
+    const handleToCreateCommunity = (): void => {
         setIsModal(true);
     }
 
-    const createGroup = () => {
+    const createGroup = (): void => {
         if (groupName) {
             if (groupName.trim() === "") {
                 toast.error("Please Enter GroupName");
@@ -135,20 +130,20 @@ const CandidateChooseCommunity = () => {
         }
     };
 
-    const joinGroup = async (groupName: string) => {
+    const joinGroup = (groupName: string): void => {
         console.log(candidateData?._id, 'this is caniddate id');
         console.log(groupName, 'this is join group name');
         socket.emit("joinMember", { candidateId: candidateData?._id?.toString(), groupName: groupName })
     }
 
-    const chooseToCommunity = async (groupName: string) => {
+    const chooseToCommunity = (groupName: string): void => {
         console.log(groupName, 'choose');
         setSelectedGroup(groupName);
         socket.emit("messageHistory", groupName);
         setChat(true);
     }
 
-    const handleToSendMessage = () => {
+    const handleToSendMessage = (): void => {
         if (message.trim() === "") {
             toast.error("Please please type anything");
             return;
@@ -333,7 +328,7 @@ const CandidateChooseCommunity = () => {
                                                                     {hovered && msg.userName === candidateData?.name && (
                                                                         <button
                                                                             className="absolute top-2 right-2  text-black px-2 py-1 rounded "
-                                                                            // onClick={() => setIsEdit(true)}
+                                                                        // onClick={() => setIsEdit(true)}
                                                                         >
                                                                             <MdModeEditOutline />
                                                                         </button>

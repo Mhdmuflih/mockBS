@@ -1,19 +1,19 @@
 import TopBar from "../../components/TopBar";
 import SignupLogo from '../../assets/signUpImage.png';
 import { useNavigate } from "react-router-dom";
-
 import LoginBAckground from '../../assets/White Minimalistic Background Texture Wallpaper Image For Free Download - Pngtree.jpeg';
+import React from "react";
 
 
-const ChooseSignup = () => {
+const ChooseSignup: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const navigateToCandidate = () => {
+    const navigateToCandidate = (): void => {
         navigate('/candidate/sign-up')
     }
 
-    const navigateToInterviewer = () => {
+    const navigateToInterviewer = (): void => {
         navigate('/interviewer/sign-up')
     }
 

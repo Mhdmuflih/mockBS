@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState, useCallback } from "react";
+import React, { FormEvent, useEffect, useState, useCallback } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
 import { editProfileCandidate, fetchCandidateProfileData } from "../../../Services/candidateService";
 import profileImage from "../../../assets/profile image.jpg";
@@ -11,14 +11,22 @@ import "react-toastify/dist/ReactToastify.css";
 import { formValidation } from "../../../Validations/formValidation";
 import { useDispatch } from "react-redux";
 import { setProfileImage } from "../../../Store/Slice/CandidateSlice";
+import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
+import { ICandidateProfileApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
 
-const CandidateProfile = () => {
 
-    const dispatch = useDispatch();
+export interface ICandidateIData {
+    name: string;
+    mobile: string;
+    profileURL: string | undefined;
+}
 
-    const [isHovered, setIsHovered] = useState(false);
+const CandidateProfile: React.FC = () => {
+
+    const dispatch: Dispatch<UnknownAction> = useDispatch();
+    const [isHovered, setIsHovered] = useState<boolean>(false);
     const [editMode, setEditMode] = useState<{ [key: string]: boolean }>({});
-    const [candidateData, setCandidateData] = useState({
+    const [candidateData, setCandidateData] = useState<ICandidateIData>({
         name: "",
         mobile: "",
         profileURL: "",
@@ -28,23 +36,28 @@ const CandidateProfile = () => {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
     useEffect(() => {
-        const takeProfileData = async () => {
+        const takeProfileData = async (): Promise<void> => {
             try {
-                const response: any = await fetchCandidateProfileData();
+                const response: ICandidateProfileApiResponse = await fetchCandidateProfileData();
                 if (response.success) {
-                    setCandidateData(response.candidateData);
+                    const formattedData: ICandidateIData = {
+                        name: response.candidateData.name,
+                        mobile: response.candidateData.mobile,
+                        profileURL: response.candidateData.profileURL
+                    }
+                    setCandidateData(formattedData);
                 } else {
                     console.log("Failed to fetch candidate profile data.");
                 }
             } catch (error: any) {
-                console.log("Error fetching data:", error.message);
+                error instanceof Error ? console.log("Error fetching data:", error.message) : console.log("An unknown error occurred.");
             }
         };
         takeProfileData();
     }, []);
 
-    const handleEditClick = useCallback((field: string) => {
-        setEditMode((prev) => {
+    const handleEditClick = useCallback((field: string): void => {
+        setEditMode((prev: { [key: string]: boolean; }) => {
             const newEditMode = { ...prev, [field]: !prev[field] };
             return newEditMode;
         });
@@ -112,7 +125,7 @@ const CandidateProfile = () => {
     return (
         <div>
             <Toaster position="top-right" reverseOrder={false} />
-            
+
             <SideBar heading="Profile">
                 <div className="bg-gray-200 p-4 shadow-md h-screen">
                     <form onSubmit={handleToSubmit}>
@@ -154,7 +167,7 @@ const CandidateProfile = () => {
                                             className="p-1 rounded bg-gray-100 text-black"
                                         />
 
-                                        
+
                                     ) : (
                                         <h1 className="text-gray-800 font-semibold ml-4">{candidateData[field as keyof typeof candidateData] || "Loading..."}</h1>
                                     )}

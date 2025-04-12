@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ICandidate, LoginPayload, ReduxInitialStateManage } from "../../Interface/SliceInterface";
+import {  LoginPayload, ReduxInitialStateManage } from "../../Interface/SliceInterface";
+import { ICandidate } from "../../Interface/candidateInterfaces/interface";
 
 const storedToken: boolean = localStorage.getItem("candidateToken") ? true : false;
 

@@ -1,28 +1,20 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SideBar from "../../../components/Candidate/SideBar";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { updatePaymentStatus } from "../../../Services/candidateService";
-// import PageLoading from "../../../components/PageLoading";
+import { ISuccess } from "../../../Interface/candidateInterfaces/IApiResponce";
 
-const SuccessPayment = () => {
+const SuccessPayment: React.FC = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const [searchParams] = useSearchParams();
     const sessionId: any = searchParams.get("transaction_id");
     const status: any = searchParams.get("status");
-
-
     const navigate = useNavigate();
-    const hasFetched = useRef(false); // Prevent multiple API calls
+    const hasFetched = useRef(false);
 
     useEffect(() => {
 
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
-
-        console.log(status, 'this is status')
         if (status === "cancelled") {
             localStorage.setItem("paymentStatus", "failed"); // Store failed status
             navigate("/candidate/home");
@@ -34,7 +26,7 @@ const SuccessPayment = () => {
 
 
         const checkPaymentStatus = async () => {
-            const response: any = await updatePaymentStatus(sessionId);
+            const response: ISuccess = await updatePaymentStatus(sessionId);
             if (response.success) {
                 console.log("Updated payment status");
             } else {
@@ -42,17 +34,14 @@ const SuccessPayment = () => {
             }
         };
         checkPaymentStatus();
-    }, [sessionId, status]); // Only run when sessionId changes
+    }, [sessionId, status]);
 
-    // if (isLoading) {
-    //     return <div><PageLoading /></div>
-    // }
 
-    const handleToHomePage = () => {
+    const handleToHomePage = (): void => {
         navigate('/candidate/home');
     };
 
-    const handleToDetailsPage = () => {
+    const handleToDetailsPage = (): void => {
         navigate('/candidate/outsourced-interviews');
     };
 

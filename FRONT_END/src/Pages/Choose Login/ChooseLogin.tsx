@@ -3,16 +3,17 @@ import TopBar from "../../components/TopBar";
 import { FaUserGraduate, FaUserTie } from "react-icons/fa";
 
 import LoginBAckground from '../../assets/White Minimalistic Background Texture Wallpaper Image For Free Download - Pngtree.jpeg';
+import React from "react";
 
-const ChooseLogin = () => {
+const ChooseLogin: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const navigateToCandidateLogin = () => {
+    const navigateToCandidateLogin = (): void => {
         navigate('/candidate/login');
     }
 
-    const navigateToInterviewerLogin = () => {
+    const navigateToInterviewerLogin = (): void => {
         navigate('/interviewer/login');
     }
 

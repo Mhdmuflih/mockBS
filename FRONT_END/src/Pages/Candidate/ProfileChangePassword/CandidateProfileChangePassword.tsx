@@ -7,15 +7,23 @@ import { changePassword } from "../../../Services/candidateService";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
+import { ISuccess } from "../../../Interface/candidateInterfaces/IApiResponce";
+
+export interface IProfileChangePassword {
+    currentPassword: string;
+    password: string;
+    confirmPassword: string
+}
 
 const CandidateProfileChangePassword = () => {
 
-    const [formData, setFormData] = useState<{ currentPassword: string, password: string, confirmPassword: string }>({
+    const [formData, setFormData] = useState<IProfileChangePassword>({
         currentPassword: '',
         password: '',
         confirmPassword: ''
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
 
     const handleTakeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -34,14 +42,10 @@ const CandidateProfileChangePassword = () => {
             return;
         }
 
-        // console.log(email, "this is location email");
-
         try {
-            const response: any = await changePassword({ currentPassword: formData.currentPassword, password: formData.password, confirmPassword: formData.confirmPassword });
-
+            const response: ISuccess = await changePassword({ currentPassword: formData.currentPassword, password: formData.password, confirmPassword: formData.confirmPassword });
             if (response.success) {
                 toast.success(response.message);
-
                 setFormData({
                     currentPassword: "",
                     password: "",
@@ -50,9 +54,8 @@ const CandidateProfileChangePassword = () => {
             } else {
                 toast.error(response.message);
             }
-        } catch (error: any) {
-            console.error("Error changing password:", error.message);
-            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
+        } catch (error: unknown) {
+            error instanceof Error ? toast.error(error.message) : toast.error("An unknown error occurred.");
         }
     };
 

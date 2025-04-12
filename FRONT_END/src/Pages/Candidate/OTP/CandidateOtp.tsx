@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Otp from "../../../components/Otp";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
     resendCandidateOTP,
@@ -10,11 +10,12 @@ import {
 
 import toast from "react-hot-toast"
 import { Toaster } from "react-hot-toast";
+import { ISuccess } from "../../../Interface/candidateInterfaces/IApiResponce";
 
 const CandidateOtp = () => {
+    
     const location = useLocation();
-    const navigate = useNavigate();
-
+    const navigate: NavigateFunction = useNavigate();
     const [timer, setTimer] = useState<number>(30);
     const [canResend, setCanResend] = useState<boolean>(false);
     const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
@@ -34,7 +35,7 @@ const CandidateOtp = () => {
         }
     }, [timer]);
 
-    const handleResendOTP = async () => {
+    const handleResendOTP = async (): Promise<void> => {
         console.log("Resend OTP triggered!");
         setTimer(30);
         setCanResend(false);
@@ -42,17 +43,16 @@ const CandidateOtp = () => {
         try {
             const { email, context }: { email: string; context: string } = location.state;
             console.log(email, context, "Email and context from location state");
-            const response: any = await resendCandidateOTP(email, context);
-
+            const response: ISuccess = await resendCandidateOTP(email, context);
             if (response && response.success) {
                 toast.success(response.message);
                 console.log("OTP resent successfully:", response.message);
             } else {
                 toast.error(response.message)
             }
-        } catch (error: any) {
-            console.error("Error while resending OTP:", error.message);
-            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
+        } catch (error: unknown) {
+            error instanceof Error ? toast.error(error.message) : toast.error("An unknown error occurred.");
+
         }
     };
 
@@ -79,14 +79,14 @@ const CandidateOtp = () => {
         }
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
 
         const OtpData = otp.join("");
         try {
             const { email, context }: { email: string; context: string } = location.state;
 
-            let response: any;
+            let response: ISuccess | undefined;
 
             if (context === "Registration") {
                 response = await verifyCandidateOTP(Number(OtpData), email);
@@ -125,15 +125,22 @@ const CandidateOtp = () => {
                     confirmButtonText: "OK",
                 });
             }
-        } catch (error: any) {
-            console.error("Error while verifying OTP:", error.message);
+        } catch (error: unknown) {
+            let errorMessage = "An unexpected error occurred. Please try again later.";
+
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            console.error("Error while verifying OTP:", errorMessage);
             Swal.fire({
                 titleText: "Error!",
-                text: error.message || "An unexpected error occurred. Please try again later.",
+                text: errorMessage,
                 icon: "error",
                 confirmButtonText: "OK",
             });
         }
+
     };
 
     return (

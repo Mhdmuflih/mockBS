@@ -3,7 +3,8 @@ import SideBar from "../../../components/Candidate/SideBar"
 import { FaUsers } from "react-icons/fa";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, } from 'recharts';
 import { fetchScheduledInterviewCount, fetchTotalAmount } from "../../../Services/candidateService";
-// import PageLoading from "../../../components/PageLoading";
+import { ICandidatePaymentAnalyiticsApiResponse, ICandidateScheduledAnalyiticsApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
+import toast, { Toaster } from "react-hot-toast";
 
 const CandidateAnalytics = () => {
 
@@ -13,17 +14,20 @@ const CandidateAnalytics = () => {
 
     useEffect(() => {
         const fetchCountOfTheData = async () => {
-            const scheduledResponse: any = await fetchScheduledInterviewCount();
-            const totalResponse: any = await fetchTotalAmount();
-            if (!scheduledResponse || !totalResponse) {
-                throw new Error("data fetch have some issue");
+            try {
+                const scheduledResponse: ICandidateScheduledAnalyiticsApiResponse = await fetchScheduledInterviewCount();
+                const totalResponse: ICandidatePaymentAnalyiticsApiResponse = await fetchTotalAmount();
+
+                if (!scheduledResponse || !totalResponse) {
+                    throw new Error("data fetch have some issue");
+                }
+
+                setScheduledInterviewCount(scheduledResponse.counts.scheduledInterviewCounts);
+                setCompletedInterviewCount(scheduledResponse.counts.completedInterviewCounts);
+                setTotalAmount(totalResponse.totalAmount);
+            } catch (error: unknown) {
+                error instanceof Error ? toast.error(error.message) : toast.error("An unknown error occurred.");
             }
-
-            setScheduledInterviewCount(scheduledResponse.counts.scheduledInterviewCounts);
-            setCompletedInterviewCount(scheduledResponse.counts.completedInterviewCounts);
-            setTotalAmount(totalResponse.totalAmount);
-
-            console.log(totalResponse, 'this is total')
         }
         fetchCountOfTheData();
     }, []);
@@ -34,16 +38,11 @@ const CandidateAnalytics = () => {
     ];
     const COLORS = ['#4CAF50', '#FF9800', '#2196F3'];
 
-    // const lineData = [
-    //     { name: 'Week 1', users: 500 },
-    //     { name: 'Week 2', users: 700 },
-    //     { name: 'Week 3', users: 800 },
-    //     { name: 'Week 4', users: 1000 },
-    // ];
-
     return (
         <>
             <SideBar heading="Analytics">
+                <Toaster position="top-right" reverseOrder={false} />
+
                 <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 px-6 py-4">
                     {/* <Breadcrumbs/> */}
                     {/* Stats Cards */}

@@ -1,55 +1,63 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Location, NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 import { addInterviewRating, fetchFeedBack, getInterviewerDetails } from "../../../Services/candidateService";
 import backgroundImage from "../../../assets/interivewsDetails background image.jpeg";
 import { FaStar } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
-// import PageLoading from "../../../components/PageLoading";
+import { IInterviewer, IScheduled } from "../../../Interface/candidateInterfaces/interface";
+import { ICandidateGetInterviewerDetails, ISuccess } from "../../../Interface/candidateInterfaces/IApiResponce";
+import { Types } from "mongoose";
 
-const CandidateInterviewDetails = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [detailsData, setDetailsData] = useState<any>(null);
+export interface IInterviewerDetails {
+    slotData: IScheduled,
+    interviewerData: IInterviewer
+}
 
-    const [isModal, setIsModal] = useState(false);
+
+const CandidateInterviewDetails: React.FC = () => {
+
+    const navigate: NavigateFunction = useNavigate();
+    const location: Location<IScheduled> = useLocation();
+    const [detailsData, setDetailsData] = useState<IInterviewerDetails | null>(null);
+    const [isModal, setIsModal] = useState<boolean>(false);
     const [feedbackData, setFeedbackData] = useState<any>(null);
-    const [isFetchingFeedback, setIsFetchingFeedback] = useState(false);
-
+    const [isFetchingFeedback, setIsFetchingFeedback] = useState<boolean>(false);
     const [isAddRating, setIsAddRating] = useState<boolean>(false);
 
     useEffect(() => {
-        if (!location.state || !location.state.detailsData) {
+        if (!location.state) {
             console.error("Location state is missing interview details");
             return;
         }
 
-        const { detailsData } = location.state;
-        const interviewerId = detailsData.interviewerId;
+        const  detailsData: IScheduled  = location.state;
+        const interviewerId: Types.ObjectId = detailsData.interviewerId;
 
         if (!interviewerId) {
             console.error("Interviewer ID is missing");
             return;
         }
 
-        const fetchInterviewerDetails = async () => {
+        const fetchInterviewerDetails = async (): Promise<void> => {
             try {
                 console.log(detailsData, 'this is detials data')
-                const response: any = await getInterviewerDetails(interviewerId);
+                const response: ICandidateGetInterviewerDetails = await getInterviewerDetails(interviewerId);
                 if (response.success) {
+                    
                     setDetailsData({
                         slotData: detailsData,
                         interviewerData: response.interviewerData
                     });
                 }
-            } catch (error: any) {
-                console.error("Error fetching interviewer details", error.message);
+            } catch (error: unknown) {
+                error instanceof Error ? console.log("Error fetching data:", error.message) : console.log("An unknown error occurred.");
             }
         };
         fetchInterviewerDetails();
     }, []);
 
-    const handleToJoin = (scheduleId: string) => {
+    const handleToJoin = (scheduleId: Types.ObjectId) => {
         navigate(`/candidate/video-call/${scheduleId}`);
     };
 
@@ -59,8 +67,8 @@ const CandidateInterviewDetails = () => {
     const handleToViewFeedback = async () => {
         setIsFetchingFeedback(true);
         try {
-            const slotId = detailsData?.slotData?._id; // Ensure slotId is extracted properly
-            const scheduledId = detailsData.slotData.scheduleId; // Ensure scheduledId is extracted properly
+            const slotId: string | undefined = detailsData?.slotData?._id.toString(); // Ensure slotId is extracted properly
+            const scheduledId: string | undefined = detailsData?.slotData?.scheduleId?.toString();
 
             if (!slotId || !scheduledId) {
                 console.error("Missing slotId or scheduledId");
@@ -102,8 +110,8 @@ const CandidateInterviewDetails = () => {
     };
     // ======================================================================================
 
-    const [ratings, setRatings] = useState(0);
-    const [comment, setComment] = useState("");
+    const [ratings, setRatings] = useState<number>(0);
+    const [comment, setComment] = useState<string>("");
 
     // Handle rating selection
     const handleRating = (starCount: number) => {
@@ -111,13 +119,18 @@ const CandidateInterviewDetails = () => {
     };
 
     // Handle form submission
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         try {
-            const interviewerId = detailsData.interviewerData._id
-            const scheduledId = detailsData.slotData.scheduleId
-            const slotId = detailsData.slotData._id
+            const interviewerId: string = detailsData?.interviewerData?._id?.toString() || "";
+            const scheduledId: string = detailsData?.slotData?.scheduleId?.toString() || "";
+            const slotId: string = detailsData?.slotData?._id?.toString() || "";
 
-            const reviewData = {
+            if (!interviewerId || !scheduledId || !slotId) {
+                toast.error("Missing required review details.");
+                return;
+            }
+
+            const reviewData: {interviewerId: string ;scheduledId: string;slotId: string;ratings: number; comment: string;} = {
                 interviewerId,
                 scheduledId,
                 slotId,
@@ -126,7 +139,8 @@ const CandidateInterviewDetails = () => {
             }
 
 
-            const response: any = await addInterviewRating(reviewData);
+            const response: ISuccess = await addInterviewRating(reviewData);
+            console.log(response)
             if (response.success) {
                 toast.success(response.message);
             } else {
@@ -135,22 +149,20 @@ const CandidateInterviewDetails = () => {
             setIsAddRating(false);
             setRatings(0);
             setComment("");
-        } catch (error: any) {
-            console.log(error.message);
-            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
+        } catch (error: unknown) {
+            error instanceof Error ? toast.error(error.message) : toast.error("An unknown error occurred.");
             onClose();
-
         }
 
     };
 
-    const onClose = () => {
+    const onClose = (): void => {
         setIsAddRating(false);
         setRatings(0);
         setComment("");
     }
 
-    const handleToAddRating = async () => {
+    const handleToAddRating = (): void => {
         setIsAddRating(true);
     }
 

@@ -1,5 +1,6 @@
+import React from "react";
 
-const PageNotFound = () => {
+const PageNotFound: React.FC = () => {
     return (
         <section>
 

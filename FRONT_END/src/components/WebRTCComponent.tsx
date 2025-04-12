@@ -110,25 +110,22 @@
 // export default WebRTCComponent;
 
 
-import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { NavigateFunction, useLocation, useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:8000", {
     transports: ["websocket"],
 });
 
-const WebRTCComponent = () => {
+const WebRTCComponent: React.FC = () => {
     const localVideoRef: any = useRef(null);
     const remoteVideoRef: any = useRef(null);
     const peerConnection: any = useRef<RTCPeerConnection | null>(null);
-
-    // const [isInRoom, setIsInRoom] = useState(false);
-    const [isWaiting, setIsWaiting] = useState(false);
-    const [isConnected, setIsConnected] = useState(false);
-
+    const [isWaiting, setIsWaiting] = useState<boolean>(false);
+    const [isConnected, setIsConnected] = useState<boolean>(false);
     const { scheduleId } = useParams<{ scheduleId: string }>();
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const location = useLocation();
 
     useEffect(() => {

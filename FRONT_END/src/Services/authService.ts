@@ -1,5 +1,6 @@
 // import axios from "axios";
 import { UnProtectedAPI } from "../Config/axiosConfig";
+import { ICandidateForgotPasswordApiResponse, ICandidateLoginApiResponse, ICandidateSignupApiResponse, ISuccess } from "../Interface/candidateInterfaces/IApiResponce";
 import { IFormData, IFormDataLogin } from "../Interface/Interface";
 
 // const baseURL = "http://localhost:8000/auth-service";
@@ -23,9 +24,9 @@ const handleError = (error: any): never => {
 
 // Candidate Routes
 
-export const googleAuthenticationCandidate = async ({email, name, profileImage}: {email:string, name: string, profileImage: string}) => {
+export const googleAuthenticationCandidate = async ({ email, name, profileImage }: { email: string, name: string, profileImage: string }) => {
     try {
-        const response = await UnProtectedAPI.post('/candidate/google',{ email,name, profileImage },{ headers: { 'Content-Type': 'application/json' } } );
+        const response = await UnProtectedAPI.post('/candidate/google', { email, name, profileImage }, { headers: { 'Content-Type': 'application/json' } });
         return response.data;
     } catch (error: any) {
         console.log("Error in Google Authentication:", error.message);
@@ -35,67 +36,73 @@ export const googleAuthenticationCandidate = async ({email, name, profileImage}:
 
 
 
-export const signUpCandidate = async (formData: IFormData) => {
+export const signUpCandidate = async (formData: IFormData): Promise<ICandidateSignupApiResponse> => {
     try {
-        const response = await UnProtectedAPI.post('/candidate/sign-up', formData)
+        const response = await UnProtectedAPI.post<ICandidateSignupApiResponse>('/candidate/sign-up', formData)
         return response.data;
     } catch (error: any) {
-        handleError(error)
+        console.log("Error in Google Authentication:", error.message);
+        throw error;
     }
 }
 
-export const verifyCandidateOTP = async (otp: number, email: string) => {
+export const verifyCandidateOTP = async (otp: number, email: string): Promise<ISuccess> => {
     try {
-        const response = await UnProtectedAPI.post('/candidate/otp', { otp: Number(otp), email: email });
+        const response = await UnProtectedAPI.post<ISuccess>('/candidate/otp', { otp: Number(otp), email: email });
         return response.data;
     } catch (error: any) {
-        handleError(error)
-
+        console.log("Error in Google Authentication:", error.message);
+        throw error;
     }
 }
 
-export const resendCandidateOTP = async (email: string, context: string) => {
+export const resendCandidateOTP = async (email: string, context: string): Promise<ISuccess> => {
     try {
-        const response = await UnProtectedAPI.post('/candidate/resend-otp', { email, context });
+        const response = await UnProtectedAPI.post<ISuccess>('/candidate/resend-otp', { email, context });
         return response.data;
     } catch (error: any) {
-        handleError(error)
+        console.log("Error in Google Authentication:", error.message);
+        throw error;
     }
 }
 
-export const forgotPasswordCandidate = async ({ email }: { email: string }) => {
+export const forgotPasswordCandidate = async ({ email }: { email: string }): Promise<ICandidateForgotPasswordApiResponse> => {
     try {
-        const response = await UnProtectedAPI.post('/candidate/forgot-password', { email });
+        const response = await UnProtectedAPI.post<ICandidateForgotPasswordApiResponse>('/candidate/forgot-password', { email });
         return response.data;
     } catch (error: any) {
-        handleError(error);
+        console.log("Error in Google Authentication:", error.message);
+        throw error;
     }
 }
 
-export const verifyCandidateForgotPasswordOTP = async (otp: number, email: string) => {
+export const verifyCandidateForgotPasswordOTP = async (otp: number, email: string): Promise<ISuccess> => {
     try {
-        const response = await UnProtectedAPI.post('/candidate/email-verify', { email, otp });
+        const response = await UnProtectedAPI.post<ISuccess>('/candidate/email-verify', { email, otp });
         return response.data;
     } catch (error: any) {
-        handleError(error);
+        console.log("Error in Google Authentication:", error.message);
+        throw error;
     }
 }
 
-export const changeCandidatePassword = async ({ email, password, confirmPassword }: { email: string, password: string, confirmPassword: string }) => {
+export const changeCandidatePassword = async ({ email, password, confirmPassword }: { email: string, password: string, confirmPassword: string }): Promise<ISuccess> => {
     try {
-        const response = await UnProtectedAPI.patch('/candidate/change-password', { email, password, confirmPassword });
+        const response = await UnProtectedAPI.patch<ISuccess>('/candidate/change-password', { email, password, confirmPassword });
         return response.data;
     } catch (error: any) {
-        handleError(error);
+        console.log("Error in Google Authentication:", error.message);
+        throw error;
     }
 }
 
-export const loginCandidate = async (formData: IFormDataLogin) => {
+export const loginCandidate = async (formData: IFormDataLogin): Promise<ICandidateLoginApiResponse> => {
     try {
-        const response = await UnProtectedAPI.post('/candidate/login', formData);
+        const response = await UnProtectedAPI.post<ICandidateLoginApiResponse>('/candidate/login', formData);
         return response.data;
     } catch (error: any) {
-        handleError(error);
+        console.log("Error in Google Authentication:", error.message);
+        throw error;
     }
 }
 

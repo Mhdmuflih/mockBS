@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import Login from "../../../components/Login";
 import { FormEvent, useState } from "react";
 import { IFormDataLogin } from "../../../Interface/Interface";
@@ -12,27 +12,29 @@ import { FaUserGraduate } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
+import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
+import { ICandidateLoginApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
 
 
 
 const CandidateLogin = () => {
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const dispatch: Dispatch<UnknownAction> = useDispatch();
+    const navigate: NavigateFunction = useNavigate();
 
     const [formDataLogin, setFormDataLogin] = useState<IFormDataLogin>({
         email: "",
         password: ""
     });
 
-    const [errors, setErrors] = useState<any>({});
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const handleTakeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setFormDataLogin({ ...formDataLogin, [name]: value });
 
         const validation = formValidation({ ...formDataLogin, [name]: value }, "login", name);
-        setErrors((prevErrors: any) => ({ ...prevErrors, [name]: validation.errors[name] || "" }));
+        setErrors((prevErrors: { [key: string]: string }) => ({ ...prevErrors, [name]: validation.errors[name] || "" }));
     }
 
     const handleToSubmit = async (event: FormEvent) => {
@@ -46,7 +48,8 @@ const CandidateLogin = () => {
 
         try {
             console.log(formDataLogin, 'this is the login formData')
-            const response: any = await loginCandidate(formDataLogin);
+            const response: ICandidateLoginApiResponse = await loginCandidate(formDataLogin);
+            console.log(response, 'login reponse')
             if (response.success) {
                 if (response.candidateData.isBlocked) {
                     toast.error("Your account is blocked. Please contact support.")
@@ -73,24 +76,23 @@ const CandidateLogin = () => {
             } else {
                 toast.error(response.message)
             }
-        } catch (error: any) {
-            console.log(error.message);
-            toast.error( error?.message || "An unexpected error occurred. Please try again later.")
+        } catch (error: unknown) {
+            error instanceof Error ? toast.error(error.message) : toast.error("An unknown error occurred.");
         }
     }
 
-    const handleNavigate = () => {
+    const handleNavigate = (): void => {
         navigate('/candidate/sign-up');
     }
 
-    const handleToForgotPassword = () => {
+    const handleToForgotPassword = (): void => {
         navigate('/candidate/forgot-password');
     }
 
     return (
         <div>
-                <Toaster position="top-right" reverseOrder={false} />
-                <Login
+            <Toaster position="top-right" reverseOrder={false} />
+            <Login
                 heading="Candidate Login"
                 onNavigate={handleNavigate}
                 forgotPassword={handleToForgotPassword}

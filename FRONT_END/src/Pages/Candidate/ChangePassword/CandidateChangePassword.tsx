@@ -1,22 +1,23 @@
 import React, { FormEvent, useState } from "react";
 import ChangePassword from "../../../components/ChangePassword";
 import { formValidation } from "../../../Validations/formValidation";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 import { changeCandidatePassword } from "../../../Services/authService";
 import Swal from "sweetalert2";
+import { ISuccess } from "../../../Interface/candidateInterfaces/IApiResponce";
 
 
 
 const CandidateChangePassword = () => {
 
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const [formData, setFormData] = useState<{ password: string; confirmPassword: string }>({
         password: "",
         confirmPassword: "",
     });
 
     const location = useLocation();
-    const email = location?.state?.email; // Safely access email
+    const email: string = location?.state?.email; // Safely access email
 
     if (!email) {
         console.error("Email is missing in the state");
@@ -45,8 +46,8 @@ const CandidateChangePassword = () => {
         console.log(email, "this is location email");
 
         try {
-            const response: any = await changeCandidatePassword({ email, password: formData.password, confirmPassword: formData.confirmPassword });
-
+            const response: ISuccess = await changeCandidatePassword({ email, password: formData.password, confirmPassword: formData.confirmPassword });
+            console.log(response,' cjange ed adsflasdjfoaweoij')
             if (response.success) {
                 Swal.fire({
                     title: "Success!",

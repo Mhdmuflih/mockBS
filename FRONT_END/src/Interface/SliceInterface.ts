@@ -1,16 +1,17 @@
 import { ObjectId } from "mongoose";
+import { ICandidate } from "./candidateInterfaces/interface";
 
-export interface ICandidate {
-    _id: ObjectId;
-    name: string;
-    email: string;
-    mobile: number;
-    password: string;
-    is_Block: boolean;
-    is_Verfied: boolean
-    profileURL?: string
-    premium?: boolean
-}
+// export interface ICandidate {
+//     _id: ObjectId;
+//     name: string;
+//     email: string;
+//     mobile: number;
+//     password: string;
+//     is_Block: boolean;
+//     is_Verfied: boolean
+//     profileURL?: string
+//     premium?: boolean
+// }
 
 export interface IInterviewer {
     _id: ObjectId;

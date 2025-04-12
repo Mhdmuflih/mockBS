@@ -1,25 +1,26 @@
 import React, { FormEvent, useState } from "react";
 import ForgotPassword from "../../../components/ForgotPassword";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { formValidation } from "../../../Validations/formValidation";
 import { forgotPasswordCandidate } from "../../../Services/authService";
 import Swal from "sweetalert2";
+import { ICandidateForgotPasswordApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
 
-const CandidateForgotPassword = () => {
+const CandidateForgotPassword: React.FC = () => {
 
-    const navigate = useNavigate();
+    const navigate: NavigateFunction = useNavigate();
     const [formData, setFromData] = useState<{ email: string }>({
         email: ""
     });
 
-    const [errors, setErrors] = useState<any>({});
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const handleTakeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setFromData({ ...formData, [name]: value });
 
         const validation = formValidation({ ...formData, [name]: value }, "forgot", name);
-        setErrors((prevErrors: any) => ({ ...prevErrors, [name]: validation.errors[name] || "" }));
+        setErrors((prevErrors: { [key: string]: string }) => ({ ...prevErrors, [name]: validation.errors[name] || "" }));
     }
 
     const handleToSubmit = async (event: FormEvent) => {
@@ -31,7 +32,8 @@ const CandidateForgotPassword = () => {
         }
 
         try {
-            const response: any = await forgotPasswordCandidate(formData);
+            const response: ICandidateForgotPasswordApiResponse = await forgotPasswordCandidate(formData);
+            console.log(response, 'forgot')
             if (response.success) {
                 Swal.fire({
                     title: "Success!",
@@ -40,7 +42,6 @@ const CandidateForgotPassword = () => {
                     confirmButtonText: 'OK'
                 });
                 console.log(response.candidateData.email, ' this data');
-                console.log("success true ok ok ok");
                 navigate('/candidate/otp', { state: { email: response.candidateData.email, context: "CandidateForgotPassword" } });
             } else {
                 console.log("failed sen sen");
@@ -51,19 +52,25 @@ const CandidateForgotPassword = () => {
                     confirmButtonText: 'OK'
                 });
             }
-        } catch (error: any) {
-            console.log(error.message);
+        } catch (error: unknown) {
+            let errorMessage = "An unexpected error occurred. Please try again later.";
+
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
+            console.error("Error while verifying OTP:", errorMessage);
             Swal.fire({
                 titleText: "Error!",
-                text: error?.message || "An unexpected error occurred. Please try again later.",
+                text: errorMessage,
                 icon: "error",
-                confirmButtonText: "OK"
+                confirmButtonText: "OK",
             });
 
         }
     }
 
-    const handleToNavigate = () => {
+    const handleToNavigate = (): void => {
         navigate('/candidate/login');
     };
 

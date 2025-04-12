@@ -1,24 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/Creative Logo Templates.jpeg";
-// import mainLapLogo from '../../assets/main.png';
 import landingFirst from "../../assets/executives-ready-meeting-removebg-preview.png";
 import landingMain from '../../assets/landing page image.jpeg';
 import sky from "../../assets/fantastic-blue-sky.jpg"
-// import landing from '../../assets/landing.jpeg';
+import React from "react";
 
-const Home = () => {
+const Home: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const navigateToSignup = () => {
+    const navigateToSignup = (): void => {
         navigate('/sign-up');
     }
 
-    const navigateToLogin = () => {
+    const navigateToLogin = (): void => {
         navigate('/login')
     }
 
-    const navigateToHomePage = () => {
+    const navigateToHomePage = (): void => {
         navigate('/')
     }
 
@@ -38,12 +37,6 @@ const Home = () => {
                     <button onClick={navigateToLogin} type="submit" className="text-white bg-[#0d97ff] px-4 py-2 rounded-3xl hover:bg-[#a0d9ef] hover:text-black duration-700">Login</button>
                 </div>
             </div>
-
-            {/* 1 part */}
-            {/* <div
-                style={{ backgroundImage: `url(${sky})` }}
-                className="h-screen bg-cover bg-center flex justify-between flex-col md:flex-row"
-            ></div> */}
 
             <div
                 style={{ backgroundImage: `url(${sky}) ` }}

@@ -1,10 +1,11 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const InterviewerPageNotFound = () => {
+const InterviewerPageNotFound: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const handleToBack = () => {
+    const handleToBack = (): void => {
         navigate('/interviewer/profile');
     }
 

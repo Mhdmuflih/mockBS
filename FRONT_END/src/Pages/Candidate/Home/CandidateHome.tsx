@@ -1,91 +1,90 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
 import { getExpertInterviewerList, GetStack } from "../../../Services/candidateService";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-// import PageLoading from "../../../components/PageLoading";
+import { ICandidateHomeApiResponse, ICandidateHomeInterviewerApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
+import { IInterviewer, IStack } from "../../../Interface/candidateInterfaces/interface";
 
-const CandidateHome = () => {
+const CandidateHome: React.FC = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    const navigate = useNavigate();
-    const [stacks, setStacks] = useState<any>([]);
-    const [searchTerm, setSearchTerm] = useState<any>("");
-    const [tech, setTech] = useState("");
-    const [selectedStack, setSelectedStack] = useState<any>(null);
-    const [technologies, setTechnologies] = useState<any>([]);
-    const [interviewers, setInterviewers] = useState<any>([]);
+    const navigate:  NavigateFunction = useNavigate();
+    const [stacks, setStacks] = useState<IStack[]>([]);
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [tech, setTech] = useState<string>("");
+    const [selectedStack, setSelectedStack] = useState<IStack | null>(null);
+    const [technologies, setTechnologies] = useState<string[]>([]);
+    const [interviewers, setInterviewers] = useState<IInterviewer[]>([]);
 
     useEffect(() => {
 
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
-
         const paymentStatus = localStorage.getItem("paymentStatus");
-
         if (paymentStatus === "failed") {
             toast.error("Payment Failed! Please try again.");
-            localStorage.removeItem("paymentStatus"); // Clear after showing toast
+            localStorage.removeItem("paymentStatus");
         }
 
-        const fetchStack = async () => {
+        const fetchStack = async (): Promise<void> => {
             try {
-                const response: any = await GetStack();
+                const response: ICandidateHomeApiResponse = await GetStack();
                 if (response.success) {
                     setStacks(response.stackData);
                 } else {
-                    console.log("not ready not ready");
+                    console.log("Stack data not available.");
                 }
-            } catch (error: any) {
-                console.log("Error fetching data:", error.message);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    console.error("Error fetching stack data:", error.message);
+                } else {
+                    console.error("An unknown error occurred while fetching stack data.");
+                }
             }
         };
         fetchStack();
     }, []);
 
-    // if(isLoading) {
-    //     return <div><PageLoading /></div>
-    // }
 
-    const handleStackClick = (stack: any) => {
+    const handleStackClick = (stack: IStack): void => {
         setSelectedStack(stack);
         setTechnologies(stack.technologies);
         setInterviewers([]);
         setSearchTerm("");
     };
 
-    const handleTechClick = async (tech: string) => {
+    const handleTechClick = async (tech: string): Promise<void> => {
         try {
             setSearchTerm("");
             setTech(tech);
-            const response: any = await getExpertInterviewerList(tech);
+            const response: ICandidateHomeInterviewerApiResponse = await getExpertInterviewerList(tech);
             if (response.success) {
                 setInterviewers(response.matchedData.interviewers);
             } else {
                 console.log("API Response Not Successful");
             }
-        } catch (error: any) {
-            console.log("Error fetching data:", error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.log("Error fetching data:", error.message);
+            } else {
+                console.log("An unknown error occurred.");
+            }
         }
     };
 
     // searching in 3 parts
     // ------------------------
-    const filteredStacks = stacks.filter((stack: any) =>
+    const filteredStacks: IStack[] = stacks.filter((stack: IStack) =>
         stack.stackName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const filteredTechnologies = technologies.filter((tech: any) =>
+    const filteredTechnologies: string[] = technologies.filter((tech: string) =>
         tech.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const filteredInterviewers = interviewers.filter((interviewer: any) =>
+    const filteredInterviewers: IInterviewer[] = interviewers.filter((interviewer: IInterviewer) =>
         interviewer.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleToNavigateInterviewerDetails = (interviewerId: string) => {
+    const handleToNavigateInterviewerDetails = (interviewerId: string): void => {
         navigate(`/candidate/interviewer-slot-details/${interviewerId}?selectedTech=${tech}`)
     }
 
@@ -93,7 +92,7 @@ const CandidateHome = () => {
         <div>
 
             <Toaster position="top-right" reverseOrder={false} />
-            
+
             <SideBar heading="Request Interviews">
                 <div className="bg-gray-200 p-4 shadow-md h-screen">
                     <div className="mt-1">

@@ -1,21 +1,19 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { NavigateFunction, useNavigate, useSearchParams } from "react-router-dom";
 import SideBar from "../../../components/Candidate/SideBar";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { updatePremiumPaymentStatus } from "../../../Services/candidateService";
+import { ISuccess } from "../../../Interface/candidateInterfaces/IApiResponce";
 
-const PremiumSuccessPayment = () => {
+const PremiumSuccessPayment: React.FC = () => {
 
     const [searchParams] = useSearchParams();
-    const sessionId: any = searchParams.get("transaction_id");
-    const status: any = searchParams.get("status");
-    const navigate = useNavigate();
-
-    const hasFetched = useRef(false); // Prevent multiple API calls
-
+    const sessionId: string = searchParams.get("transaction_id") as string;
+    const status: string = searchParams.get("status") as string;
+    const navigate: NavigateFunction = useNavigate();
+    const hasFetched = useRef<boolean>(false); // Prevent multiple API calls
 
 
     useEffect(() => {
-        console.log(status, 'this is status')
         if (status === "cancelled") {
             localStorage.setItem("paymentStatus", "failed"); // Store failed status
             navigate("/candidate/home");
@@ -27,7 +25,7 @@ const PremiumSuccessPayment = () => {
 
 
         const checkPaymentStatus = async () => {
-            const response: any = await updatePremiumPaymentStatus(sessionId);
+            const response: ISuccess = await updatePremiumPaymentStatus(sessionId);
             if (response.success) {
                 console.log("Updated payment status");
             } else {
@@ -38,11 +36,11 @@ const PremiumSuccessPayment = () => {
     }, [sessionId, status]); // Only run when sessionId changes
 
 
-    const handleToHomePage = () => {
+    const handleToHomePage = (): void => {
         navigate('/candidate/home');
     };
 
-    const handleToDetailsPage = () => {
+    const handleToDetailsPage = (): void => {
         navigate('/candidate/community-chat');
     };
 

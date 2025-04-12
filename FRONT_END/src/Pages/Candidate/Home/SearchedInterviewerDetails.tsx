@@ -1,33 +1,45 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
 import { interviewerSlotDetails, paymentForBooking } from "../../../Services/candidateService";
 import { useLocation, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-// import PageLoading from "../../../components/PageLoading";
+import { ISlotInterviewerApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
+import { IInterviewer, ISchedule, ISlot, ISlotData } from "../../../Interface/candidateInterfaces/interface";
 
-const SearchedInterviewerDetails = () => {
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { interviewerId } = useParams<{ interviewerId: string }>();
+export interface IInterviewerSlotData {
+    stack: string;
+    technology: string[];
+    date: string;
+    from: string;
+    to: string;
+    title: string;
+    price: string | number;
+    description: string;
+    status: string;
+    scheduleId: unknown;
+    slotId: unknown;
+}
+
+const SearchedInterviewerDetails: React.FC = () => {
+    
+    const { interviewerId } = useParams<{ interviewerId: string | undefined }>();
     const location = useLocation();
-    const [slotData, setSlotData] = useState<any[]>([]);
-    const [interviewer, setInterviewer] = useState<any | null>(null);
-    const searchParams = new URLSearchParams(location.search);
-    const selectedTech = searchParams.get("selectedTech") || "";
+    const [slotData, setSlotData] = useState<IInterviewerSlotData[]>([]);
+    const [interviewer, setInterviewer] = useState<IInterviewer | null>(null);
+    const searchParams: URLSearchParams = new URLSearchParams(location.search);
+    const selectedTech: string = searchParams.get("selectedTech") || "";
 
     useEffect(() => {
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
 
-        const fetchData = async () => {
+        const fetchData = async (): Promise<void> => {
             try {
                 if (!interviewerId || !selectedTech) return;
-                const response: any = await interviewerSlotDetails(interviewerId, selectedTech);
+                const response: ISlotInterviewerApiResponse = await interviewerSlotDetails(interviewerId, selectedTech);
                 if (response.success) {
                     const formattedData = response.slotData
-                        .map((slot: any) =>
-                            slot.slots.flatMap((slotDetail: any) =>
-                                slotDetail.schedules.map((schedule: any) => ({
+                        .map((slot: ISlotData) =>
+                            slot.slots.flatMap((slotDetail: ISlot) =>
+                                slotDetail.schedules.map((schedule: ISchedule) => ({
                                     stack: slot.stack.stackName,
                                     technology: slot.stack.technologies,
                                     date: new Date(slotDetail.date).toISOString().split('T')[0],
@@ -45,18 +57,14 @@ const SearchedInterviewerDetails = () => {
                     setSlotData(formattedData);
                     setInterviewer(response.interviewerData);
                 }
-            } catch (error: any) {
-                console.log("Error fetching data:", error.message);
+            } catch (error: unknown) {
+                error instanceof Error ? console.log("Error fetching data:", error.message) : console.log("An unknown error occurred.");
             }
         };
         fetchData();
     }, [interviewerId, selectedTech]);
 
-    // if (isLoading) {
-    //     return <div><PageLoading /></div>;
-    // }
-
-    const handleToBooking = async (scheduledData: any) => {
+    const handleToBooking = async (scheduledData: IInterviewerSlotData) => {
         try {
             const data = {
                 slotId: scheduledData.slotId,
@@ -72,8 +80,8 @@ const SearchedInterviewerDetails = () => {
             } else {
                 toast.error(paymentResponse.message);
             }
-        } catch (error: any) {
-            toast.error(error?.message || "An unexpected error occurred. Please try again later.");
+        } catch (error: unknown) {
+            error instanceof Error ? console.log("Error fetching data:", error.message) : console.log("An unknown error occurred.");
         }
     };
 
@@ -97,7 +105,7 @@ const SearchedInterviewerDetails = () => {
                         </thead>
                         <tbody>
                             {slotData.length > 0 ? (
-                                slotData.map((slot: any, index: number) => (
+                                slotData.map((slot: IInterviewerSlotData, index: number) => (
                                     <tr key={index} className="bg-gray-100">
                                         <td className="px-4 py-2">{new Date(slot.date).toLocaleDateString()}</td>
                                         <td className="px-4 py-2">{slot.from} - {slot.to}</td>

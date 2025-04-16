@@ -6,7 +6,7 @@ import { Types } from "mongoose";
 
 
 
-const baseURL = "http://localhost:8000";
+const baseURL = import.meta.env.VITE_BASE_URL;
 
 const ProtectedAPI = axios.create({
     baseURL: baseURL,
@@ -38,7 +38,7 @@ ProtectedAPI.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem("candidateRefreshToken");
-                const response: any = await axios.post("http://localhost:8000/auth-service/candidate/refresh-token", { refreshToken });
+                const response: any = await axios.post(`${baseURL}/auth-service/candidate/refresh-token`, { refreshToken });
 
                 if (response.data.success) {
                     store.dispatch(loginSuccess({

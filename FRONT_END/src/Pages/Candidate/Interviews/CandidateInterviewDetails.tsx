@@ -18,7 +18,7 @@ export interface IInterviewerDetails {
 const CandidateInterviewDetails: React.FC = () => {
 
     const navigate: NavigateFunction = useNavigate();
-    const location: Location<IScheduled> = useLocation();
+    const location = useLocation();
     const [detailsData, setDetailsData] = useState<IInterviewerDetails | null>(null);
     const [isModal, setIsModal] = useState<boolean>(false);
     const [feedbackData, setFeedbackData] = useState<any>(null);
@@ -31,20 +31,21 @@ const CandidateInterviewDetails: React.FC = () => {
             return;
         }
 
-        const  detailsData: IScheduled  = location.state;
-        const interviewerId: Types.ObjectId = detailsData.interviewerId;
+        const detailsData = location.state.detailsData;
+        const interviewerId = detailsData.interviewerId;
 
         if (!interviewerId) {
             console.error("Interviewer ID is missing");
             return;
         }
 
+
         const fetchInterviewerDetails = async (): Promise<void> => {
             try {
                 console.log(detailsData, 'this is detials data')
                 const response: ICandidateGetInterviewerDetails = await getInterviewerDetails(interviewerId);
                 if (response.success) {
-                    
+
                     setDetailsData({
                         slotData: detailsData,
                         interviewerData: response.interviewerData
@@ -130,7 +131,7 @@ const CandidateInterviewDetails: React.FC = () => {
                 return;
             }
 
-            const reviewData: {interviewerId: string ;scheduledId: string;slotId: string;ratings: number; comment: string;} = {
+            const reviewData: { interviewerId: string; scheduledId: string; slotId: string; ratings: number; comment: string; } = {
                 interviewerId,
                 scheduledId,
                 slotId,

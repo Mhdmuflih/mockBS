@@ -3,7 +3,7 @@ import { loginSuccess, logout } from '../Store/Slice/AdminSlice';
 import store from '../Store/Store';
 
 
-const baseURL = "http://localhost:8000";
+const baseURL = import.meta.env.VITE_BASE_URL;
 
 const ProtectedAPI = axios.create({
     baseURL: baseURL,
@@ -35,7 +35,7 @@ ProtectedAPI.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem("adminRefreshToken");
-                const response: any = await axios.post("http://localhost:8000/auth-service/admin/refresh-token", { refreshToken });
+                const response: any = await axios.post(`${baseURL}/auth-service/admin/refresh-token`, { refreshToken });
 
                 if (response.data.success) {
                     store.dispatch(loginSuccess({

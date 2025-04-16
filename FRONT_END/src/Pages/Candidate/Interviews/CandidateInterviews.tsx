@@ -35,6 +35,7 @@ const CandidateInterviews: React.FC = () => {
     }, [searchQuery, currentPage]);
 
     const handleToDetails = (id: Types.ObjectId, detailsData: IScheduled): void => {
+        console.log(id,'this is id', scheduledData, 'this is scheduled data')
         navigate(`/candidate/outsourced-interviews/${id}`, { state: { detailsData: detailsData } });
     }
 

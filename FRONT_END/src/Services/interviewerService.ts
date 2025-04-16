@@ -4,7 +4,7 @@ import { loginSuccess, logout } from '../Store/Slice/InterviewerSlice';
 
 
 
-const baseURL = "http://localhost:8000";
+const baseURL = import.meta.env.VITE_BASE_URL;
 
 const ProtectedAPI = axios.create({
     baseURL: baseURL,
@@ -37,7 +37,7 @@ ProtectedAPI.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem("interviewerRefreshToken");
-                const response: any = await axios.post("http://localhost:8000/auth-service/interviewer/refresh-token", { refreshToken });
+                const response: any = await axios.post(`${baseURL}/auth-service/interviewer/refresh-token`, { refreshToken });
 
                 if (response.data.success) {
                     store.dispatch(loginSuccess({

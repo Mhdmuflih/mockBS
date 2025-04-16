@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
-import { Location, NavigateFunction, useLocation, useNavigate } from "react-router-dom";
+import {  NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 import { addInterviewRating, fetchFeedBack, getInterviewerDetails } from "../../../Services/candidateService";
 import backgroundImage from "../../../assets/interivewsDetails background image.jpeg";
 import { FaStar } from "react-icons/fa";

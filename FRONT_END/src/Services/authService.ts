@@ -1,13 +1,7 @@
-// import axios from "axios";
 import { UnProtectedAPI } from "../Config/axiosConfig";
 import { ICandidateForgotPasswordApiResponse, ICandidateLoginApiResponse, ICandidateSignupApiResponse, ISuccess } from "../Interface/candidateInterfaces/IApiResponce";
 import { IFormData, IFormDataLogin } from "../Interface/Interface";
 
-// const baseURL = "http://localhost:8000/auth-service";
-
-// const UnProtectedAPI = axios.create({
-//     baseURL: baseURL
-// });
 
 const handleError = (error: any): never => {
     // Log the error

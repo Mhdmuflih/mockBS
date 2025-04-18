@@ -92,6 +92,7 @@ export const changeCandidatePassword = async ({ email, password, confirmPassword
 
 export const loginCandidate = async (formData: IFormDataLogin): Promise<ICandidateLoginApiResponse> => {
     try {
+        console.log(import.meta.env.VITE_BASE_URL,'this is base url of the backend');
         const response = await UnProtectedAPI.post<ICandidateLoginApiResponse>('/candidate/login', formData);
         return response.data;
     } catch (error: any) {

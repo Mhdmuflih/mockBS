@@ -8,6 +8,8 @@ import { Types } from "mongoose";
 
 const baseURL = import.meta.env.VITE_BASE_URL;
 
+console.log(baseURL,'this is base url')
+
 const ProtectedAPI = axios.create({
     baseURL: baseURL,
 });

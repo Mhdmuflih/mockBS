@@ -10,7 +10,7 @@ import { MdModeEditOutline } from "react-icons/md";
 import { ICandidatePremiumApiResponse, ICandidateProfileApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
 import { ICandidate, IGroup, IGroupMessage } from "../../../Interface/candidateInterfaces/interface";
 
-const socket = io('ws://localhost:6060', { transports: ['websocket'] }); // Use correct server URL
+const socket = io('ws://chat-service:6060', { transports: ['websocket'] }); // Use correct server URL
 
 
 const CandidateChooseCommunity = () => {

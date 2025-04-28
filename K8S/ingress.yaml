@@ -32,3 +32,11 @@ spec:
                 name: api-gateway
                 port:
                   number: 8000
+
+          - path: /ws/chat/
+            pathType: Prefix
+            backend:
+              service:
+                name: chat-service
+                port:
+                  number: 6060

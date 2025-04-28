@@ -52,11 +52,16 @@ const CandidateProfile = () => {
 
     const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setCandidateData((prev) => ({ ...prev, [name]: value }));
-
-        const validation = formValidation({ ...candidateData, [name]: value }, "signup", name);
+        
+        // First create the new updated data
+        const updatedData = { ...candidateData, [name]: value };
+        setCandidateData(updatedData);
+    
+        // Then validate the updatedData, not the old candidateData
+        const validation = formValidation(updatedData, "signup", name);
         setErrors((prevErrors: any) => ({ ...prevErrors, [name]: validation.errors[name] || "" }));
     }, [candidateData]);
+    
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {

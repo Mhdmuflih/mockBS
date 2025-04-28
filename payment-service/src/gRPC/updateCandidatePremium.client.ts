@@ -17,7 +17,7 @@ const packageDefinition = protoLoader.loadSync(ProtoPath, {
 
 const premiumProto: any = grpc.loadPackageDefinition(packageDefinition).premium;
 
-const client: any = new premiumProto.PremiumService('0.0.0.0:50051', grpc.credentials.createInsecure());
+const client: any = new premiumProto.PremiumService('user-management-service.default.svc.cluster.local:50051', grpc.credentials.createInsecure());
 
 export const sendPremiumData = (candidateId: string): Promise<{ success: boolean, message: string }> => {
     return new Promise((resolve, reject) => {

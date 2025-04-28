@@ -17,7 +17,7 @@ const packageDefinition = protoLoader.loadSync(ProtoPath, {
 
 const bookingProto: any = grpc.loadPackageDefinition(packageDefinition).booking;
 
-const client: any = new bookingProto.BookingService('0.0.0.0:50052', grpc.credentials.createInsecure());
+const client: any = new bookingProto.BookingService('booking-service.default.svc.cluster.local:50052', grpc.credentials.createInsecure());
 
 export const sendBookingData = (bookingData: any): Promise<any> => {
     return new Promise((resolve, reject) => {

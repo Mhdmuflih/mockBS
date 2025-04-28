@@ -2,9 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CandidateModule } from './candidate/candidate.module';
-import { ClientsModule, GrpcOptions, Transport } from '@nestjs/microservices';
-import { url } from 'inspector';
-import { join } from 'path';
 import { InterviewerModule } from './interviewer/interviewer.module';
 import { AdminModule } from './admin/admin.module';
 

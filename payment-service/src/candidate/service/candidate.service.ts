@@ -53,8 +53,8 @@ export class CandidateService implements ICandidateService {
             quantity: 1
           }
         ],
-        success_url: `http://localhost:5173/candidate/payment-status?transaction_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `http://localhost:5173/candidate/payment-status?status=cancelled`
+        success_url: `https://mock-bs.muflih.online/candidate/payment-status?transaction_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `https://mock-bs.muflih.online/candidate/payment-status?status=cancelled`
       });
 
 
@@ -171,8 +171,8 @@ export class CandidateService implements ICandidateService {
             quantity: 1
           },
         ],
-         success_url: `http://localhost:5173/candidate/premium-payment-status?transaction_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `http://localhost:5173/candidate/premium-payment-status?status=cancelled`
+         success_url: `https://mock-bs.muflih.online/candidate/premium-payment-status?transaction_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `https://mock-bs.muflih.online/candidate/premium-payment-status?status=cancelled`
       });
 
       const createPremiumPaymentData = {

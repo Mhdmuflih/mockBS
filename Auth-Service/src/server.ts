@@ -44,6 +44,7 @@ app.use(morgan("tiny"));
 
 // Custom logging middleware
 app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.url}`)
     logger.info(`Incoming request: ${req.method} ${req.url}`);
     next();
 });

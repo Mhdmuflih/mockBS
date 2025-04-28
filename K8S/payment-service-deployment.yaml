@@ -1,0 +1,46 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  labels:
+    app: payment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      containers:
+      - name: payment-service
+        image: mhdmuflih/mock:payment-service
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: payment-service-env
+        ports:
+          - containerPort: 4000
+
+
+
+
+---
+
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+spec:
+  type: NodePort
+  selector:
+    app: payment-service
+  ports:
+    - name: payment-service
+      protocol: TCP
+      port: 4000  # The external service port
+      targetPort: 4000 # The container port

@@ -1,0 +1,41 @@
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1  
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: mhdmuflih/mock:api-gateway  
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: api-gateway-env
+
+---
+
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+spec:
+  type: LoadBalancer
+  selector:
+    app: api-gateway
+  ports:
+    - name: api-gateway
+      protocol: TCP
+      port: 8000  # The external service port
+      targetPort: 8000 # The container port

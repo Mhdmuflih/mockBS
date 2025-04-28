@@ -1,0 +1,41 @@
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review-service
+  labels:
+    app: review-service
+spec:
+  replicas: 1  
+  selector:
+    matchLabels:
+      app: review-service
+  template:
+    metadata:
+      labels:
+        app: review-service
+    spec:
+      containers:
+      - name: review-service
+        image: mhdmuflih/mock:review-service  
+        imagePullPolicy: Always
+        envFrom:
+            - configMapRef:
+                name: review-service-env
+
+---
+
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: review-service
+spec:
+  type: NodePort
+  selector:
+    app: review-service
+  ports:
+    - name: review-service
+      protocol: TCP
+      port: 5005  # The external service port
+      targetPort: 5005 # The container port

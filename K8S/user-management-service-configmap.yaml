@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-management-service-env
+data:
+  PORT: "2000"
+  FrontEnd: "https://mock-bs.muflih.online"
+  mongoURL: "mongodb+srv://mhdmuflihkk:N7Ruw7Zld2hatfwF@cluster0.amaa4jd.mongodb.net"
+  CLOUDINARY_CLOUD_NAME: "dbsjysx86"
+  CLOUDINARY_API_KEY: "696815445151489"
+  CLOUDINARY_API_SECRET: "tfdJQ2qjeiLE2KS2oCM4_uh9ceI"

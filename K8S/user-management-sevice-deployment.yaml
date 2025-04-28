@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management-service
+  labels:
+    app: user-management-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-management-service
+  template:
+    metadata:
+      labels:
+        app: user-management-service
+    spec:
+      containers:
+      - name: user-management-service
+        image: mhdmuflih/mock:user-management-service
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        envFrom:
+        - configMapRef:
+            name: user-management-service-env
+        ports:
+        - containerPort: 2000  # Server port exposed in the container
+
+
+
+---
+
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-management-service
+spec:
+  type: NodePort  # Use LoadBalancer if you're on a cloud and want an external IP
+  selector:
+    app: user-management-service
+  ports:
+    - name: grpc
+      protocol: TCP
+      port: 50051  # Exposed gRPC port (externally accessible)
+      targetPort: 50051  # Internal gRPC port (should be the same in the container)
+    - name: server
+      protocol: TCP
+      port: 2000  # External port for your HTTP server
+      targetPort: 2000  # Internal port your server is listening on

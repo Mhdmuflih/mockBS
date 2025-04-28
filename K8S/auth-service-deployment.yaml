@@ -1,0 +1,41 @@
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  labels:
+    app: auth-service
+spec:
+  replicas: 1  
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: mhdmuflih/mock:auth-service  
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: auth-service-env
+
+---
+
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+spec:
+  type: NodePort
+  selector:
+    app: auth-service
+  ports:
+    - name: auth-service
+      protocol: TCP
+      port: 1000  # The external service port
+      targetPort: 1000 # The container port

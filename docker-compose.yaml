@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    depends_on:
+      - auth-service
+      - user-management-service
+      - booking-service
+      - payment-service
+      - review-service
+      - chat-service
+    ports:
+      - "8000:8000"
+
+  auth-service:
+    build: ./Auth-Service
+    container_name: auth-service
+    ports:
+      - "1000:1000"
+
+  user-management-service:
+    build: ./user-management-service
+    container_name: user-management-service
+    ports:
+      - "2000:2000"
+
+  booking-service:
+    build: ./booking-service
+    container_name: booking-service
+    ports:
+      - "3000:3000"
+
+  payment-service:
+    build: ./payment-service
+    container_name: payment-service
+    ports:
+      - "4000:4000"
+
+  review-service:
+    build: ./review-service
+    container_name: review-service
+    ports:
+      - "5005:5005"
+
+  chat-service:
+    build: ./chat-service
+    container_name: chat-service
+    ports:
+      - "6000:6000"

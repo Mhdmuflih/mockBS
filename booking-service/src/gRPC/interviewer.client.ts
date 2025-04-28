@@ -19,7 +19,7 @@ const packageDefinition = protoLoader.loadSync(ProtoPath, {
 
 const interviewerProto: any = grpc.loadPackageDefinition(packageDefinition).interviewer;
 
-const client: any = new interviewerProto.InterviewerService('0.0.0.0:50051', grpc.credentials.createInsecure());
+const client: any = new interviewerProto.InterviewerService('user-management-service.default.svc.cluster.local:50051', grpc.credentials.createInsecure());
 
 export const sendInterviewer = (ids: string[]): Promise<any> => {
     return new Promise((resolve, reject) => {

@@ -13,29 +13,28 @@
     "axios": "^1.8.2",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "express-http-proxy": "^2.1.1",
-    "http-proxy-middleware": "^3.0.3",
+    "http-proxy-middleware": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "type": "file:../../../../jsonwebtoken",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/axios": "^0.9.36",
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^6.1.1",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.1",
     "@types/express-http-proxy": "^1.6.6",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^22.10.5",
+    "@types/node": "^22.14.1",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   }
 }

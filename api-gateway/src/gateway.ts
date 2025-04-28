@@ -34,11 +34,11 @@ app.use("/auth-service", proxy(process.env.Auth_Service as string || "http://loc
 app.use("/user-service", verifyJWT, proxy(process.env.User_Management_Service as string || "http://localhost:2020"));
 app.use("/booking-service", verifyJWT, proxy(process.env.Booking_Service as string || "http://localhost:3030"));
 app.use("/payment-service", verifyJWT, proxy(process.env.Payment_Service as string || "http://localhost:4040"));
-app.use('/review-service', verifyJWT, proxy(process.env.Review_Service as string || "http://localhost:5050") );
+app.use('/review-service', verifyJWT, proxy(process.env.Review_Service as string || "http://localhost:5050"));
 app.use('/chat-service', verifyJWT, proxy(process.env.Chat_Service as string || "http://localhost:6006"));
 
 app.use('/socket.io', createProxyMiddleware({
-    target:"http://localhost:3000",
+    target: process.env.Booking_Service as string || "http://localhost:3030",
     ws: true,
     changeOrigin: true,
 }));

@@ -11,11 +11,8 @@ import { ICandidatePremiumApiResponse, ICandidateProfileApiResponse } from "../.
 import { ICandidate, IGroup, IGroupMessage } from "../../../Interface/candidateInterfaces/interface";
 
 // const socket = io('ws://localhost:6060', { transports: ['websocket'] }); // Use correct server URL
-const socket = io('wss://api.muflih.online/chat-gateway', {
-    path: "/chat-gateway/socket.io", // default
-    transports: ['websocket'], // force WebSocket (optional but good)
-    withCredentials: true,
-  });
+const socket = io('wss://ws.muflih.online', { transports: ['websocket'] });
+
 
 const CandidateChooseCommunity = () => {
 

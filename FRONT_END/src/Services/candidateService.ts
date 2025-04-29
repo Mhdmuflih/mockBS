@@ -20,7 +20,7 @@ ProtectedAPI.interceptors.request.use(
         const token = localStorage.getItem("candidateToken");
 
         if (token && config.headers) {
-            config.headers.Authorization = `Bearer ${token}`; // Attach the token to the headers
+            config.headers.Authorization = `Bearer ${token} ${"candidate"}`; // Attach the token to the headers
         }
 
         return config;
@@ -31,33 +31,46 @@ ProtectedAPI.interceptors.request.use(
     }
 );
 
+
+
 ProtectedAPI.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
-        if (error.response?.status === 403 && !originalRequest._retry) {
-            originalRequest._retry = true;
-            try {
-                const refreshToken = localStorage.getItem("candidateRefreshToken");
-                const response: any = await axios.post(`${baseURL}/auth-service/candidate/refresh-token`, { refreshToken });
+        if (error.response?.status === 403) {
+            const message = error.response?.data?.message;
 
-                if (response.data.success) {
-                    store.dispatch(loginSuccess({
-                        isLoggedIn: true,
-                        storedData: response.data.candidateData,
-                        token: response.data.token,
-                        refreshToken: response.data.refreshToken
-                    }))
+            // If the user is blocked, logout immediately
+            if (message === "USER_BLOCKED") {
+                store.dispatch(logout()); 
+                return Promise.reject(error); 
+            }
 
-                    originalRequest.headers = originalRequest.headers || {};
-                    originalRequest.headers["Authorization"] = `Bearer ${response.data.accessToken}`;
-                    return ProtectedAPI(originalRequest);
+            // If token expired, try to refresh
+            if (!originalRequest._retry) {
+                originalRequest._retry = true;
+                try {
+                    const refreshToken = localStorage.getItem("candidateRefreshToken");
+                    const response: any = await axios.post(`${baseURL}/auth-service/candidate/refresh-token`, { refreshToken });
+
+                    if (response.data.success) {
+                        store.dispatch(loginSuccess({
+                            isLoggedIn: true,
+                            storedData: response.data.candidateData,
+                            token: response.data.token,
+                            refreshToken: response.data.refreshToken
+                        }));
+
+                        originalRequest.headers = originalRequest.headers || {};
+                        originalRequest.headers["Authorization"] = `Bearer ${response.data.accessToken}`;
+                        return ProtectedAPI(originalRequest);
+                    }
+                } catch (refreshError) {
+                    console.error("Refresh Token Error:", refreshError);
+                    store.dispatch(logout());
+                    return Promise.reject(refreshError);
                 }
-            } catch (refreshError) {
-                console.error("Refresh Token Error:", refreshError);
-                store.dispatch(logout()); // Uncomment if logout is needed
-                return Promise.reject(refreshError);
             }
         }
 

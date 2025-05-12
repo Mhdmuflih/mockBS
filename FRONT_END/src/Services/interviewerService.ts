@@ -280,3 +280,18 @@ export const fetchReviewRating = async (slotId: string, scheduledId: string) => 
         throw new Error(error.response?.data?.message || "An error occurred during the fetch payement process.");
     }
 }
+
+
+
+
+
+export const cancelInterview = async (data: any) => {
+    try {
+        console.log(data,'this is data ')
+        const response = await ProtectedAPI.patch('/booking-service/interviewer/cancel-interview', {data});
+        return response.data;
+    } catch (error: any) {
+        console.error("update payment status Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
+    }
+}

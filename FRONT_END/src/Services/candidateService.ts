@@ -314,3 +314,37 @@ export const fetchTotalAmount = async (): Promise<ICandidatePaymentAnalyiticsApi
         throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
     }
 }
+
+
+
+
+export const cancelInterview = async (data: any) => {
+    try {
+        console.log(data,'this is data ')
+        const response = await ProtectedAPI.patch('/booking-service/candidate/cancel-interview', {data});
+        return response.data;
+    } catch (error: any) {
+        console.error("update payment status Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
+    }
+}
+
+
+export const sendMoneyToWallet = async (id: string) => {
+    try {
+        const response = await ProtectedAPI.post(`/payment-service/candidate/cancel-interview/${id}` );
+        return response.data;
+    } catch (error: any) {
+        console.error("update payment status Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
+    }
+}
+export const sendMoneyToInterviewer = async (id: any) => {
+    try {
+        const response = await ProtectedAPI.post(`/payment-service/candidate/sendMoney-interview/${id}` );
+        return response.data;
+    } catch (error: any) {
+        console.error("update payment status Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
+    }
+}

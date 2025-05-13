@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
-import {  NavigateFunction, useLocation, useNavigate } from "react-router-dom";
+import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 import { addInterviewRating, fetchFeedBack, getInterviewerDetails } from "../../../Services/candidateService";
 import backgroundImage from "../../../assets/interivewsDetails background image.jpeg";
 import { FaStar } from "react-icons/fa";
@@ -19,7 +19,7 @@ const CandidateInterviewDetails: React.FC = () => {
 
     const navigate: NavigateFunction = useNavigate();
     const location = useLocation();
-    const [detailsData, setDetailsData] = useState<IInterviewerDetails | null>(null);
+    const [detailsData, setDetailsData] = useState<any>(null);
     const [isModal, setIsModal] = useState<boolean>(false);
     const [feedbackData, setFeedbackData] = useState<any>(null);
     const [isFetchingFeedback, setIsFetchingFeedback] = useState<boolean>(false);
@@ -173,45 +173,88 @@ const CandidateInterviewDetails: React.FC = () => {
             <Toaster position="top-right" reverseOrder={false} />
 
 
-            <div className="bg-gray-200 p-4 shadow-md min-h-screen flex justify-center">
-                {detailsData && (
-                    <div className="bg-white p-6 mt-3 rounded-2xl w-full max-w-4xl">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-center">
-                            {/* Interviewer Details */}
-                            <div className="flex flex-col items-center">
-                                <img src={detailsData.interviewerData.profileURL} alt="" className="w-20 h-20 rounded-full" />
-                                <p className="font-serif mt-2 text-lg font-bold">{detailsData.interviewerData.name}</p>
-                                <p className="text-sm">Experience: <span className="font-bold">{detailsData.interviewerData.yearOfExperience} years</span></p>
-                                <p className="text-sm">Designation: <span className="font-bold">{detailsData.interviewerData.currentDesignation}</span></p>
-                                <p className="text-sm">Organization: <span className="font-bold">{detailsData.interviewerData.organization}</span></p>
-                                <div className="mt-5 space-x-4">
-                                    <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToViewFeedback}>view feedback</button>
-                                    <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToAddRating}>add rating</button>
+            {detailsData?.slotData?.status === "cancelled" ? (
+                <>
+                    <div className="bg-gray-200 p-4 shadow-md min-h-screen flex justify-center">
+                        <div className="bg-white p-6 mt-3 rounded-2xl w-full max-w-4xl text-center">
+                            <p className="text-red-500 text-xl font-semibold">This interview has been cancelled.</p>
+                            <h1 className="mt-4 text-lg font-medium">
+                                Reason: <span className="font-normal">{detailsData?.slotData?.cancelReason || "No reason provided."}</span>
+                            </h1>
+                        </div>
+                    </div>
+                </>
+
+            ) : (
+                <div className="bg-gray-200 p-4 shadow-md min-h-screen flex justify-center">
+                    {detailsData && (
+                        <div className="bg-white p-6 mt-3 rounded-2xl w-full max-w-4xl">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-center">
+                                {/* Interviewer Details */}
+                                <div className="flex flex-col items-center">
+                                    <img
+                                        src={detailsData.interviewerData?.profileURL}
+                                        alt="Interviewer"
+                                        className="w-20 h-20 rounded-full"
+                                    />
+                                    <p className="font-serif mt-2 text-lg font-bold">
+                                        {detailsData.interviewerData?.name}
+                                    </p>
+                                    <p className="text-sm">
+                                        Experience: <span className="font-bold">{detailsData.interviewerData?.yearOfExperience} years</span>
+                                    </p>
+                                    <p className="text-sm">
+                                        Designation: <span className="font-bold">{detailsData.interviewerData?.currentDesignation}</span>
+                                    </p>
+                                    <p className="text-sm">
+                                        Organization: <span className="font-bold">{detailsData.interviewerData?.organization}</span>
+                                    </p>
+                                    <div className="mt-5 space-x-4">
+                                        <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToViewFeedback}>
+                                            View Feedback
+                                        </button>
+                                        <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToAddRating}>
+                                            Add Rating
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Slot Details */}
+                                <div className="flex flex-col items-center">
+                                    <p className="text-sm">
+                                        Stack: <span className="font-bold">{detailsData.slotData?.scheduledSlot?.stack}</span>
+                                    </p>
+                                    <p className="text-sm">
+                                        Technology: <span className="font-bold">{detailsData.slotData?.scheduledSlot?.technology}</span>
+                                    </p>
+                                    <p className="text-sm">
+                                        Status:{" "}
+                                        <span className={`font-bold ${detailsData.slotData?.status === "pending" ? "text-red-600" : "text-green-600"}`}>
+                                            {detailsData.slotData?.status}
+                                        </span>
+                                    </p>
+                                </div>
+
+                                {/* Background Image */}
+                                <div className="flex justify-center">
+                                    <img src={backgroundImage} alt="Background" className="w-60 md:w-80 rounded-lg" />
                                 </div>
                             </div>
 
-                            {/* Slot Details */}
-                            <div className="flex flex-col items-center">
-                                <p className="text-sm">Stack: <span className="font-bold">{detailsData.slotData.scheduledSlot.stack}</span></p>
-                                <p className="text-sm">Technology: <span className="font-bold">{detailsData.slotData.scheduledSlot.technology}</span></p>
-                                <p className="text-sm">Status: <span className={`font-bold ${detailsData.slotData.status === "pending" ? "text-red-600" : "text-green-600"}`}>{detailsData.slotData.status}</span></p>
-                            </div>
-
-                            {/* Background Image */}
-                            <div className="flex justify-center">
-                                <img src={backgroundImage} alt="" className="w-60 md:w-80 rounded-lg" />
-                            </div>
+                            {detailsData.slotData?.status === "pending" && (
+                                <div className="flex justify-center mt-6">
+                                    <button
+                                        className="bg-[#4B4F60] text-white py-2 px-10 rounded-2xl"
+                                        onClick={() => handleToJoin(detailsData.slotData.scheduleId)}
+                                    >
+                                        JOIN
+                                    </button>
+                                </div>
+                            )}
                         </div>
-
-                        {detailsData.slotData.status === "pending" && (
-                            <div className="flex justify-center mt-6">
-                                <button className="bg-[#4B4F60] text-white py-2 px-10 rounded-2xl" onClick={() => handleToJoin(detailsData.slotData.scheduleId)}>JOIN</button>
-                            </div>
-                        )}
-
-                    </div>
-                )}
-            </div>
+                    )}
+                </div>
+            )}
 
             {isModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-4 transition-opacity duration-300">

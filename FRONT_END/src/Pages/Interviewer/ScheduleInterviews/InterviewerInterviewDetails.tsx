@@ -143,43 +143,58 @@ const InterviewerInterviewDetails = () => {
             <SideBar heading="Interview Details">
                 <Toaster position="top-right" />
 
-                <div className={`bg-[#30323A] p-4 shadow-md min-h-screen flex justify-center transition-all duration-300 ${isModal ? "blur-sm" : ""}`}>
-                    {detailsData && (
-                        <div className="bg-white p-6 mt-3 rounded-2xl w-full h-[450px] md:max-w-2xl ">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-center">
-                                {/* Interviewer Details */}
-                                <div className="flex flex-col items-center">
-                                    <img src={detailsData.candidateData.profileURL} alt="" className="w-20 h-20 rounded-full" />
-                                    <p className="font-serif mt-2 text-lg font-bold">{detailsData.candidateData.name}</p>
-                                    <p className="text-sm">Email: <span className="font-bold">{detailsData.candidateData.email}</span></p>
-                                    <p className="text-sm">Mobile: <span className="font-bold">{detailsData.candidateData.mobile}</span></p>
-                                    <div className="mt-5">
-                                        <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToAddFeedback}>add feedback</button>
-                                        <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToViewFeedback}>view</button>
+                {detailsData?.slotData?.status === "cancelled" ? (
+                    <>
+                        <div className="bg-gray-200 p-4 shadow-md min-h-screen flex justify-center">
+                            <div className="bg-white p-6 mt-3 rounded-2xl w-full max-w-4xl text-center">
+                                <p className="text-red-500 text-xl font-semibold">This interview has been cancelled.</p>
+                                <h1 className="mt-4 text-lg font-medium">
+                                    Reason: <span className="font-normal">{detailsData?.slotData?.cancelReason || "No reason provided."}</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </>
+
+                ) : (
+
+                    <div className={`bg-[#30323A] p-4 shadow-md min-h-screen flex justify-center transition-all duration-300 ${isModal ? "blur-sm" : ""}`}>
+                        {detailsData && (
+                            <div className="bg-white p-6 mt-3 rounded-2xl w-full h-[450px] md:max-w-2xl ">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-center">
+                                    {/* Interviewer Details */}
+                                    <div className="flex flex-col items-center">
+                                        <img src={detailsData.candidateData.profileURL} alt="" className="w-20 h-20 rounded-full" />
+                                        <p className="font-serif mt-2 text-lg font-bold">{detailsData.candidateData.name}</p>
+                                        <p className="text-sm">Email: <span className="font-bold">{detailsData.candidateData.email}</span></p>
+                                        <p className="text-sm">Mobile: <span className="font-bold">{detailsData.candidateData.mobile}</span></p>
+                                        <div className="mt-5">
+                                            <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToAddFeedback}>add feedback</button>
+                                            <button className="bg-gray-800 text-white py-2 px-4 rounded-2xl" onClick={handleToViewFeedback}>view</button>
+                                        </div>
+                                    </div>
+
+                                    {/* Slot Details */}
+                                    <div className="flex flex-col items-center">
+                                        <p className="text-sm">Stack: <span className="font-bold">{detailsData.slotData.stack}</span></p>
+                                        <p className="text-sm">Technology: <span className="font-bold">{detailsData.slotData.technology}</span></p>
+                                        <p className="text-sm">Status: <span className={`font-bold ${detailsData.slotData.status === "pending" ? "text-red-600" : "text-green-600"}`}>{detailsData.slotData.status}</span></p>
+                                    </div>
+
+                                    {/* Background Image */}
+                                    <div className="flex justify-center">
+                                        <img src={backgroundImage} alt="" className="w-32 md:w-80 rounded-lg" />
                                     </div>
                                 </div>
-
-                                {/* Slot Details */}
-                                <div className="flex flex-col items-center">
-                                    <p className="text-sm">Stack: <span className="font-bold">{detailsData.slotData.stack}</span></p>
-                                    <p className="text-sm">Technology: <span className="font-bold">{detailsData.slotData.technology}</span></p>
-                                    <p className="text-sm">Status: <span className={`font-bold ${detailsData.slotData.status === "pending" ? "text-red-600" : "text-green-600"}`}>{detailsData.slotData.status}</span></p>
-                                </div>
-
-                                {/* Background Image */}
-                                <div className="flex justify-center">
-                                    <img src={backgroundImage} alt="" className="w-32 md:w-80 rounded-lg" />
-                                </div>
-                            </div>
 
                                 <div className="flex justify-center md:mt-10">
                                     <button className="bg-[#4B4F60] text-white py-2 px-32 rounded-2xl" onClick={() => handleToJoin(detailsData.slotData.scheduledId)}>JOIN</button>
                                 </div>
-                        
 
-                        </div>
-                    )}
-                </div>
+
+                            </div>
+                        )}
+                    </div>
+                )} 
 
                 {isModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-4">

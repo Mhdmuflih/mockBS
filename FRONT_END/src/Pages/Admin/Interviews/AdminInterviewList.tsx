@@ -3,11 +3,9 @@ import SideBar from "../../../components/Admin/SideBar";
 import Table from "../../../components/Admin/Table";
 import { fetchInterviewList } from "../../../Services/adminService";
 import { useNavigate } from "react-router-dom";
-// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminInterviewList = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
 
     const [interviewData, setInterviewData] = useState<any[]>([]);
@@ -17,10 +15,6 @@ const AdminInterviewList = () => {
     const limit = 5;
 
     useEffect(() => {
-
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
 
         const fetchInterviewsData = async () => {
             try {
@@ -38,7 +32,9 @@ const AdminInterviewList = () => {
                         details: item.description || "N/A",
                         scheduleId: item.scheduleId,
                         interviewerId: item.interviewerId,
-                        candidateId: item.candidateId
+                        candidateId: item.candidateId,
+                        status: item.status,
+                        cancelReason: item.cancelReason
                     }));
                     setInterviewData(formattedData);
                     setTotalPages(response.interviewData.totalPages)
@@ -52,12 +48,8 @@ const AdminInterviewList = () => {
         fetchInterviewsData();
     }, [searchQuery, currentPage]);
 
-    // if (isLoading) {
-    //     return <div><AdminSideLoading /></div>
-    // }
-
-    const handleToDetails = (scheduleId: string, candidateId: string, interviewerId: string) => {
-        navigate(`/admin/interviews/${scheduleId}`, { state: { candidateId: candidateId, interviewerId: interviewerId } })
+    const handleToDetails = (scheduleId: string, candidateId: string, interviewerId: string, interviewData: any) => {
+        navigate(`/admin/interviews/${scheduleId}`, { state: { candidateId: candidateId, interviewerId: interviewerId, interviewData: interviewData } })
     }
 
     const handleChange = (_: unknown, value: number) => {
@@ -69,6 +61,7 @@ const AdminInterviewList = () => {
         { key: "technology", label: "Roll Name" },
         { key: "date", label: "Creates On" },
         { key: "time", label: "Schedule On" },
+        { key: "status", label: "Status" },
         { key: "details", label: "Details" },
 
     ];
@@ -79,27 +72,39 @@ const AdminInterviewList = () => {
 
                 <SideBar heading="Interviews" >
 
-                        <Table
-                            columns={interviewColumns}
-                            handleChange={handleChange}
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            searchQuery={searchQuery}
-                            setSearchQuery={setSearchQuery}
-                            data={interviewData.map((data) => ({
-                                serial: data.serial,
-                                technology: data.technology || "N/A",
-                                date: data.date,
-                                time: data.time,
-                                details: (
-                                    <button
-                                        onClick={() => handleToDetails(data.scheduleId, data.candidateId, data.interviewerId)}
-                                        className="bg-[#32ADE6] text-white px-3 py-1 rounded-full hover:text-white hover:bg-[#999999] duration-500"                                    >
-                                        Details
-                                    </button>
-                                ),
-                            }))}
-                        />
+                    <Table
+                        columns={interviewColumns}
+                        handleChange={handleChange}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        data={interviewData.map((data) => ({
+                            serial: data.serial,
+                            technology: data.technology || "N/A",
+                            date: data.date,
+                            time: data.time,
+                            status: (
+                                <span
+                                    className={`px-3 py-1 rounded-full text-sm font-semibold ${data.status.toLowerCase() === "completed"
+                                        ? "text-green-600 bg-green-100"
+                                        : data.status.toLowerCase() === "pending"
+                                            ? "text-yellow-700 bg-yellow-100 px-5"
+                                            : "text-red-600 bg-red-100 px-4"
+                                        }`}
+                                >
+                                    {data.status}
+                                </span>
+                            ),
+                            details: (
+                                <button
+                                    onClick={() => handleToDetails(data.scheduleId, data.candidateId, data.interviewerId, data)}
+                                    className="bg-[#32ADE6] text-white px-3 py-1 rounded-full hover:text-white hover:bg-[#999999] duration-500"                                    >
+                                    Details
+                                </button>
+                            ),
+                        }))}
+                    />
                 </SideBar>
             </div>
         </>

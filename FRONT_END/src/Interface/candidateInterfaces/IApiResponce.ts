@@ -66,6 +66,7 @@ export interface ICandidateScheduledAnalyiticsApiResponse extends ISuccess {
     counts: {
         completedInterviewCounts: number;
         scheduledInterviewCounts: number;
+        cancelledInterviewCounts: number;    
     }
 }
 

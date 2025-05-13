@@ -3,20 +3,24 @@ import SideBar from "../../../components/Candidate/SideBar"
 import { FaUsers } from "react-icons/fa";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, } from 'recharts';
 import { fetchScheduledInterviewCount, fetchTotalAmount } from "../../../Services/candidateService";
-import { ICandidatePaymentAnalyiticsApiResponse, ICandidateScheduledAnalyiticsApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
+import { ICandidateScheduledAnalyiticsApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
 import toast, { Toaster } from "react-hot-toast";
+import { GiMoneyStack } from "react-icons/gi";
 
 const CandidateAnalytics = () => {
 
     const [scheduledInterviewCount, setScheduledInterviewCount] = useState<number>(0);
     const [completedInterviewCount, setCompletedInterviewCount] = useState<number>(0);
+    const [cancelledInterviewCount, setCancelledInterviewCount] = useState<number>(0);
     const [totalAmount, setTotalAmount] = useState<number>(0);
+    const [walletData, setWalletData] = useState<any>(null)
+
 
     useEffect(() => {
         const fetchCountOfTheData = async () => {
             try {
                 const scheduledResponse: ICandidateScheduledAnalyiticsApiResponse = await fetchScheduledInterviewCount();
-                const totalResponse: ICandidatePaymentAnalyiticsApiResponse = await fetchTotalAmount();
+                const totalResponse: any = await fetchTotalAmount();
 
                 if (!scheduledResponse || !totalResponse) {
                     throw new Error("data fetch have some issue");
@@ -24,7 +28,11 @@ const CandidateAnalytics = () => {
 
                 setScheduledInterviewCount(scheduledResponse.counts.scheduledInterviewCounts);
                 setCompletedInterviewCount(scheduledResponse.counts.completedInterviewCounts);
-                setTotalAmount(totalResponse.totalAmount);
+                setCancelledInterviewCount(scheduledResponse.counts.cancelledInterviewCounts);
+                setTotalAmount(totalResponse.totalAmount.total);
+                setWalletData(totalResponse.totalAmount.walletData);
+
+
             } catch (error: unknown) {
                 error instanceof Error ? toast.error(error.message) : toast.error("An unknown error occurred.");
             }
@@ -35,18 +43,19 @@ const CandidateAnalytics = () => {
     const pieData = [
         { name: 'Completed Interview', value: completedInterviewCount },
         { name: 'Scheduled Interview', value: scheduledInterviewCount },
+        { name: 'Cancelled Interview', value: cancelledInterviewCount },
     ];
     const COLORS = ['#4CAF50', '#FF9800', '#2196F3'];
 
     return (
         <>
             <SideBar heading="Analytics">
-                <Toaster position="top-right" reverseOrder={false} />
+                <Toaster position="top-right" />
 
                 <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 px-6 py-4">
                     {/* <Breadcrumbs/> */}
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 ">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 ">
                         {[
                             {
                                 title: 'Scheduled Interview',
@@ -66,6 +75,13 @@ const CandidateAnalytics = () => {
                                 title: 'Total Payed Amount',
                                 value: `${totalAmount}`,
                                 icon: <FaUsers className="w-7 h-7" />,
+                                color: 'bg-white border-l-4 border-emerald-400',
+                                iconColor: 'text-emerald-400'
+                            },
+                            {
+                                title: <h1 className="text-yellow-500">Wallet Amount</h1>,
+                                value: `${walletData?.balance ?? 0}`,
+                                icon: <GiMoneyStack className="w-7 h-7" />,
                                 color: 'bg-white border-l-4 border-emerald-400',
                                 iconColor: 'text-emerald-400'
                             },
@@ -111,6 +127,7 @@ const CandidateAnalytics = () => {
                             </ResponsiveContainer>
                         </div>
 
+
                         {/* Line Chart */}
                         {/* <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
                             <h2 className="text-xl font-semibold mb-6 text-gray-700">Active Users Over Time</h2>
@@ -123,6 +140,49 @@ const CandidateAnalytics = () => {
                                 </LineChart>
                             </ResponsiveContainer>
                         </div> */}
+
+                        <div className="mt-6 overflow-x-auto">
+                            <table className="w-full table-auto border border-gray-200 rounded-md overflow-hidden shadow-sm">
+                                <thead>
+                                    <tr className="bg-gray-800 text-white text-sm text-center">
+                                        <th className="p-4 border-r border-gray-200">Sl No</th>
+                                        <th className="p-4 border-r border-gray-200">Date</th>
+                                        <th className="p-4 border-r border-gray-200">Status</th>
+                                        <th className="p-4">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white text-sm">
+                                    {walletData?.walletHistory?.length > 0 ? (
+                                        walletData.walletHistory.map((data: any, index: number) => (
+                                            <tr
+                                                key={index}
+                                                className="border-b border-gray-200 hover:bg-gray-50 text-center"
+                                            >
+                                                <td className="p-4 border-r border-gray-100">{index + 1}</td>
+                                                <td className="p-4 border-r border-gray-100">
+                                                    {new Date(data.date).toISOString().split('T')[0]}
+                                                </td>
+                                                <td className="p-4 border-r border-gray-100 font-medium text-green-700">
+                                                    {data.description}
+                                                </td>
+                                                <td className={`p-4 font-semibold ${data.amount > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                                                    ₹ {data.amount}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={4} className="p-5 text-center text-gray-500">
+                                                No wallet history available.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
                     </div>
 
                 </main>

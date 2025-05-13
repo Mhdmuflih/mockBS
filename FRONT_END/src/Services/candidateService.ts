@@ -305,7 +305,7 @@ export const fetchScheduledInterviewCount = async (): Promise<ICandidateSchedule
         throw new Error(error.response?.data?.message || "An error occurred during the update payment status process.");
     }
 }
-export const fetchTotalAmount = async (): Promise<ICandidatePaymentAnalyiticsApiResponse> => {
+export const fetchTotalAmount = async (): Promise<any> => {
     try {
         const response = await ProtectedAPI.get<ICandidatePaymentAnalyiticsApiResponse>('/payment-service/candidate/total-amount');
         return response.data;

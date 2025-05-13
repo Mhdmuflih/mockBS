@@ -3,11 +3,9 @@ import SideBar from "../../../components/Admin/SideBar";
 import { useEffect, useState } from "react";
 import { fetchInterviewerAndCandidate } from "../../../Services/adminService";
 import { TiArrowBack } from "react-icons/ti";
-// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminInterviewDetails = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     const location = useLocation();
     const [interviewerData, setInterviewerData] = useState<{ name: string, email: string, mobile: string, profileURL: string }>({
@@ -23,15 +21,13 @@ const AdminInterviewDetails = () => {
         profileURL: ""
     });
 
+    const [interviewDatas, setInterviewDatas] = useState<any>(null)
+
 
     useEffect(() => {
 
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
-
-        const { candidateId, interviewerId }: { candidateId: string, interviewerId: string } = location.state;
-        console.log(candidateId, interviewerId, 'this is that candidate and interviewer id');
+        const { candidateId, interviewerId, interviewData }: { candidateId: string, interviewerId: string, interviewData: any } = location.state;
+        console.log(candidateId, interviewerId, interviewData, 'this is that candidate and interviewer id');
         const ids: { candidateId: string, interviewerId: string } = {
             candidateId: candidateId,
             interviewerId: interviewerId
@@ -56,6 +52,7 @@ const AdminInterviewDetails = () => {
                     }
                     setInterviewerData(interviewerFormate);
                     setCandidateData(candidateFormate);
+                    setInterviewDatas(interviewData)
                 } else {
                     console.log("not ok not ok");
                 }
@@ -66,9 +63,6 @@ const AdminInterviewDetails = () => {
         fetchInterviewerAndCandidateData();
     }, []);
 
-    // if(isLoading) {
-    //     return <div><AdminSideLoading /></div>
-    // }
 
     return (
         <>
@@ -78,7 +72,33 @@ const AdminInterviewDetails = () => {
                         <div>
                             <TiArrowBack className="text-white text-2xl cursor-pointer" onClick={() => navigate('/admin/interviews')} />
                         </div>
+
+                        {interviewDatas && (
+                            <div className="text-white mt-4 ml-2">
+                                <h2 className="text-xl font-semibold">
+                                    Status:{" "}
+                                    <span
+                                        className={`font-bold ${interviewDatas.status.toLowerCase() === "completed"
+                                            ? "text-green-400"
+                                            : interviewDatas.status.toLowerCase() === "pending"
+                                                ? "text-yellow-400"
+                                                : "text-red-400"
+                                            }`}
+                                    >
+                                        {interviewDatas.status}
+                                    </span>
+                                </h2>
+
+                                {interviewDatas.status.toLowerCase() === "cancelled" && interviewDatas.cancelReason && (
+                                    <p className="mt-2 text-red-300">
+                                        <strong>Reason:</strong> {interviewDatas.cancelReason}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+
                         <div className="flex justify-around mt-12">
+
                             {interviewerData && (
                                 <div>
                                     <h1 className="text-white font-bold font-serif text-center">Interviewer</h1>

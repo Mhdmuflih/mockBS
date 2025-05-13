@@ -38,6 +38,7 @@ const InterviewerScheduled = () => {
                         candidateId: scheduled.candidateId,
                         interviewerId: scheduled.interviewerId,
                         scheduledId: scheduled.scheduleId,
+                        cancelReason: scheduled.cancelReason,
                         _id: scheduled._id
                     }));
                     setScheduledData(formattedData);

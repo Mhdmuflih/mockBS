@@ -42,7 +42,7 @@ const Table: React.FC<TableProps> = ({ columns, data, actions, searchQuery, setS
                     data.map((row, index) => (
                         <div
                             key={index}
-                            className="grid grid-cols-5 gap-4 bg-black text-gray-300 p-2 rounded-md"
+                            className={`grid grid-cols-${columns.length} gap-4 bg-black text-gray-300 p-2 rounded-md"`}
                         >
                             {columns.map((col) => (
                                 <div key={col.key} className="text-sm ">

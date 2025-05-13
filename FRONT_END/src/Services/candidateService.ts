@@ -8,7 +8,7 @@ import { Types } from "mongoose";
 
 const baseURL = import.meta.env.VITE_BASE_URL;
 
-console.log(baseURL,'this is base url')
+console.log(baseURL, 'this is base url')
 
 const ProtectedAPI = axios.create({
     baseURL: baseURL,
@@ -43,8 +43,8 @@ ProtectedAPI.interceptors.response.use(
 
             // If the user is blocked, logout immediately
             if (message === "USER_BLOCKED") {
-                store.dispatch(logout()); 
-                return Promise.reject(error); 
+                store.dispatch(logout());
+                return Promise.reject(error);
             }
 
             // If token expired, try to refresh
@@ -197,6 +197,16 @@ export const paymentForBooking = async (paymentData: any) => {
     }
 }
 
+export const walletPayment = async (paymentData: any) => {
+    try {
+        const response = await ProtectedAPI.post('/payment-service/candidate/wallet-payment', paymentData);
+        return response.data;
+    } catch (error: any) {
+        console.error("Login Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the payment for booking process.");
+    }
+}
+
 export const updatePaymentStatus = async (sessionId: string): Promise<ISuccess> => {
     try {
         const response = await ProtectedAPI.post<ISuccess>('/payment-service/candidate/verify-payment', { sessionId });
@@ -266,12 +276,12 @@ export const fetchFeedBack = async (slotId: string | undefined, scheduledId: str
 }
 
 
-export const addInterviewRating = async (reviewData: { 
-    interviewerId: string; 
-    scheduledId: string; 
-    slotId: string; 
-    ratings: number; 
-    comment: string; 
+export const addInterviewRating = async (reviewData: {
+    interviewerId: string;
+    scheduledId: string;
+    slotId: string;
+    ratings: number;
+    comment: string;
 }): Promise<ISuccess> => {
     try {
         const response = await ProtectedAPI.post<ISuccess>('/review-service/candidate/add-review-rating', reviewData)
@@ -320,8 +330,8 @@ export const fetchTotalAmount = async (): Promise<any> => {
 
 export const cancelInterview = async (data: any) => {
     try {
-        console.log(data,'this is data ')
-        const response = await ProtectedAPI.patch('/booking-service/candidate/cancel-interview', {data});
+        console.log(data, 'this is data ')
+        const response = await ProtectedAPI.patch('/booking-service/candidate/cancel-interview', { data });
         return response.data;
     } catch (error: any) {
         console.error("update payment status Error:", error.response?.data || error.message);
@@ -332,7 +342,7 @@ export const cancelInterview = async (data: any) => {
 
 export const sendMoneyToWallet = async (id: string) => {
     try {
-        const response = await ProtectedAPI.post(`/payment-service/candidate/cancel-interview/${id}` );
+        const response = await ProtectedAPI.post(`/payment-service/candidate/cancel-interview/${id}`);
         return response.data;
     } catch (error: any) {
         console.error("update payment status Error:", error.response?.data || error.message);
@@ -341,7 +351,7 @@ export const sendMoneyToWallet = async (id: string) => {
 }
 export const sendMoneyToInterviewer = async (id: any) => {
     try {
-        const response = await ProtectedAPI.post(`/payment-service/candidate/sendMoney-interview/${id}` );
+        const response = await ProtectedAPI.post(`/payment-service/candidate/sendMoney-interview/${id}`);
         return response.data;
     } catch (error: any) {
         console.error("update payment status Error:", error.response?.data || error.message);

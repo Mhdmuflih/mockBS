@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
-import { interviewerSlotDetails, paymentForBooking } from "../../../Services/candidateService";
+import { interviewerSlotDetails, paymentForBooking, walletPayment } from "../../../Services/candidateService";
 import { useLocation, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { ISlotInterviewerApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
@@ -21,13 +21,18 @@ export interface IInterviewerSlotData {
 }
 
 const SearchedInterviewerDetails: React.FC = () => {
-    
+
     const { interviewerId } = useParams<{ interviewerId: string | undefined }>();
     const location = useLocation();
     const [slotData, setSlotData] = useState<IInterviewerSlotData[]>([]);
     const [interviewer, setInterviewer] = useState<IInterviewer | null>(null);
     const searchParams: URLSearchParams = new URLSearchParams(location.search);
     const selectedTech: string = searchParams.get("selectedTech") || "";
+
+
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedMethod, setSelectedMethod] = useState<'wallet' | 'online' | ''>('');
+    const [selectedSlot, setSelectedSlot] = useState<any>(null);
 
     useEffect(() => {
 
@@ -64,24 +69,64 @@ const SearchedInterviewerDetails: React.FC = () => {
         fetchData();
     }, [interviewerId, selectedTech]);
 
-    const handleToBooking = async (scheduledData: IInterviewerSlotData) => {
+    // const handleToBooking = async (scheduledData: IInterviewerSlotData) => {
+    //     try {
+    //         const data = {
+    //             slotId: scheduledData.slotId,
+    //             scheduleId: scheduledData.scheduleId,
+    //             amount: scheduledData.price,
+    //             interviewerId: interviewerId,
+    //             interviewerName: interviewer?.name,
+    //             scheduleData: scheduledData
+    //         };
+    //         const paymentResponse: any = await paymentForBooking(data);
+    //         if (paymentResponse?.session?.url) {
+    //             window.location.href = paymentResponse.session.url;
+    //         } else {
+    //             toast.error(paymentResponse.message);
+    //         }
+    //     } catch (error: unknown) {
+    //         error instanceof Error ? console.log("Error fetching data:", error.message) : console.log("An unknown error occurred.");
+    //     }
+    // };
+
+
+    const handlePayment = async () => {
+        if (!selectedSlot || !selectedMethod) return;
+
         try {
-            const data = {
-                slotId: scheduledData.slotId,
-                scheduleId: scheduledData.scheduleId,
-                amount: scheduledData.price,
+            const commonData = {
+                slotId: selectedSlot.slotId,
+                scheduleId: selectedSlot.scheduleId,
+                amount: selectedSlot.price,
                 interviewerId: interviewerId,
                 interviewerName: interviewer?.name,
-                scheduleData: scheduledData
+                scheduleData: selectedSlot,
             };
-            const paymentResponse: any = await paymentForBooking(data);
-            if (paymentResponse?.session?.url) {
-                window.location.href = paymentResponse.session.url;
-            } else {
-                toast.error(paymentResponse.message);
+
+            if (selectedMethod === 'wallet') {
+                console.log("okokok wallet is going")
+                const walletResponse: any = await walletPayment(commonData);
+                if (walletResponse.success) {
+                    toast.success("Wallet payment successful!");
+                    setShowPaymentModal(false);
+                    setSelectedMethod('');
+                    setSelectedSlot(null);
+                } else {
+                    toast.error(walletResponse.message || "Wallet payment failed");
+                }
             }
-        } catch (error: unknown) {
-            error instanceof Error ? console.log("Error fetching data:", error.message) : console.log("An unknown error occurred.");
+
+            if (selectedMethod === 'online') {
+                const onlineResponse: any = await paymentForBooking(commonData);
+                if (onlineResponse?.session?.url) {
+                    window.location.href = onlineResponse.session.url;
+                } else {
+                    toast.error(onlineResponse.message || "Online payment failed");
+                }
+            }
+        } catch (error: any) {
+            toast.error(error?.message || "Payment failed");
         }
     };
 
@@ -116,7 +161,12 @@ const SearchedInterviewerDetails: React.FC = () => {
                                         </td>
                                         <td>
                                             {slot.status === "open" ? (
-                                                <button onClick={() => handleToBooking(slot)} className="bg-black text-white px-2 py-1 rounded">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedSlot(slot);
+                                                        setShowPaymentModal(true);
+                                                    }}
+                                                    className="bg-black text-white px-2 py-1 rounded">
                                                     Book Now
                                                 </button>
                                             ) : (
@@ -148,6 +198,61 @@ const SearchedInterviewerDetails: React.FC = () => {
                     </button>
                 </div>
             </div>
+
+
+            {showPaymentModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white rounded-lg p-6 w-[90%] max-w-md shadow-lg">
+                        <h2 className="text-xl font-bold mb-4">Choose Payment Method</h2>
+
+                        <div className="space-y-2 mb-4">
+                            <label className="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="wallet"
+                                    checked={selectedMethod === 'wallet'}
+                                    onChange={() => setSelectedMethod('wallet')}
+                                    className="mr-2"
+                                />
+                                Wallet Payment
+                            </label>
+                            <label className="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="online"
+                                    checked={selectedMethod === 'online'}
+                                    onChange={() => setSelectedMethod('online')}
+                                    className="mr-2"
+                                />
+                                Online Payment
+                            </label>
+                        </div>
+
+                        <div className="flex justify-end space-x-2">
+                            <button
+                                onClick={() => {
+                                    setShowPaymentModal(false);
+                                    setSelectedMethod('');
+                                    setSelectedSlot(null);
+                                }}
+                                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                disabled={!selectedMethod}
+                                onClick={handlePayment}
+                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                            >
+                                Pay Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </SideBar>
     );
 };

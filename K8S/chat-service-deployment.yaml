@@ -42,7 +42,7 @@ spec:
       port: 6000       # Expose HTTP server
       targetPort: 6000
 
-    - name: websocket
+    - name: ws
       protocol: TCP
       port: 6060       # Expose WebSocket server
       targetPort: 6060

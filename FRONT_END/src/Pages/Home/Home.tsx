@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/Creative Logo Templates.jpeg";
-import landingFirst from "../../assets/executives-ready-meeting-removebg-preview.png";
+// import landingFirst from "../../assets/executives-ready-meeting-removebg-preview.png";
 import landingMain from '../../assets/landing page image.jpeg';
-import sky from "../../assets/fantastic-blue-sky.jpg"
+// import sky from "../../assets/fantastic-blue-sky.jpg"
 import React from "react";
+import { motion } from 'framer-motion';
+
 
 const Home: React.FC = () => {
 
@@ -26,7 +28,71 @@ const Home: React.FC = () => {
 
             {/* top bar */}
 
-            <div className=" w-full p-1 flex justify-between items-center fixed top-0 left-0 shadow-md bg-white z-50">
+
+            <div className="min-h-screen bg-slate-900 text-white flex flex-col">
+                {/* Navbar */}
+                <motion.nav
+                    className="flex items-center justify-between px-6 py-4 bg-slate-800 shadow-md"
+                    initial={{ y: -50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <div className="flex items-center">
+                        <img onClick={navigateToHomePage} src={logo} alt="Company Logo" className="h-8 w-12 mr-4 ml-3 shadow-md rounded-xl hover:cursor-pointer" />
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-green-600 text-transparent bg-clip-text">
+                            mockBS
+                        </h1>
+                    </div>
+                    <ul className="flex space-x-6 text-sm">
+                        <li className="hover:text-emerald-300 cursor-pointer text-emerald-400 transition">Home</li>
+                        <li className="hover:text-emerald-300 cursor-pointer text-emerald-400 transition">About</li>
+                        <li className="hover:text-emerald-300 cursor-pointer text-emerald-400 transition">Contact</li>
+                    </ul>
+                    <div>
+                        <button onClick={navigateToSignup} className="text-slate-900 bg-emerald-400 px-4 py-1 mr-4 rounded-3xl hover:bg-emerald-500 hover:text-white transition duration-300">
+                            Sign Up
+                        </button>
+                        <button onClick={navigateToLogin} className="text-slate-900 bg-white px-4 py-1 rounded-3xl hover:bg-slate-700 hover:text-white transition duration-300">
+                            Login
+                        </button>
+                    </div>
+                </motion.nav>
+
+                {/* Hero Section */}
+                <div className="flex-grow flex flex-col justify-center items-center text-center px-4">
+                    <motion.h2
+                        className="text-4xl md:text-6xl font-extrabold mb-4 bg-gradient-to-r from-green-300 to-teal-500 text-transparent bg-clip-text"
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        Every mock interview brings you one step closer to your dream job.
+                    </motion.h2>
+
+                    <motion.p
+                        className="text-lg md:text-xl text-slate-300 mb-6 max-w-xl"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.3 }}
+                    >
+                        Enhance your skills with mock interviews led by industry experts, and receive personalized feedback to boost your confidence.
+                    </motion.p>
+
+                    <motion.button
+                        onClick={navigateToSignup}
+                        className="bg-emerald-500 hover:bg-emerald-400 px-6 py-3 rounded-full text-white font-semibold transition duration-300"
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.6 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        Get Started
+                    </motion.button>
+                </div>
+            </div>
+
+            {/* <div className=" w-full p-1 flex justify-between items-center fixed top-0 left-0 shadow-md bg-white z-50">
                 <div className="flex">
                     <img onClick={navigateToHomePage} src={logo} alt="Company Logo" className="h-10 w-14 mr-4 ml-3 shadow-md rounded-xl hover:cursor-pointer" />
                     <h1 className="mt-2 font-semibold text-[#0d97ff]">mock BS</h1>
@@ -52,16 +118,16 @@ const Home: React.FC = () => {
                     </div>
 
                     <button onClick={navigateToSignup} type="submit" className="bg-[#0d97ff] px-4 py-3 rounded-2xl font-serif mt-10 hover:bg-[#30323A] hover:text-white" >Get Started Now</button>
-                </div>
+                </div> */}
 
-                {/* <div className="mr-10 mt-32">
+            {/* <div className="mr-10 mt-32">
                     <img src={mainLapLogo} alt="Main Lap Logo" className="h-[380px]" />
                 </div> */}
 
-                <div className=" w-96 rounded-es-[200px]">
+            {/* <div className=" w-96 rounded-es-[200px]">
                     <img src={landingFirst} alt="" className="mt-[330px] " />
                 </div>
-            </div>
+            </div> */}
 
             {/* 2 part */}
 

@@ -11,4 +11,7 @@ export interface ICandidateService {
     loginCandidate(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; candidate: ICandidate }>;
 
     validateRefreshToken(refreshToken: string): Promise<any>;
+
+    checkIsBlock(userId: string): Promise<any>;
+
 }

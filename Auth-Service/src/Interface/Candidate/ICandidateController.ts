@@ -11,4 +11,7 @@ export interface ICandidateController {
     loginCandidate(req: Request, res: Response): Promise<void>;
 
     validateRefreshToken(req: Request, res: Response): Promise<any>
+
+    checkIsBlock(req: Request, res: Response): Promise<void>
+
 }

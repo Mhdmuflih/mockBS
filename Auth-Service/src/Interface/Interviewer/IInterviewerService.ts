@@ -10,5 +10,8 @@ export interface IInterviewerService {
     loginInterviewer(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; interviewer: IInterviewer }>;
 
     validateRefreshToken(token: string): Promise<{accessToken: string, refreshToken: string, interviewer: IInterviewer}>;
+
+    checkIsBlock(userId: string): Promise<any>
+
     // addDetails(experience: number, designation: string, organization: string, university: string, introduction: string, email: string): Promise<IInterviewer | null>;
 }

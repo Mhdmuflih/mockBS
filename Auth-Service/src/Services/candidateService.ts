@@ -260,4 +260,15 @@ export class CandidateService implements ICandidateService {
             throw error;
         }
     }
+
+
+    async checkIsBlock(userId: string): Promise<any> {
+        try {
+            const data = await this.candidateRepository.findCandidateById(userId);
+            return data;
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
+    }
 }

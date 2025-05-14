@@ -21,4 +21,7 @@ Candidate_Route.patch('/change-password', candidateController.changePassword.bin
 Candidate_Route.post('/login', candidateController.loginCandidate.bind(candidateController));
 Candidate_Route.post('/refresh-token', candidateController.validateRefreshToken.bind(candidateController));
 
+Candidate_Route.get('/isBlock/:userId', candidateController.checkIsBlock.bind(candidateController));
+
+
 export default Candidate_Route;

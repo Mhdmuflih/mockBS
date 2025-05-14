@@ -177,6 +177,25 @@ export class InterviewerControllers implements IInterviewerController {
         }
     }
 
+
+    async checkIsBlock(req: Request, res: Response): Promise<void> {
+        try {
+            console.log("23456789")
+            const {userId} = req.params;
+            console.log(userId,'this is blcok check user id');
+            const data = await this.interviewerService.checkIsBlock(userId);
+            console.log(data, 'this is data')
+            res.status(HTTP_STATUS.OK).json({success: true , message:"user check the data", data: data})
+        } catch (error: any) {
+            if (error instanceof Error) {
+                res.status(409).json({ message: error.message });
+            } else {
+                console.log(error.message);
+                res.status(error.status || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+            }
+        }
+    }
+
     // async addDetails(req: Request, res: Response): Promise<void> {
     //     try {
     //         const { formData, email } = req.body; // Extract formData and email from req.body

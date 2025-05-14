@@ -223,6 +223,17 @@ export class InterviewerService implements IInterviewerService {
         }
     }
 
+
+    async checkIsBlock(userId: string): Promise<any> {
+        try {
+            const data = await this.interviewerRepository.findInterviewerById(userId);
+            return data;
+        } catch (error: any) {
+            console.log(error.message);
+            throw error;
+        }
+    }
+
     // async addDetails(experience: number, designation: string, organization: string, university: string, introduction: string, email: string): Promise<IInterviewer | null> {
     //     try {
     //         const interviewer = await this.interviewerRepository.findInterviewerByEmail(email);

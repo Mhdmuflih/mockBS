@@ -10,6 +10,8 @@ export interface IInterviewerController {
     loginInterviewer(req: Request, res: Response): Promise<void>;
 
     validateRefreshToken(req: Request, res: Response): Promise<void>
+
+    checkIsBlock(req: Request, res: Response): Promise<void>
     
     // addDetails(req: Request, res: Response): Promise<void>;
     // login(req: Request, res: Response): Promise<void>;

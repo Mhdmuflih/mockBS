@@ -9,16 +9,19 @@ import { CandidateInterviewerWalletRepository } from './repository/candidate-int
 import { Wallet, WalletSchema } from 'src/admin/model/wallet';
 import { PremiumPayment, PremiumPaymentSchema } from './model/premium.schema';
 import { CandidatePremiumRepository } from './repository/candidate-premium.repository';
+import { CandidateWallet, CandidateWalletSchema } from './model/candidate-wallet.schema';
+import { CandidateWalletRepository } from './repository/candidate-wallet.repository';
 
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Payment.name, schema: PaymentSchema }]),
     MongooseModule.forFeature([{ name: Wallet.name, schema: WalletSchema }]),
-    MongooseModule.forFeature([{name: PremiumPayment.name, schema: PremiumPaymentSchema}])
+    MongooseModule.forFeature([{ name: PremiumPayment.name, schema: PremiumPaymentSchema }]),
+    MongooseModule.forFeature([{ name: CandidateWallet.name, schema: CandidateWalletSchema }])
   ],
   controllers: [CandidateController],
-  providers: [CandidateService, CandidateRepository, CandidateInterviewerWalletRepository, CandidatePremiumRepository],
+  providers: [CandidateService, CandidateRepository, CandidateInterviewerWalletRepository, CandidatePremiumRepository, CandidateWalletRepository],
   exports: [CandidateService]
 })
 export class CandidateModule { }

@@ -13,7 +13,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
         @InjectModel(Payment.name) private readonly paymentModel: Model<Payment>
     ) {
         super(paymentModel)
-     }
+    }
 
     async autoDeleteExpiredPayments(data: IPayment): Promise<void> {
         await this.paymentModel.deleteOne({
@@ -22,7 +22,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
             createdAt: { $lt: new Date(Date.now() - 2 * 60 * 1000) } // 2-minute expiry
         });
     }
-    
+
 
     async savePayment(candidateId: string, data: any): Promise<IPayment> {
         try {
@@ -73,7 +73,8 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
         try {
             const existing = await this.paymentModel.findOne({
                 scheduleId: data.scheduleId,
-                status:"completed"
+                status: "completed",
+                interviewStatus: { $in: ['pending', 'completed'] }
             });
             return existing;
         } catch (error: any) {
@@ -84,7 +85,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
 
     async verifyPayment(transactionId: string): Promise<IPayment> {
         try {
-            const updatePayment =  await this.paymentModel.findOneAndUpdate({ transactionId: transactionId }, { $set: { status: "completed" } }, { new: true })
+            const updatePayment = await this.paymentModel.findOneAndUpdate({ transactionId: transactionId }, { $set: { status: "completed" } }, { new: true })
             return updatePayment;
         } catch (error: any) {
             console.log(error.message);
@@ -94,7 +95,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
 
     async findPaymentData(transactionId: string): Promise<IPayment> {
         try {
-            const findedData =  await this.paymentModel.findOne({ transactionId: transactionId });
+            const findedData = await this.paymentModel.findOne({ transactionId: transactionId });
             return findedData;
         } catch (error: any) {
             console.log(error.message);
@@ -107,8 +108,42 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
             const result = await this.paymentModel.aggregate([
                 { $match: { candidateId: new mongoose.Types.ObjectId(candidateId), status: "completed" } },
                 { $group: { _id: null, totalAmount: { $sum: "$amount" } } }
-            ]); 
-            return result.length > 0 ? result[0].totalAmount : 0; 
+            ]);
+            return result.length > 0 ? result[0].totalAmount : 0;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
+    async findPaymentDataForCancel(candidateId: string, scheduleId: string): Promise<IPayment> {
+        try {
+            return await this.paymentModel.findOne({ candidateId: candidateId, scheduleId: scheduleId, status: "completed" });
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async updateInterviewStatus(candidateId: string, scheduleId: string, interviewStatus: string): Promise<IPayment> {
+        try {
+            const updatedPayment = await this.paymentModel.findOneAndUpdate(
+                { candidateId, scheduleId, status: "completed" },
+                { $set: { interviewStatus: interviewStatus } },
+                { new: true } // return the updated document
+            );
+            console.log(updatedPayment, 'update this');
+            return updatedPayment
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async findThePaymentData(candidateId: string, scheduleId: string): Promise<IPayment> {
+        try {
+            return await this.paymentModel.findOne({ candidateId: candidateId, scheduleId: scheduleId, interviewStatus: "completed" });
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

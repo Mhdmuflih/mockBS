@@ -76,8 +76,10 @@ const CandidateLogin = () => {
             } else {
                 toast.error(response.message)
             }
-        } catch (error: unknown) {
-            error instanceof Error ? toast.error(error.message) : toast.error("An unknown error occurred.");
+        } catch (error: any) {
+            console.log(error.message);
+            toast.error(error.message)
+            //  toast.error("An unknown error occurred.");
         }
     }
 

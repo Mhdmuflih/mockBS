@@ -14,7 +14,7 @@ export class Scheduled extends Document {
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'schedule', required: true })
     scheduleId: Types.ObjectId;
 
-    @Prop({ type: {stack: String,technology: String,date: String,from: String,to: String,title: String,price: Number}, required: true })
+    @Prop({ type: { stack: String, technology: String, date: String, from: String, to: String, title: String, price: Number }, required: true })
     scheduledSlot: {
         stack: string;
         technology: string;
@@ -27,6 +27,9 @@ export class Scheduled extends Document {
 
     @Prop({ type: String, required: true, default: "pending" })
     status: string;
+
+    @Prop({ type: String })
+    cancelReason: string;
 }
 
 export const ScheduledSchema = SchemaFactory.createForClass(Scheduled);

@@ -77,11 +77,34 @@ export class CandidateService implements ICandidateService {
     }
   }
 
-  async getInterviewCounts(candidateId: string): Promise<{scheduledInterviewCounts: number, completedInterviewCounts: number}> {
+  async getInterviewCounts(candidateId: string): Promise<{ scheduledInterviewCounts: number, completedInterviewCounts: number, cancelledInterviewCounts: number }> {
     try {
       const scheduledInterviewCounts = await this.scheduleRepository.getScheduledInterviewCount(candidateId);
       const completedInterviewCounts = await this.scheduleRepository.getCompletedInterviewCount(candidateId);
-      return {scheduledInterviewCounts: scheduledInterviewCounts, completedInterviewCounts: completedInterviewCounts}
+      const cancelledInterviewCounts = await this.scheduleRepository.getCancelledInterviewCount(candidateId);
+      return { scheduledInterviewCounts: scheduledInterviewCounts, completedInterviewCounts: completedInterviewCounts, cancelledInterviewCounts:cancelledInterviewCounts }
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
+  async cancelInterview(id: string, reason: string): Promise<any> {
+    try {
+      console.log(id, reason, 'data in service ');
+      const cancelData = await this.scheduleRepository.findOneTheSchedule(id);
+      console.log(cancelData, 'this is the data of the cancel')
+
+      if (!cancelData) {
+        throw new HttpException('Scheduled interview not found', HttpStatus.NOT_FOUND);
+      }
+
+      const updateTheScheduledStatus = await this.scheduleRepository.updateStatus(id, reason);
+      console.log(updateTheScheduledStatus, 'this is update the status');
+      const updateTheSlotStatus = await this.slotRepository.updateScheduleDataStatusCancelled(cancelData.scheduleId._id.toString())
+      console.log(updateTheSlotStatus,'update the slot data')
+      return cancelData;
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

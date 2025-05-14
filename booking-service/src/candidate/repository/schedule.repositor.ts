@@ -86,6 +86,38 @@ export class ScheduleRepository extends BaseRepository<Scheduled> implements ICa
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    async getCancelledInterviewCount(candidateId: string): Promise<number> {
+        try {
+            const cancelledInterviewCounts = await this.scheduledModel.countDocuments({candidateId: candidateId, status: "cancelled"}) || 0;
+            return cancelledInterviewCounts;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+     async findOneTheSchedule(id: string): Promise<any> {
+        try {
+            const data = await this.scheduledModel.findOne({_id: id});
+            return data;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async updateStatus(id: string, reason: string): Promise<any> {
+        try {
+            const data = await this.scheduledModel.findOneAndUpdate({_id: id}, {$set:{status: "cancelled",cancelReason: `candidate: ${reason}`}});
+            return data;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     // async candidateSceduledInterviews(candidateId: string, page: number, limit: number, search: string): Promise<{ total: number, data: ISchedule[] }> {
     //     try {

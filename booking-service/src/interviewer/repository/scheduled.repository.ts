@@ -22,4 +22,27 @@ export class ScheduleRepository extends BaseRepository<Scheduled> implements IIn
     //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     //     }
     // }
+
+
+    async findOneTheSchedule(id: string): Promise<any> {
+        try {
+            const data = await this.scheduledModal.findOne({ _id: id });
+            console.log(data, 'this is taht eroror1254534753465436')
+            return data;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    async updateStatus(id: string, reason: string): Promise<any> {
+        try {
+            const data = await this.scheduledModal.findOneAndUpdate({ _id: id }, { $set: { status: "cancelled", cancelReason: `interviewer: ${reason}` } });
+            return data;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

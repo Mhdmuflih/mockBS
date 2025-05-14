@@ -84,5 +84,29 @@ export class interviewerSlotRepository extends BaseRepository<InterviewerSlot> i
     //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     //     }
     // }
+     async updateScheduleDataStatusCancelled(scheduledId: string): Promise<any> {
+        try {
+            const updateData = await this.slotModel.updateOne(
+                {
+                    "slots.schedules._id": scheduledId // Find the specific schedule
+                },
+                {
+                    $set: { "slots.$[].schedules.$[sched].status": "cancelled" } // Update status to "booked"
+                },
+                {
+                    arrayFilters: [{ "sched._id": scheduledId }] // Apply filter to target correct schedule
+                }
+            );
+
+            if (updateData.matchedCount === 0) {
+                throw new HttpException("Schedule not found", HttpStatus.NOT_FOUND);
+            }
+
+            return { success: true, message: "Schedule status updated", updateData };
+        } catch (error: any) {
+            console.error("Error updating schedule status:", error.message);
+            throw new HttpException(error.message || "An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

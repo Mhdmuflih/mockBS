@@ -64,6 +64,20 @@ async getInterviewCounts(@Headers('x-user-id') candidateId: string): Promise<{su
   }
 }
 
+
+@Patch('/cancel-interview')
+async cancelInterview(@Body() body: { data: { selectedId: string; cancelReason: string } }): Promise<{success:boolean; message: string, cancelData: any}>{
+  try {
+    const  {selectedId, cancelReason} = body.data
+    console.log(selectedId, cancelReason, ' this isData')
+    const cancelData = await this.candidateService.cancelInterview(selectedId, cancelReason)
+    return {success: true, message: "interview cacelled successfully", cancelData: cancelData};
+  } catch (error: any) {
+    console.log(error.message);
+    throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
   // Grpc for the booking schedule data comes in payment service
   // ==============================================================
 

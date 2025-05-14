@@ -137,7 +137,7 @@ const InterviewerDetails = () => {
                                 <input
                                     type="text"
                                     id="yearOfExpr"
-                                    name="experience"
+                                    name="yearOfExperience"
                                     placeholder="Year of Experience"
                                     value={formData.yearOfExperience}
                                     onChange={handleTakeInput}
@@ -159,7 +159,7 @@ const InterviewerDetails = () => {
                                     <input
                                         type="text"
                                         id="designation"
-                                        name="designation"
+                                        name="currentDesignation"
                                         placeholder="Designation"
                                         value={formData.currentDesignation}
                                         onChange={handleTakeInput}

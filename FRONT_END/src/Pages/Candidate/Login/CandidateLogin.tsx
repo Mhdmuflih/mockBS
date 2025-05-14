@@ -13,7 +13,6 @@ import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
-import { ICandidateLoginApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
 
 
 
@@ -48,7 +47,7 @@ const CandidateLogin = () => {
 
         try {
             console.log(formDataLogin, 'this is the login formData')
-            const response: ICandidateLoginApiResponse = await loginCandidate(formDataLogin);
+            const response: any = await loginCandidate(formDataLogin);
             console.log(response, 'login reponse')
             if (response.success) {
                 if (response.candidateData.isBlocked) {

@@ -45,8 +45,10 @@ const Table: React.FC<TableProps> = ({ columns, data, actions, searchQuery, setS
                     data.map((row, index) => (
                         <div
                             key={index}
-                            className={`grid grid-cols-${columns.length} gap-4 bg-black text-gray-300 p-2 rounded-md"`}
+                            className="grid gap-4 bg-black text-gray-300 p-2 rounded-md"
+                            style={{ gridTemplateColumns: `repeat(${columns.length + (actions ? 1 : 0)}, minmax(0, 1fr))` }}
                         >
+
                             {columns.map((col) => (
                                 <div key={col.key} className="text-sm ">
                                     {row[col.key] || "N/A"}

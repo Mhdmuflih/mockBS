@@ -1,5 +1,5 @@
 import { UnProtectedAPI } from "../Config/axiosConfig";
-import { ICandidateForgotPasswordApiResponse, ICandidateLoginApiResponse, ICandidateSignupApiResponse, ISuccess } from "../Interface/candidateInterfaces/IApiResponce";
+import { ICandidateForgotPasswordApiResponse, ICandidateSignupApiResponse, ISuccess } from "../Interface/candidateInterfaces/IApiResponce";
 import { IFormData, IFormDataLogin } from "../Interface/Interface";
 
 
@@ -90,11 +90,11 @@ export const changeCandidatePassword = async ({ email, password, confirmPassword
     }
 }
 
-export const loginCandidate = async (formData: IFormDataLogin): Promise<ICandidateLoginApiResponse> => {
+export const loginCandidate = async (formData: IFormDataLogin) => {
     try {
         console.log(formData,'1234567890')
         console.log(import.meta.env.VITE_BASE_URL,'this is base url of the backend');
-        const response = await UnProtectedAPI.post<ICandidateLoginApiResponse>('/candidate/login', formData);
+        const response = await UnProtectedAPI.post('/candidate/login', formData);
         return response.data;
     } catch (error: any) {
         console.log("Error in Google Authentication:", error.message);

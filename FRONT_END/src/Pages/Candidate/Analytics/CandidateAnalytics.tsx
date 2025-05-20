@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar"
-import { FaUsers } from "react-icons/fa";
+import { FaBan, FaCalendarCheck, FaCheckCircle, FaDollarSign } from "react-icons/fa";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, } from 'recharts';
 import { fetchScheduledInterviewCount, fetchTotalAmount } from "../../../Services/candidateService";
 import { ICandidateScheduledAnalyiticsApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
@@ -45,7 +45,7 @@ const CandidateAnalytics = () => {
         { name: 'Scheduled Interview', value: scheduledInterviewCount },
         { name: 'Cancelled Interview', value: cancelledInterviewCount },
     ];
-    const COLORS = ['#4CAF50', '#FF9800', '#2196F3'];
+    const COLORS = ['#4CAF50', '#2196F3', '#FF0000'];
 
     return (
         <>
@@ -55,36 +55,43 @@ const CandidateAnalytics = () => {
                 <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 px-6 py-4">
                     {/* <Breadcrumbs/> */}
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 ">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 ">
                         {[
-                            {
+                                                       {
                                 title: 'Scheduled Interview',
                                 value: `${scheduledInterviewCount}`,
-                                icon: <FaUsers className="w-7 h-7" />,
-                                color: 'bg-white border-l-4 border-emerald-400',
-                                iconColor: 'text-emerald-400'
+                                icon: <FaCalendarCheck className="w-7 h-7" />,
+                                color: 'bg-white border-l-4 border-blue-500',
+                                iconColor: 'text-blue-500'
+                            },
+                            {
+                                title: 'Cancelled Interview',
+                                value: `${cancelledInterviewCount}`, // You may want a separate count here
+                                icon: <FaBan className="w-7 h-7" />,
+                                color: 'bg-white border-l-4 border-red-500',
+                                iconColor: 'text-red-500'
                             },
                             {
                                 title: 'Completed Interviews',
                                 value: `${completedInterviewCount}`,
-                                icon: <FaUsers className="w-7 h-7" />,
-                                color: 'bg-white border-l-4 border-emerald-400',
-                                iconColor: 'text-emerald-400'
+                                icon: <FaCheckCircle className="w-7 h-7" />,
+                                color: 'bg-white border-l-4 border-green-500',
+                                iconColor: 'text-green-500'
                             },
                             {
                                 title: 'Total Payed Amount',
                                 value: `${totalAmount}`,
-                                icon: <FaUsers className="w-7 h-7" />,
-                                color: 'bg-white border-l-4 border-emerald-400',
-                                iconColor: 'text-emerald-400'
+                                icon: <FaDollarSign className="w-7 h-7" />,
+                                color: 'bg-white border-l-4 border-purple-500',
+                                iconColor: 'text-purple-500'
                             },
                             {
-                                title: <h1 className="text-yellow-500">Wallet Amount</h1>,
+                                title: <span className="text-yellow-500 font-semibold">Wallet Amount</span>,
                                 value: `${walletData?.balance ?? 0}`,
                                 icon: <GiMoneyStack className="w-7 h-7" />,
-                                color: 'bg-white border-l-4 border-emerald-400',
-                                iconColor: 'text-emerald-400'
-                            },
+                                color: 'bg-white border-l-4 border-yellow-500',
+                                iconColor: 'text-yellow-500'
+                            }
 
                         ].map((card, index) => (
                             <div key={index}
@@ -153,7 +160,7 @@ const CandidateAnalytics = () => {
                                 </thead>
                                 <tbody className="bg-white text-sm">
                                     {walletData?.walletHistory?.length > 0 ? (
-                                        walletData.walletHistory.map((data: any, index: number) => (
+                                        [...walletData.walletHistory].reverse().map((data: any, index: number) => (
                                             <tr
                                                 key={index}
                                                 className="border-b border-gray-200 hover:bg-gray-50 text-center"

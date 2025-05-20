@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import SideBar from "../../../components/Candidate/SideBar"
 import { cancelInterview, getCandidateScheduledInterviews, sendMoneyToWallet } from "../../../Services/candidateService";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
+import { debounce } from "lodash";
 
 const CandidateInterviews = () => {
 
@@ -13,12 +14,27 @@ const CandidateInterviews = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
+    const [rawSearchQuery, setRawSearchQuery] = useState("");
     const limit = 5;
 
     const [isModal, setIsModal] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<string>("");
     const [cancelReason, setCancelReason] = useState<string>("");
 
+
+    const debouncedSearch = useCallback(
+        debounce((query: string) => {
+            setSearchQuery(query);
+        }, 500),
+        []
+    );
+
+    useEffect(() => {
+        debouncedSearch(rawSearchQuery);
+        return () => {
+            debouncedSearch.cancel();
+        }
+    }, [rawSearchQuery]);
 
     useEffect(() => {
 
@@ -95,9 +111,9 @@ const CandidateInterviews = () => {
                                 type="text"
                                 placeholder="Search..."
                                 className="px-3 py-2 rounded-md w-full bg-white text-black"
-                                value={searchQuery}
+                                value={rawSearchQuery}
                                 onChange={(event) => {
-                                    setSearchQuery(event.target.value);
+                                    setRawSearchQuery(event.target.value);
                                     setCurrentPage(1);
                                 }}
                             />
@@ -116,7 +132,7 @@ const CandidateInterviews = () => {
                             {/* Table Rows */}
                             <div className="mt-1 space-y-2 flex-grow ">
                                 {scheduledData.length > 0 ? (
-                                    scheduledData.map((data) => (
+                                    [...scheduledData].reverse().map((data) => (
                                         <>
                                             <div key={data._id} className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-x-7 bg-black text-gray-300 p-2 rounded-md">
 

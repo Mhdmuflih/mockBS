@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SideBar from "../../../components/Admin/SideBar";
 import { fetchApprovalData } from "../../../Services/adminService";
 import { useNavigate } from "react-router-dom";
 import profileImage from "../../../assets/profile image.jpg";
 import Pagination from '@mui/material/Pagination';
+import { debounce } from "lodash";
 
 const AdminApproval = () => {
 
@@ -11,9 +12,25 @@ const AdminApproval = () => {
     
     const [approvalData, setApprovalData] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [rawSearchQuery, setRawSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const limit = 5;
+
+    const debouncedSearch = useCallback(
+        debounce((query: string) => {
+            setSearchQuery(query);
+        }, 500),
+        []
+    )
+
+    useEffect(() => {
+        setRawSearchQuery(rawSearchQuery);
+        return () => {
+            debouncedSearch.cancel();
+        }
+    },[rawSearchQuery]);
+    
 
     useEffect(() => {
 
@@ -68,9 +85,9 @@ const AdminApproval = () => {
                             type="text"
                             placeholder="Search..."
                             className="px-3 py-2 rounded-md w-full bg-black text-white"
-                            value={searchQuery}
+                            value={rawSearchQuery}
                             onChange={(event) => {
-                                setSearchQuery(event.target.value)
+                                setRawSearchQuery(event.target.value)
                                 setCurrentPage(1)
                             }}
                         />

@@ -39,9 +39,16 @@ const SearchedInterviewerDetails: React.FC = () => {
     const debouncedHandlePayment = useCallback(
         debounce(() => {
             handlePayment();
-        }, 2000), // Debounce with 2 seconds
+        }, 2000),
         []
     );
+
+    useEffect(() => {
+        return () => {
+            debouncedHandlePayment.cancel();
+        };
+    }, [debouncedHandlePayment]);
+
 
 
     useEffect(() => {

@@ -29,7 +29,7 @@ const AdminCandidatesList = () => {
     const debouncedSearch = useCallback(
         debounce((query: string) => {
             setSearchQuery(query);
-        }, 2000),
+        }, 500),
         []
     )
 

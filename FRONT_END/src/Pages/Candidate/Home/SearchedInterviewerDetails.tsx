@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../../../components/Candidate/SideBar";
 import { interviewerSlotDetails, paymentForBooking, walletPayment } from "../../../Services/candidateService";
 import { useLocation, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { ISlotInterviewerApiResponse } from "../../../Interface/candidateInterfaces/IApiResponce";
 import { IInterviewer, ISchedule, ISlot, ISlotData } from "../../../Interface/candidateInterfaces/interface";
-import { debounce } from "lodash";
 
 export interface IInterviewerSlotData {
     stack: string;
@@ -34,22 +33,6 @@ const SearchedInterviewerDetails: React.FC = () => {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [selectedMethod, setSelectedMethod] = useState<'wallet' | 'online' | ''>('');
     const [selectedSlot, setSelectedSlot] = useState<any>(null);
-
-
-    const debouncedHandlePayment = useCallback(
-        debounce(() => {
-            handlePayment();
-        }, 2000),
-        []
-    );
-
-    useEffect(() => {
-        return () => {
-            debouncedHandlePayment.cancel();
-        };
-    }, [debouncedHandlePayment]);
-
-
 
     useEffect(() => {
 
@@ -260,7 +243,7 @@ const SearchedInterviewerDetails: React.FC = () => {
                             </button>
                             <button
                                 disabled={!selectedMethod}
-                                onClick={debouncedHandlePayment}
+                                onClick={handlePayment}
                                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                             >
                                 Pay Now

@@ -25,7 +25,7 @@ const AdminApproval = () => {
     )
 
     useEffect(() => {
-        setRawSearchQuery(rawSearchQuery);
+        debouncedSearch(rawSearchQuery);
         return () => {
             debouncedSearch.cancel();
         }

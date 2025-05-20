@@ -3,15 +3,10 @@ import SideBar from "../../../components/Admin/SideBar";
 import { fetchApprovalData } from "../../../Services/adminService";
 import { useNavigate } from "react-router-dom";
 import profileImage from "../../../assets/profile image.jpg";
-
-// import Typography from '@mui/material/Typography';
 import Pagination from '@mui/material/Pagination';
-// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
-// import Stack from '@mui/material/Stack';
 
 const AdminApproval = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     
     const [approvalData, setApprovalData] = useState<any[]>([]);
@@ -21,10 +16,6 @@ const AdminApproval = () => {
     const limit = 5;
 
     useEffect(() => {
-
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
 
         const takeApprovalDetails = async () => {
             try {
@@ -45,11 +36,8 @@ const AdminApproval = () => {
             }
         };
         takeApprovalDetails();
-    }, [searchQuery, currentPage]);  // Now, it will re-run when currentPage changes
+    }, [searchQuery, currentPage]);
 
-    // if (isLoading) {
-    //     return <AdminSideLoading />
-    // }
 
     const handleToDetails = (id: string) => {
         try {

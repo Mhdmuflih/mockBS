@@ -3,26 +3,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchCandidatesDetails } from "../../../Services/adminService";
 import SideBar from "../../../components/Admin/SideBar";
 import { TiArrowBack } from "react-icons/ti";
-// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 const AdminCandidateDetails = () => {
-
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
-
     const navigate = useNavigate();
-    const { id } = useParams(); // Access dynamic id from URL
+    const { id } = useParams();
     const [candidateDetails, setCandidateDetails] = useState<any>(null);
 
     useEffect(() => {
 
-        // setTimeout(()=> {
-        //     setIsLoading(false);
-        // },2000);
-
         const fetchDetails = async () => {
             if (!id) {
                 console.log("No id provided");
-                return; // Early return if id is undefined
+                return;
             }
             try {
                 console.log(id, "Fetching details");
@@ -32,7 +24,7 @@ const AdminCandidateDetails = () => {
                     setCandidateDetails(response.candidateData);
                 } else {
                     console.log("Failed to fetch details");
-                    setCandidateDetails(null); // Set to null if no data found
+                    setCandidateDetails(null);
                 }
             } catch (error: any) {
                 console.log("Error fetching details:", error.message);
@@ -45,9 +37,6 @@ const AdminCandidateDetails = () => {
         fetchDetails();
     }, [id]);
 
-    // if (isLoading) {
-    //     return <div><AdminSideLoading /></div>; // Show loading state while data is being fetched
-    // }
 
     if (!candidateDetails) {
         return <div>No details found for the selected candidate.</div>;

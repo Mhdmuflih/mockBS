@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SideBar from "../../../components/Admin/SideBar";
 import { fetchCandidateData, TakeActionCandidate } from "../../../Services/adminService";
 import { useNavigate } from "react-router-dom";
@@ -10,26 +10,37 @@ import Table from "../../../components/Admin/Table";
 import toast from "react-hot-toast"
 import { Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
-// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
+import { debounce } from "lodash";
 
 
 const AdminCandidatesList = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [approvalData, setApprovalData] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [rawSearchQuery, setRawSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const limit = 5;
 
-    useEffect(() => {
 
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
+    const debouncedSearch = useCallback(
+        debounce((query: string) => {
+            setSearchQuery(query);
+        }, 2000),
+        []
+    )
+
+    useEffect(() => {
+        debouncedSearch(rawSearchQuery);
+        return () => {
+            debouncedSearch.cancel();
+        }
+    }, [rawSearchQuery]);
+
+    useEffect(() => {
 
         const takeApprovalDetails = async () => {
             try {
@@ -48,9 +59,6 @@ const AdminCandidatesList = () => {
         takeApprovalDetails();
     }, [searchQuery, currentPage]);
 
-    // if (isLoading) {
-    //     return <div><AdminSideLoading /></div>
-    // }
 
     const handleToDetails = (id: string) => {
         navigate(`/admin/candidate/${id}`);
@@ -125,8 +133,8 @@ const AdminCandidatesList = () => {
                     handleChange={handleChange}
                     currentPage={currentPage}
                     totalPages={totalPages}
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
+                    searchQuery={rawSearchQuery}
+                    setSearchQuery={setRawSearchQuery}
                     data={approvalData.map((data, index) => ({
                         serial: (currentPage - 1) * limit + index + 1,
                         name: (

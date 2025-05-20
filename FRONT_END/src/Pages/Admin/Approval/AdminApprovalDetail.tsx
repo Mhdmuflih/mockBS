@@ -8,15 +8,12 @@ import profileImage from "../../../assets/profile image.jpg";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
-// import AdminSideLoading from "../../../components/Admin/AdminSideLoading";
 
 
 const AdminApprovalDetail = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
-
     const navigate = useNavigate();
-    const { id } = useParams(); // Access dynamic id from URL
+    const { id } = useParams();
     const [interviewerDetails, setInterviewerDetails] = useState<any>(null);
     const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
 
@@ -26,20 +23,16 @@ const AdminApprovalDetail = () => {
 
     useEffect(() => {
 
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
-
         const fetchDetails = async () => {
             if (!id) {
                 console.log("No id provided");
-                return; // Early return if id is undefined
+                return;
             }
             try {
-                const response: any = await fetchInterviewerDetails(id); // Fetch details using the id
+                const response: any = await fetchInterviewerDetails(id);
                 if (response.success) {
                     console.log(response.approvalData, "this is single data");
-                    setInterviewerDetails(response.approvalData); // Fix: Use `approvalData` instead of `data`
+                    setInterviewerDetails(response.approvalData);
                 } else {
                     console.log("Failed to fetch details");
                 }
@@ -54,9 +47,6 @@ const AdminApprovalDetail = () => {
         fetchDetails();
     }, [id]);
 
-    // if (isLoading) {
-    //     return <div><AdminSideLoading /></div>; // Show loading state while data is being fetched
-    // }
 
     if (!interviewerDetails) {
         return <div>No details found for the selected interviewer.</div>;

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SideBar from "../../../components/Admin/SideBar";
 import Table from "../../../components/Admin/Table";
 import { fetchInterviewList } from "../../../Services/adminService";
 import { useNavigate } from "react-router-dom";
+import { debounce } from "lodash";
 
 const AdminInterviewList = () => {
 
@@ -10,9 +11,24 @@ const AdminInterviewList = () => {
 
     const [interviewData, setInterviewData] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [rawSearchQuery, setRawSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const limit = 5;
+
+    const debouncedSearch = useCallback(
+        debounce((query:string) => {
+            setSearchQuery(query);
+        }, 500),
+        []
+    )
+
+    useEffect(() => {
+        debouncedSearch(rawSearchQuery);
+        return () => {
+            debouncedSearch.cancel();
+        }
+    }, [rawSearchQuery]);
 
     useEffect(() => {
 
@@ -77,8 +93,8 @@ const AdminInterviewList = () => {
                         handleChange={handleChange}
                         currentPage={currentPage}
                         totalPages={totalPages}
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
+                        searchQuery={rawSearchQuery}
+                        setSearchQuery={setRawSearchQuery}
                         data={interviewData.map((data) => ({
                             serial: data.serial,
                             technology: data.technology || "N/A",

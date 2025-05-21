@@ -1,24 +1,34 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SideBar from "../../../components/Interviewer/Sidebar";
 import Table from "../../../components/Interviewer/Table";
 import { getSlotData } from "../../../Services/interviewerService";
-// import PageLoading from "../../../components/PageLoading";
+import { debounce } from "lodash";
 
 const InterviewerSlots = () => {
 
-    // const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const [slotData, setSlotData] = useState<any[]>([]);  // Change state to hold an array
+    const [slotData, setSlotData] = useState<any[]>([]);  
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPages] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
+    const [rawSearchQuery, setRawSearchQuery] = useState("");
     const limit = 4;
 
-    useEffect(() => {
+    const debouncedSearch = useCallback(
+        debounce((query: string) => {
+            setSearchQuery(query);
+        }, 500),
+        []
+    );
 
-        // setTimeout(() => {
-        //     setIsLoading(false);
-        // }, 2000);
+    useEffect(() => {
+        debouncedSearch(rawSearchQuery);
+        return () => {
+            debouncedSearch.cancel();
+        }
+    }, [rawSearchQuery]);
+
+    useEffect(() => {
 
         const fetchSlotData = async () => {
             try {
@@ -56,10 +66,6 @@ const InterviewerSlots = () => {
         fetchSlotData();
     }, [searchQuery, currentPage]);
 
-    // if (isLoading) {
-    //     return <div><PageLoading /></div>
-    // }
-
 
     const handleChange = (_: unknown, value: number) => {
         setCurrentPage(value);
@@ -87,8 +93,8 @@ const InterviewerSlots = () => {
                         handleChange={handleChange}
                         currentPage={currentPage}
                         totalPages={totalPage}
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
+                        searchQuery={rawSearchQuery}
+                        setSearchQuery={setRawSearchQuery}
                     />
                 </div>
 

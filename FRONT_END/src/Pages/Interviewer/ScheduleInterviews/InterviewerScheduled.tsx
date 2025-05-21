@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SideBar from "../../../components/Interviewer/Sidebar";
 import Table from "../../../components/Interviewer/Table";
 import { cancelInterview, getInterviewerScheduledInterviews } from "../../../Services/interviewerService";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { sendMoneyToWallet } from "../../../Services/candidateService";
+import { debounce } from "lodash";
 
 const InterviewerScheduled = () => {
 
@@ -14,12 +15,26 @@ const InterviewerScheduled = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPages] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
+    const [rawSearchQuery, setRawSearchQuery] = useState("");
     const limit = 5;
 
     const [isModal, setIsModal] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<string>("");
     const [cancelReason, setCancelReason] = useState<string>("");
 
+    const debouncedSearch = useCallback(
+        debounce((query: string) => {
+            setSearchQuery(query);
+        }, 500),
+        []
+    );
+
+    useEffect(() => {
+        debouncedSearch(rawSearchQuery);
+        return () => {
+            debouncedSearch.cancel();
+        }
+    }, [rawSearchQuery]);
 
     useEffect(() => {
 
@@ -117,8 +132,8 @@ const InterviewerScheduled = () => {
                         handleChange={handleChange}
                         currentPage={currentPage}
                         totalPages={totalPage}
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
+                        searchQuery={rawSearchQuery}
+                        setSearchQuery={setRawSearchQuery}
                         data={scheduledData.map((data) => ({
                             stack: data.stack,
                             technology: data.technology,

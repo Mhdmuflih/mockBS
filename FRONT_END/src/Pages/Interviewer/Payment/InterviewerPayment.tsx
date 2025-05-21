@@ -2,19 +2,16 @@ import SideBar from "../../../components/Interviewer/Sidebar";
 import PaymentBackgroundImage from '../../../assets/payment baground image.jpeg';
 import { useEffect, useState } from "react";
 import { getPaymentData, wallterWithdraw } from "../../../Services/interviewerService";
-// import PageLoading from "../../../components/PageLoading";
 import Swal from "sweetalert2";
 import toast, { Toaster } from "react-hot-toast";
 
 const InterviewerPayment = () => {
 
-    // const [isLoading, setIsLoading] = useState(true);
     const [walletData, setWalletData] = useState<any | null>(null);
     const [isModal, setIsModal] = useState(false);
     const [withdrawAmount, setWithdrawAmount] = useState<any | number>("");
 
     useEffect(() => {
-        // setTimeout(() => setIsLoading(false), 2000);
 
         const fetchPaymentData = async () => {
             const response: any = await getPaymentData();
@@ -27,7 +24,6 @@ const InterviewerPayment = () => {
         fetchPaymentData();
     }, []);
 
-    // if (isLoading) return <PageLoading />;
 
     const handleToWithdraw = () => setIsModal(true);
     const handleCloseModal = () => setIsModal(false);
@@ -95,7 +91,7 @@ const InterviewerPayment = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-black">
-                            {walletData?.walletHistory.map((data: any, index: number) => (
+                            {[...walletData?.walletHistory].reverse().map((data: any, index: number) => (
                                 <tr key={index} className="text-center">
                                     <td className="p-3">{index + 1}</td>
                                     <td className="p-3">{new Date(data.date).toISOString().split('T')[0]}</td>

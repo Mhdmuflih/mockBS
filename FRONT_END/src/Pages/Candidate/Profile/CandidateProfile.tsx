@@ -8,9 +8,9 @@ import { IoMdRemoveCircleOutline } from "react-icons/io";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
-import { formValidation } from "../../../Validations/formValidation";
 import { useDispatch } from "react-redux";
 import { setProfileImage } from "../../../Store/Slice/CandidateSlice";
+import { candidateUpdateProfileValidation } from "../../../Validations/candidateUpdateProfileValidation";
 
 const CandidateProfile = () => {
 
@@ -58,7 +58,7 @@ const CandidateProfile = () => {
         setCandidateData(updatedData);
     
         // Then validate the updatedData, not the old candidateData
-        const validation = formValidation(updatedData, "signup", name);
+        const validation = candidateUpdateProfileValidation(updatedData, name);
         setErrors((prevErrors: any) => ({ ...prevErrors, [name]: validation.errors[name] || "" }));
     }, [candidateData]);
     
@@ -74,7 +74,7 @@ const CandidateProfile = () => {
     const handleToSubmit = async (event: FormEvent) => {
         event.preventDefault();
 
-        const validation = formValidation(candidateData, "signup");
+        const validation = candidateUpdateProfileValidation(candidateData);
         setErrors(validation.errors);
 
         // Stop if the form is not valid

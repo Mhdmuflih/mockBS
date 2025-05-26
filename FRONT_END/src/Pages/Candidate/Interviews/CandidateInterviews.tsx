@@ -36,26 +36,22 @@ const CandidateInterviews = () => {
         }
     }, [rawSearchQuery]);
 
-    useEffect(() => {
-
-        const fetchCandidateScheduledInterviews = async () => {
-            try {
-                const response: any = await getCandidateScheduledInterviews(currentPage, limit, searchQuery);
-                if (response.success) {
-                    console.log(response.scheduledData)
-                    // console.log(response.scheduledData, ' this is for the scheduled data for the interviewer');
-                    // console.log(response.scheduledData.totalPages
-                    //     , ' this is for the scheduled data for the interviewer');
-
-                    setScheduledData(response.scheduledData.scheduledInterview);
-                    setTotalPages(response.scheduledData.totalPages)
-                } else {
-                    console.log("not ok not ok")
-                }
-            } catch (error: any) {
-                console.log("error occure for the fetch the shceduled interviews", error.message);
+    const fetchCandidateScheduledInterviews = async () => {
+        try {
+            const response: any = await getCandidateScheduledInterviews(currentPage, limit, searchQuery);
+            if (response.success) {
+                setScheduledData(response.scheduledData.scheduledInterview);
+                setTotalPages(response.scheduledData.totalPages)
+            } else {
+                console.log("Not OK");
             }
+        } catch (error: any) {
+            console.log("Error fetching scheduled interviews", error.message);
         }
+    };
+
+
+    useEffect(() => {
         fetchCandidateScheduledInterviews();
     }, [searchQuery, currentPage]);
 
@@ -91,6 +87,8 @@ const CandidateInterviews = () => {
             // Perform cancel API call here
             setIsModal(false);
             setCancelReason("");
+
+            fetchCandidateScheduledInterviews();
 
         } catch (error: any) {
             console.log(error.message);

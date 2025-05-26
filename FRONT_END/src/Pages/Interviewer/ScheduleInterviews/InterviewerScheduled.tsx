@@ -36,35 +36,35 @@ const InterviewerScheduled = () => {
         }
     }, [rawSearchQuery]);
 
-    useEffect(() => {
-
-        const fetchInterviewerScheduledInterviews = async () => {
-            try {
-                const response: any = await getInterviewerScheduledInterviews(currentPage, limit, searchQuery);
-                if (response.success) {
-                    console.log(response.sheduledData.totalPages, 'this is for the scheudled Data')
-                    const formattedData = response.sheduledData.scheduledData.map((scheduled: any) => ({
-                        stack: scheduled.scheduledSlot.stack,
-                        technology: scheduled.scheduledSlot.technology,
-                        date: scheduled.scheduledSlot.date,
-                        scheduled: `${scheduled.scheduledSlot.from} - ${scheduled.scheduledSlot.to}`,
-                        price: scheduled.scheduledSlot.price,
-                        status: scheduled.status,
-                        candidateId: scheduled.candidateId,
-                        interviewerId: scheduled.interviewerId,
-                        scheduledId: scheduled.scheduleId,
-                        cancelReason: scheduled.cancelReason,
-                        _id: scheduled._id
-                    }));
-                    setScheduledData(formattedData);
-                    setTotalPages(response.sheduledData.totalPages)
-                } else {
-                    console.log("not ok not ok");
-                }
-            } catch (error: any) {
-                console.log("error occur the fetch the interviewer shceduled interviews", error.message);
+    const fetchInterviewerScheduledInterviews = async () => {
+        try {
+            const response: any = await getInterviewerScheduledInterviews(currentPage, limit, searchQuery);
+            if (response.success) {
+                console.log(response.sheduledData.totalPages, 'this is for the scheudled Data')
+                const formattedData = response.sheduledData.scheduledData.map((scheduled: any) => ({
+                    stack: scheduled.scheduledSlot.stack,
+                    technology: scheduled.scheduledSlot.technology,
+                    date: scheduled.scheduledSlot.date,
+                    scheduled: `${scheduled.scheduledSlot.from} - ${scheduled.scheduledSlot.to}`,
+                    price: scheduled.scheduledSlot.price,
+                    status: scheduled.status,
+                    candidateId: scheduled.candidateId,
+                    interviewerId: scheduled.interviewerId,
+                    scheduledId: scheduled.scheduleId,
+                    cancelReason: scheduled.cancelReason,
+                    _id: scheduled._id
+                }));
+                setScheduledData(formattedData);
+                setTotalPages(response.sheduledData.totalPages)
+            } else {
+                console.log("not ok not ok");
             }
+        } catch (error: any) {
+            console.log("error occur the fetch the interviewer shceduled interviews", error.message);
         }
+    }
+
+    useEffect(() => {
         fetchInterviewerScheduledInterviews();
     }, [searchQuery, currentPage]);
 
@@ -104,6 +104,8 @@ const InterviewerScheduled = () => {
             // Perform cancel API call here
             setIsModal(false);
             setCancelReason("");
+
+            fetchInterviewerScheduledInterviews();
 
         } catch (error: any) {
             console.log(error.message);

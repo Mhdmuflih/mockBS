@@ -2,9 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { NavigateFunction, useLocation, useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
-// const socket = io("http://localhost:8000", {
-//     transports: ["websocket"],
-// });
+
 const socket = io("https://api.muflih.online", {
     transports: ["websocket"],
 });

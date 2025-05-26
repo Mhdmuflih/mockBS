@@ -58,10 +58,6 @@ const InterviewerPayment = () => {
         setIsModal(false);
     };
 
-    if(!walletData) {
-        return <div>Loading....</div>
-    }
-
     return (
         <SideBar heading="Payment" subHeading="Track your earnings and manage your finances">
             <Toaster position="top-right" reverseOrder={false} />
@@ -70,10 +66,14 @@ const InterviewerPayment = () => {
                     <img src={PaymentBackgroundImage} alt="Payment Background" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 flex items-center justify-between px-6 bg-black bg-opacity-50">
                         <div>
-                            <h2 className="text-lg font-semibold">Total Earnings  <span className={`text-3xl ml-4 font-bold ${walletData.balance > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                {walletData.balance}
-                            </span></h2>
+                            <h2 className="text-lg font-semibold">
+                                Total Earnings
+                                <span className={`text-3xl ml-4 font-bold ${walletData?.balance && walletData.balance > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                    {walletData?.balance ?? 0}
+                                </span>
+                            </h2>
                             <p className="text-sm">Last Updated: 25/12/2024</p>
+
                         </div>
                         <button className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-md" onClick={handleToWithdraw}>Withdraw</button>
                     </div>
@@ -91,19 +91,28 @@ const InterviewerPayment = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-black">
-                            {[...walletData?.walletHistory].reverse().map((data: any, index: number) => (
-                                <tr key={index} className="text-center">
-                                    <td className="p-3">{index + 1}</td>
-                                    <td className="p-3">{new Date(data.date).toISOString().split('T')[0]}</td>
-                                    <td className={`p-3 ${data.description === 'credit' ? 'text-green-500' : 'text-red-500'}`}>
-                                        {data.description}
-                                    </td>
-                                    <td className={`p-3  ${data.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                        {data.amount}
+                            {walletData?.walletHistory && walletData.walletHistory.length > 0 ? (
+                                walletData.walletHistory.map((data: any, index: number) => (
+                                    <tr key={index} className="text-center">
+                                        <td className="p-3">{index + 1}</td>
+                                        <td className="p-3">{new Date(data.date).toISOString().split('T')[0]}</td>
+                                        <td className={`p-3 ${data.description === 'credit' ? 'text-green-500' : 'text-red-500'}`}>
+                                            {data.description}
+                                        </td>
+                                        <td className={`p-3  ${data.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                            {data.amount}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={4} className="text-center py-6 text-gray-400">
+                                        No wallet history available.
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
+
 
                     </table>
                 </div>

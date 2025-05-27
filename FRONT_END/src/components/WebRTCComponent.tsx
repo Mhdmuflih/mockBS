@@ -3,8 +3,11 @@ import { NavigateFunction, useLocation, useNavigate, useParams } from "react-rou
 import { io } from "socket.io-client";
 
 
-const socket = io("https://api.muflih.online", {
-    transports: ["websocket"],
+// const socket = io("https://api.muflih.online", {
+//     transports: ["websocket"],
+// });
+const socket = io("https://api.muflih.online/webrtc", {
+    path: "/webrtc/socket.io",
 });
 
 const WebRTCComponent: React.FC = () => {

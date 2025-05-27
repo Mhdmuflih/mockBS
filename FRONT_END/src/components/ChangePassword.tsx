@@ -11,10 +11,8 @@ const ChangePassword = (props: changePassword) => {
                     style={{ backgroundImage: `url(${backgroundImage})` }}
                     className="bg-black bg-cover bg-center text-white p-6 w-[550px] rounded-xl shadow-[8px_8px_10px_rgba(0,0,0,1)]"
                 >
-                    <div>
-                        <img src="" alt="Icon" className="" />
-                        {/* If no icon is available, you can remove or add one */}
-                        <span>Image Icon</span>
+                    <div className='pt-9'>
+
                     </div>
 
                     <h2 className="text-center text-2xl font-serif text-white mb-6">

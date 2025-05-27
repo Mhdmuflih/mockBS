@@ -262,7 +262,7 @@ const InterviewerProfile = () => {
                                             <p className="text-red-500 text-sm ml-10">{errors.university}</p>
                                         )}
                                     </div>
-                                    <button type="button" onClick={() => handleEditClick("organization")} className="text-white text-lg">
+                                    <button type="button" onClick={() => handleEditClick("university")} className="text-white text-lg">
                                         {editMode.university ? <IoMdRemoveCircleOutline /> : <MdModeEditOutline />}
                                     </button>
                                 </div>
@@ -280,7 +280,7 @@ const InterviewerProfile = () => {
                                             <p className="text-red-500 text-sm ml-10">{errors.introduction}</p>
                                         )}
                                     </div>
-                                    <button type="button" onClick={() => handleEditClick("organization")} className="text-white text-lg">
+                                    <button type="button" onClick={() => handleEditClick("introduction")} className="text-white text-lg">
                                         {editMode.introduction ? <IoMdRemoveCircleOutline /> : <MdModeEditOutline />}
                                     </button>
                                 </div>

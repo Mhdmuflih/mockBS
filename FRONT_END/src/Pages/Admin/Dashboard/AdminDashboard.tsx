@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import SideBar from "../../../components/Admin/SideBar";
 import { fetchInterview, fetchPayment, fetchUsers } from "../../../Services/adminService";
 import { FaChartLine, FaClipboardList, FaUsers, FaWrench } from "react-icons/fa";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Legend, LineChart, Line } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Legend } from 'recharts';
 import { GrCompliance } from "react-icons/gr";
 
 const AdminDashboard = () => {
@@ -37,13 +37,6 @@ const AdminDashboard = () => {
         { name: "Total Revenue", revenue },
         { name: "Profit", revenue: profitInterview },
         { name: "Premium Profit", revenue: profitPremium },
-      ];
-
-    const lineData = [
-        { name: 'Week 1', users: 500 },
-        { name: 'Week 2', users: 700 },
-        { name: 'Week 3', users: 800 },
-        { name: 'Week 4', users: 1000 },
     ];
 
     useEffect(() => {
@@ -160,7 +153,7 @@ const AdminDashboard = () => {
                     </div>
 
                     {/* Graphs Section */}
-                    <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Pie Chart */}
                         <div className="bg-white rounded-lg shadow-sm p-6 border">
                             <h2 className="text-xl font-semibold mb-6 text-gray-700">User Distribution</h2>
@@ -191,74 +184,8 @@ const AdminDashboard = () => {
                             </ResponsiveContainer>
                         </div>
 
-                        {/* Line Chart */}
-                        <div className="bg-white rounded-lg shadow-sm p-6 border">
-                            <h2 className="text-xl font-semibold mb-6 text-gray-700">Active Users Over Time</h2>
-                            <ResponsiveContainer width="100%" height={250}>
-                                <LineChart data={lineData}>
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Line type="monotone" dataKey="users" stroke="#4CAF50" strokeWidth={2} />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </div>
                     </div>
 
-
-                    {/* Recent Activity & System Stats */}
-                    <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Recent Activity */}
-                        <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 border">
-                            <h2 className="text-xl font-semibold mb-6 text-gray-700 flex items-center">
-                                <FaClipboardList className="mr-2 text-violet-400" /> Recent Activity
-                            </h2>
-                            <div className="space-y-4">
-                                {[
-                                    { text: 'New user registration', time: '2 hours ago', status: 'success' },
-                                    { text: 'Sales report generated', time: '4 hours ago', status: 'warning' },
-                                    { text: 'System maintenance', time: '1 day ago', status: 'info' }
-                                ].map((activity, index) => (
-                                    <div key={index}
-                                        className="p-4 rounded-lg hover:bg-gray-50 
-                                transition-colors duration-200 cursor-pointer border border-gray-100"
-                                    >
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-gray-700 font-medium">{activity.text}</span>
-                                            <span className="text-sm text-gray-500">{activity.time}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-
-                        {/* System Stats */}
-                        <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 border">
-                            <h2 className="text-xl font-semibold mb-6 text-gray-700 flex items-center">
-                                <FaChartLine className="mr-2 text-sky-400" /> System Stats
-                            </h2>
-                            <div className="space-y-4">
-                                {[
-                                    { label: 'System Uptime', value: '99.9%', color: 'bg-emerald-400' },
-                                    { label: 'Response Time', value: '0.2s', color: 'bg-sky-400' },
-                                    { label: 'Active Sessions', value: '234', color: 'bg-violet-400' }
-                                ].map((stat, index) => (
-                                    <div key={index} className="p-4 rounded-lg border border-gray-100">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="text-gray-700 font-medium">{stat.label}</span>
-                                            <span className="text-gray-800 font-semibold">{stat.value}</span>
-                                        </div>
-                                        <div className="mt-2 bg-gray-100 rounded-full h-2">
-                                            <div className={`${stat.color} h-2 rounded-full opacity-80`}
-                                                style={{ width: '75%' }}>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
 
                     {/* Latest Updates */}
                     <div className="mt-6 bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 border">

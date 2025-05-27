@@ -62,8 +62,8 @@ const InterviewerDetails = () => {
         try {
             const form = new FormData();
             form.append("email", email);
-            form.append("experience", formData.yearOfExperience);
-            form.append("designation", formData.currentDesignation);
+            form.append("yearOfExperience", formData.yearOfExperience);
+            form.append("currentDesignation", formData.currentDesignation);
             form.append("organization", formData.organization);
             form.append("university", formData.university);
             form.append("introduction", formData.introduction);
@@ -85,6 +85,8 @@ const InterviewerDetails = () => {
             const response: any = await addDetailsInterviewer(form);
             if (response.success) {
                 dispatch(updateDetails(response.interviewerData));
+
+                console.log(response.interviewerData, 'this is interviewer data')
 
                 Swal.fire({
                     title: "Success!",
@@ -144,8 +146,8 @@ const InterviewerDetails = () => {
                                     className="w-[654px] p-2 text-sm rounded-md bg-[#181A22] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
                                 />
                             </div>
-                            {errors.experience && (
-                                <p className="text-red-500 text-sm ml-10">{errors.experience}</p>
+                            {errors.yearOfExperience  && (
+                                <p className="text-red-500 text-sm ml-10">{errors.yearOfExperience }</p>
                             )}
                         </div>
 
@@ -165,8 +167,8 @@ const InterviewerDetails = () => {
                                         onChange={handleTakeInput}
                                         className="w-[300px] p-2 ml-10 text-sm rounded-md bg-[#181A22] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
                                     />
-                                    {errors.designation && (
-                                        <p className="text-red-500 text-sm ml-10">{errors.designation}</p>
+                                    {errors.currentDesignation && (
+                                        <p className="text-red-500 text-sm ml-10">{errors.currentDesignation}</p>
                                     )}
                                 </div>
 

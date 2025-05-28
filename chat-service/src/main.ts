@@ -13,10 +13,9 @@ async function server() {
 
   app.use(morgan("tiny"));
 
-  const configService = app.get(ConfigService);
-
   app.useWebSocketAdapter(new IoAdapter(app));
   
+  const configService = app.get(ConfigService);
 
 
   app.enableCors({

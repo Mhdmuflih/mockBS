@@ -1,9 +1,8 @@
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
 import { ChatService } from "./chat.service";
 import { Server, Socket } from 'socket.io';
-import { HttpException, HttpStatus } from "@nestjs/common";
 
-@WebSocketGateway(6060, { cors: { origin: "*" } }) // Ensure it runs on the correct port
+@WebSocketGateway( { cors: true, namespace:"/chat" }) // Ensure it runs on the correct port
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @WebSocketServer()

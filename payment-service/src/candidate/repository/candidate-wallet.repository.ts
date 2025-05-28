@@ -3,15 +3,16 @@ import { BaseRepository } from "src/repository/baseRepository";
 import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
 import { CandidateWallet } from "../model/candidate-wallet.schema";
-import { ICandidateWallet } from "../interface/ICandidateWallet";
+import { ICandidateWallet } from "../interface/Interface";
+import { ICandidateWalletRepository } from "../interface/ICandidateWallet";
 
 @Injectable()
-export class CandidateWalletRepository extends BaseRepository<CandidateWallet> implements ICandidateWallet {
+export class CandidateWalletRepository extends BaseRepository<CandidateWallet> implements ICandidateWalletRepository {
     constructor(@InjectModel(CandidateWallet.name) private readonly candidateWalletModel: Model<CandidateWallet>) {
         super(candidateWalletModel);
     }
 
-    async createWallet(walletData: any): Promise<any> {
+    async createWallet(walletData: any): Promise<ICandidateWallet> {
         try {
             const newWallet = new this.candidateWalletModel(walletData);
             const saveData = await newWallet.save();
@@ -23,7 +24,7 @@ export class CandidateWalletRepository extends BaseRepository<CandidateWallet> i
     }
 
 
-    async existingWallet(candidateId: any): Promise<any> {
+    async existingWallet(candidateId: any): Promise<ICandidateWallet> {
         try {
             return await this.candidateWalletModel.findOne({ candidateId: candidateId });
         } catch (error: any) {
@@ -33,7 +34,7 @@ export class CandidateWalletRepository extends BaseRepository<CandidateWallet> i
     }
 
 
-    async updateWallet(walletData: any): Promise<any> {
+    async updateWallet(walletData: any): Promise<ICandidateWallet> {
         try {
             console.log(walletData.candidateId, 'this is update wallet time the candidate id');
             const existingWallet = await this.existingWallet(walletData.candidateId);
@@ -51,7 +52,7 @@ export class CandidateWalletRepository extends BaseRepository<CandidateWallet> i
     }
 
 
-    async getWalletData(candidateId: any): Promise<any> {
+    async getWalletData(candidateId: any): Promise<ICandidateWallet> {
         try {
             const walletData = await this.candidateWalletModel.findOne({ candidateId: new mongoose.Types.ObjectId(candidateId) });
             return walletData
@@ -62,7 +63,7 @@ export class CandidateWalletRepository extends BaseRepository<CandidateWallet> i
     }
 
 
-    async findCandidate(candidateId: string): Promise<any> {
+    async findCandidate(candidateId: string): Promise<ICandidateWallet> {
         try {
             const data = await this.candidateWalletModel.findOne({ candidateId: candidateId });
             return data;
@@ -72,7 +73,7 @@ export class CandidateWalletRepository extends BaseRepository<CandidateWallet> i
         }
     }
 
-    async updateBalance(candidateId: any, newBalance: number, historyEntry: any): Promise<any> {
+    async updateBalance(candidateId: any, newBalance: number, historyEntry: any): Promise<ICandidateWallet> {
         try {
             const wallet = await this.candidateWalletModel.findOne({ candidateId });
             if (!wallet) {

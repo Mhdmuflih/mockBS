@@ -47,8 +47,19 @@ interface ScheduleData {
 
 
 
-export interface IWallet extends Document {
+export interface IInterviewerWallet extends Document {
     interviewerId: Types.ObjectId;
+    balance: number;
+    walletHistory: {
+        date: Date;
+        amount: number;
+        description: string;
+        currentBalance: number;
+    }[];
+}
+
+export interface ICandidateWallet extends Document {
+    candidateId: Types.ObjectId;
     balance: number;
     walletHistory: {
         date: Date;

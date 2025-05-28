@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
-import { IWallet } from "./Interface";
+import { IInterviewerWallet } from "./Interface";
 
 export interface ICandidateInterviewerWalletRepository {
-    createWallet(walletData: IWallet): Promise<IWallet>;
-    updateWallet(walletData: any): Promise<IWallet>;
-    findExistingWallet(interviewerId: string | Types.ObjectId): Promise<IWallet>;
+    createWallet(walletData: IInterviewerWallet): Promise<IInterviewerWallet>;
+    updateWallet(walletData: any): Promise<IInterviewerWallet>;
+    findExistingWallet(interviewerId: string | Types.ObjectId): Promise<IInterviewerWallet>;
 }

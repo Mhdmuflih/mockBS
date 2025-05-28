@@ -1,7 +1,6 @@
-import { IPayment, IWallet } from "./interface";
+import { WalletDTO } from "../dto/interviewer.wallet.dto";
 
 export interface IInterviewerService {
-    // getPaymentData(interviewerId: string): Promise<IPayment[]>
-    walletData(interviewerId: string): Promise<IWallet>
-    walletWithdraw(interviewerId: string, amount: number): Promise<IWallet>
+    walletData(interviewerId: string): Promise<WalletDTO>
+    walletWithdraw(interviewerId: string, amount: number): Promise<WalletDTO>
 }

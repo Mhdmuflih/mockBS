@@ -3,6 +3,7 @@ import { CandidateService } from '../service/candidate.service';
 import { ICandidateController } from '../interface/ICandidateController';
 import Stripe from 'stripe';
 import { PaymentData } from '../interface/Interface';
+import { CandidateWalletDTO } from '../dto/candidate.wallet.dto';
 
 
 @Controller('candidate')
@@ -67,7 +68,7 @@ export class CandidateController implements ICandidateController {
   }
 
   @Get('/total-amount')
-  async getCandidateTotalAmount(@Headers('x-user-id') candidateId: string): Promise<{ success: boolean, message: string, totalAmount: number }> {
+  async getCandidateTotalAmount(@Headers('x-user-id') candidateId: string): Promise<{ success: boolean, message: string, totalAmount: {total: number, walletData: CandidateWalletDTO} }> {
     try {
       const totalAmount = await this.candidateService.getCandidateTotalAmount(candidateId);
       return { success: true, message: "candidate total payed Data", totalAmount: totalAmount }

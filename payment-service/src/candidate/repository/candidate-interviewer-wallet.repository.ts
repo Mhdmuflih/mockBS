@@ -4,7 +4,7 @@ import { BaseRepository } from "src/repository/baseRepository";
 import { ICandidateInterviewerWalletRepository } from "../interface/ICandidateInterviewerWalletRepository";
 import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model, Types } from "mongoose";
-import { IWallet } from "../interface/Interface";
+import { IInterviewerWallet } from "../interface/Interface";
 
 @Injectable()
 export class CandidateInterviewerWalletRepository extends BaseRepository<Wallet> implements ICandidateInterviewerWalletRepository {
@@ -12,7 +12,7 @@ export class CandidateInterviewerWalletRepository extends BaseRepository<Wallet>
         super(walletModel);
     }
 
-    async createWallet(walletData: IWallet): Promise<IWallet> {
+    async createWallet(walletData: IInterviewerWallet): Promise<IInterviewerWallet> {
         try {
             console.log(walletData, ' this is create wallet data')
             const newWallet = new this.walletModel(walletData);
@@ -24,7 +24,7 @@ export class CandidateInterviewerWalletRepository extends BaseRepository<Wallet>
         }
     }
 
-    async updateWallet(walletData: any): Promise<IWallet> {
+    async updateWallet(walletData: any): Promise<IInterviewerWallet> {
         try {
             console.log(walletData.interviewerId, 'ith ippo enth thenga anavoo')
             const existingWallet = await this.findExistingWallet(walletData.interviewerId);
@@ -42,7 +42,7 @@ export class CandidateInterviewerWalletRepository extends BaseRepository<Wallet>
     }
 
 
-    async findExistingWallet(interviewerId: string | Types.ObjectId): Promise<IWallet> {
+    async findExistingWallet(interviewerId: string | Types.ObjectId): Promise<IInterviewerWallet> {
         try {
             if (!mongoose.Types.ObjectId.isValid(interviewerId)) {
                 throw new Error('Invalid ObjectId format');

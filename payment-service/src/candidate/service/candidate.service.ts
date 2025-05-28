@@ -2,13 +2,13 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ICandidateService } from '../interface/ICandidateService';
 import { CandidateRepository } from '../repository/candidate.repository';
 import Stripe from 'stripe';
-import { ClientKafka, ClientProxy } from '@nestjs/microservices';
 import { sendBookingData } from 'src/gRPC/booking.client';
 import { PaymentData } from '../interface/Interface';
 import { CandidateInterviewerWalletRepository } from '../repository/candidate-interviewer-wallet.repository';
 import { CandidatePremiumRepository } from '../repository/candidate-premium.repository';
 import { sendPremiumData } from 'src/gRPC/updateCandidatePremium.client';
 import { CandidateWalletRepository } from '../repository/candidate-wallet.repository';
+import { CandidateWalletDTO } from '../dto/candidate.wallet.dto';
 
 @Injectable()
 export class CandidateService implements ICandidateService {
@@ -148,10 +148,8 @@ export class CandidateService implements ICandidateService {
   }
 
 
-  async walletPaymentForBooking(candidateId: string, data: any): Promise<any> {
+  async walletPaymentForBooking(candidateId: string, data: any): Promise<void> {
     try {
-
-
       const existingPayment = await this.candidateRepository.findPayment(data);
       if (existingPayment !== null) {
         const deleteData: any = await this.candidateRepository.autoDeleteExpiredPayments(existingPayment);
@@ -236,7 +234,7 @@ export class CandidateService implements ICandidateService {
 
 
 
-  async takeThePremium(candidateId: string, premiumData: { amount: number, duration: string }): Promise<any> {
+  async takeThePremium(candidateId: string, premiumData: { amount: number, duration: string }): Promise<Stripe.Checkout.Session> {
     try {
       console.log(candidateId, premiumData, 'this is candidate service amount of premium');
 
@@ -298,11 +296,15 @@ export class CandidateService implements ICandidateService {
     }
   }
 
-  async getCandidateTotalAmount(candidateId: string): Promise<any> {
+  async getCandidateTotalAmount(candidateId: string): Promise<{ total: number, walletData: CandidateWalletDTO }> {
     try {
       const total = await this.candidateRepository.getTotalAmount(candidateId);
       const walletData = await this.candidateWalletRepository.getWalletData(candidateId);
-      return { total: total, walletData: walletData };
+      let walletDTO: CandidateWalletDTO | null = null;
+      if (walletData) {
+        walletDTO = CandidateWalletDTO.from(walletData);
+      }
+      return { total: total, walletData: walletDTO };
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

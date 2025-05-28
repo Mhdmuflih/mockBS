@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, Query } from '@nestjs/common';
+import { Controller, Get, HttpStatus, HttpException, Query } from '@nestjs/common';
 import { AdminService } from '../service/admin.service';
 import { IAdminController } from '../interface/IAdminController';
-import { IPayment } from 'src/candidate/interface/Interface';
 
 @Controller('admin')
 export class AdminController implements IAdminController {

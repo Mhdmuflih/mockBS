@@ -12,16 +12,6 @@ export class AdminRepository extends BaseRepository<Payment> implements IAdminRe
         super(paymentModel)
     }
 
-    // async getInterviewerPaymentHistory(page: number, limit: number, search: string): Promise<any> {
-    //     try {
-    //         return this.findWithPagination({ status: "completed" }, page, limit, search);
-    //     } catch (error: any) {
-    //         console.log(error.message);
-    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
-
-
     async findTotalAmount(): Promise<number> {
         try {
             const result: TotalAmountResult[] = await this.paymentModel.aggregate([

@@ -12,7 +12,7 @@ export class InterviewerWalletRepository extends BaseRepository<Wallet> implemen
         super(walletModel);
     }
 
-    async getWalletHistoryData(interviewerId: string): Promise<IWallet> {
+    async getWalletHistoryData(interviewerId: string): Promise<IWallet | null> {
         try {
             const wallet =  await this.walletModel.findOne({ interviewerId: interviewerId }).exec();
             console.log(wallet, 'this is wallet in repo')

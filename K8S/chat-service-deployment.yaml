@@ -21,7 +21,6 @@ spec:
         imagePullPolicy: Always
         ports:
           - containerPort: 6000  # HTTP server port
-          - containerPort: 6060  # WebSocket server port
         envFrom:
           - configMapRef:
               name: chat-service-env
@@ -41,8 +40,3 @@ spec:
       protocol: TCP
       port: 6000       # Expose HTTP server
       targetPort: 6000
-
-    - name: ws
-      protocol: TCP
-      port: 6060       # Expose WebSocket server
-      targetPort: 6060

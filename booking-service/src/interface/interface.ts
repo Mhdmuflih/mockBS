@@ -1,14 +1,16 @@
-import { Types } from "mongoose";
+import { Document, Types } from "mongoose";
 
-export interface IInterviewerSlot {
+export interface IInterviewerSlot extends Document {
     interviewerId: Types.ObjectId;  // Ensure it matches your schema
     stack: {
         stackName: string;
         technologies: string;
     };
     slots: {
+        _id?: string
         date: Date;
         schedules: {
+            _id?:string;
             fromTime: string;
             toTime: string;
             title: string;
@@ -20,11 +22,12 @@ export interface IInterviewerSlot {
 }
 
 
-export interface ISchedule {
+export interface ISchedule extends Document{
     candidateId: Types.ObjectId;
     interviewerId: Types.ObjectId;
     scheduleId: Types.ObjectId;
     scheduledSlot: {
+        _id?:string;
         stack: string;
         technology: string;
         date: string;
@@ -34,4 +37,5 @@ export interface ISchedule {
         price: number;
     };
     status: string;
+    cancelReason?: string;
 }

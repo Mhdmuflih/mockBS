@@ -4,8 +4,10 @@ import { sendInterviewer } from 'src/gRPC/interviewer.client';
 import { ScheduleRepository } from '../repository/schedule.repositor';
 import { ICandidateService } from '../interface/ICandidateService';
 import { ClientKafka } from '@nestjs/microservices';
-import { ISchedule } from 'src/interface/interface';
+import { IInterviewerSlot, ISchedule } from 'src/interface/interface';
 import { IInterviewer } from '../interface/interface';
+import { ScheduleDTO } from '../dto/schedule.dto';
+import { InterviewerSlotDTO } from '../dto/interivewerSlot.response.dto';
 
 @Injectable()
 export class CandidateService implements ICandidateService {
@@ -19,8 +21,8 @@ export class CandidateService implements ICandidateService {
   // =============================
   async getMatchedSlot(tech: string): Promise<IInterviewer[]> {
     try {
-      const getMatchedSlot = await this.slotRepository.getMatchSlot(tech);
-      const interviewerIds = getMatchedSlot.map(slot => slot.interviewerId.toString());
+      const getMatchedSlot: IInterviewerSlot[] = await this.slotRepository.getMatchSlot(tech);
+      const interviewerIds: string[] = getMatchedSlot.map(slot => slot.interviewerId.toString());
 
       const interviewerDataResponse = await sendInterviewer(interviewerIds);
 
@@ -32,13 +34,14 @@ export class CandidateService implements ICandidateService {
   }
   // ====================================================
 
-  async getinterviewerSlotDetails(interviewerId: string, tech: string): Promise<any> {
+  async getinterviewerSlotDetails(interviewerId: string, tech: string): Promise<[InterviewerSlotDTO[], IInterviewer]> {
     try {
       await this.slotRepository.updateSlotInterviewerExpire(interviewerId, tech)
-      const slotData = await this.slotRepository.getSlotInterviewerDetails(interviewerId, tech);
+      const slotData: IInterviewerSlot[] = await this.slotRepository.getSlotInterviewerDetails(interviewerId, tech);
       const interviewerDataResponse = await sendInterviewer([interviewerId]);
+      console.log(interviewerDataResponse, 'this is that')
 
-      return [slotData, interviewerDataResponse];
+      return [InterviewerSlotDTO.fromList(slotData), interviewerDataResponse];
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -47,7 +50,6 @@ export class CandidateService implements ICandidateService {
 
   async scheduleInterview(scheduleData: any): Promise<void> {
     try {
-      // const existingScheudledData = await this.scheduleRepository.findOne(scheduleData.scheduleId);
       const existingScheudledData = await this.scheduleRepository.findScheduleInterview(scheduleData.scheduledId);
       if (existingScheudledData) {
         throw new Error("already booked interview ");
@@ -61,17 +63,17 @@ export class CandidateService implements ICandidateService {
     }
   }
 
-  async scheduledInterviews(candidateId: string, page: number, limit: number, search: string): Promise<{ scheduledInterview: ISchedule[], totalRecords: number, totalPages: number, currentPage: number }> {
+  async scheduledInterviews(candidateId: string, page: number, limit: number, search: string): Promise<{ scheduledInterview: ScheduleDTO[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      const scheduledInterview = await this.scheduleRepository.findWithPagination({candidateId}, page, limit, search);
-      // const scheduledInterview = await this.scheduleRepository.candidateSceduledInterviews(candidateId, page, limit, search);
+      const scheduledInterview = await this.scheduleRepository.findWithPagination({ candidateId }, page, limit, search);
+      const scheduledData: ScheduleDTO[] = ScheduleDTO.fromList(scheduledInterview.data);
       return {
-        scheduledInterview: scheduledInterview.data,
+        scheduledInterview: scheduledData,
         totalRecords: scheduledInterview.total,
         totalPages: Math.ceil(scheduledInterview.total / limit),
         currentPage: page
       }
-    } catch(error: any) {
+    } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -79,10 +81,10 @@ export class CandidateService implements ICandidateService {
 
   async getInterviewCounts(candidateId: string): Promise<{ scheduledInterviewCounts: number, completedInterviewCounts: number, cancelledInterviewCounts: number }> {
     try {
-      const scheduledInterviewCounts = await this.scheduleRepository.getScheduledInterviewCount(candidateId);
-      const completedInterviewCounts = await this.scheduleRepository.getCompletedInterviewCount(candidateId);
-      const cancelledInterviewCounts = await this.scheduleRepository.getCancelledInterviewCount(candidateId);
-      return { scheduledInterviewCounts: scheduledInterviewCounts, completedInterviewCounts: completedInterviewCounts, cancelledInterviewCounts:cancelledInterviewCounts }
+      const scheduledInterviewCounts: number = await this.scheduleRepository.getScheduledInterviewCount(candidateId);
+      const completedInterviewCounts: number = await this.scheduleRepository.getCompletedInterviewCount(candidateId);
+      const cancelledInterviewCounts: number = await this.scheduleRepository.getCancelledInterviewCount(candidateId);
+      return { scheduledInterviewCounts: scheduledInterviewCounts, completedInterviewCounts: completedInterviewCounts, cancelledInterviewCounts: cancelledInterviewCounts }
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -90,21 +92,15 @@ export class CandidateService implements ICandidateService {
   }
 
 
-  async cancelInterview(id: string, reason: string): Promise<any> {
+  async cancelInterview(id: string, reason: string): Promise<ScheduleDTO> {
     try {
-      console.log(id, reason, 'data in service ');
-      const cancelData = await this.scheduleRepository.findOneTheSchedule(id);
-      console.log(cancelData, 'this is the data of the cancel')
-
+      const cancelData: ISchedule = await this.scheduleRepository.findOneTheSchedule(id);
       if (!cancelData) {
         throw new HttpException('Scheduled interview not found', HttpStatus.NOT_FOUND);
       }
-
-      const updateTheScheduledStatus = await this.scheduleRepository.updateStatus(id, reason);
-      console.log(updateTheScheduledStatus, 'this is update the status');
-      const updateTheSlotStatus = await this.slotRepository.updateScheduleDataStatusCancelled(cancelData.scheduleId._id.toString())
-      console.log(updateTheSlotStatus,'update the slot data')
-      return cancelData;
+      await this.scheduleRepository.updateStatus(id, reason);
+      await this.slotRepository.updateScheduleDataStatusCancelled(cancelData.scheduleId._id.toString())
+      return ScheduleDTO.from(cancelData);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

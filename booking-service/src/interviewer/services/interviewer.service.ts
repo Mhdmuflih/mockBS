@@ -3,6 +3,8 @@ import { IInterviewerSlotService } from '../interface/IInterviewerSlotService';
 import { interviewerSlotRepository } from '../repository/interviewer.slot.repository';
 import { ScheduleRepository } from '../repository/scheduled.repository';
 import { IInterviewerSlot, ISchedule } from '../../interface/interface';
+import { InterviewerSlotDTO } from '../dto/interviewerSlot.dto';
+import { ScheduleDTO } from '../dto/schedule.dto';
 
 
 @Injectable()
@@ -15,10 +17,10 @@ export class InterviewerService implements IInterviewerSlotService {
   async addSlot(interviewerId: string, formData: any): Promise<IInterviewerSlot> {
     try {
 
-      if(new Date(formData.date) < new Date()) {
+      if (new Date(formData.date) < new Date()) {
         throw new Error("Selected date in Incorrect. please choose correct date");
       }
-      
+
       const slotData = {
         stack: formData.stack,
         slots: [{
@@ -57,12 +59,12 @@ export class InterviewerService implements IInterviewerSlotService {
 
           // aa data yill ninn time 2 um check cheyth add akkunna time um nilavill ulla time um same anagill error throw cheyyum 
           // allengill ividan aa date oru varible kk vech pinne is update true akki vidum ith true anangil avide update akkum athille schedule array kk push akkum data nne
-          if(dateSlot) {
+          if (dateSlot) {
             dateSlot.schedules.forEach((scheduled: any) => {
               const checkTime = scheduled.fromTime == formData.fromTime || scheduled.toTime == formData.toTime;
-              if(checkTime) {
+              if (checkTime) {
                 throw new Error("Your already added this time. Change this time");
-              }else {
+              } else {
                 date = dateSlot.date
                 isUpdate = true;
               }
@@ -71,9 +73,9 @@ export class InterviewerService implements IInterviewerSlotService {
         })
       }
 
-      if(isUpdate) {
+      if (isUpdate) {
         return await this.interviewerSlotRepository.updateScheduleData(interviewerId, slotData, date);
-      }else {
+      } else {
         const addSlot = await this.interviewerSlotRepository.create(interviewerId, slotData);
         return addSlot;
       }
@@ -85,16 +87,15 @@ export class InterviewerService implements IInterviewerSlotService {
   }
 
 
-  async getSlot(interviewerId: string, page: number, limit: number, search?: string): Promise<{getSlotData: IInterviewerSlot[], totalRecords: number, totalPages:number, currentPage: number}> {
+  async getSlot(interviewerId: string, page: number, limit: number, search?: string): Promise<{ getSlotData: InterviewerSlotDTO[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      const getSlotData = await this.interviewerSlotRepository.findWithPagination({interviewerId}, page, limit, search);
-      // const getSlotData = await this.interviewerSlotRepository.getAllSlots(interviewerId, page, limit, search);
-      // console.log(getSlotData[0].slots, 'this is get slot data')
+      const getSlotData = await this.interviewerSlotRepository.findWithPagination({ interviewerId }, page, limit, search);
+      const interviewerSlot: InterviewerSlotDTO[] = InterviewerSlotDTO.fromList(getSlotData.data);
       return {
-        getSlotData: getSlotData.data,
+        getSlotData: interviewerSlot,
         totalRecords: getSlotData.total,
         totalPages: Math.ceil(getSlotData.total / limit),
-        currentPage:page        
+        currentPage: page
       };
     } catch (error: any) {
       console.log(error.message);
@@ -102,15 +103,15 @@ export class InterviewerService implements IInterviewerSlotService {
     }
   }
 
-  async getSheduledInterviews(interviewerId: string, page: number, limit: number, search: string): Promise<{scheduledData:ISchedule[], totalRecords: number, totalPages: number, currentPage: number}> {
+  async getSheduledInterviews(interviewerId: string, page: number, limit: number, search: string): Promise<{ scheduledData: ScheduleDTO[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      const scheduledData = await this.interviewerScheduledRepository.findWithPagination({interviewerId}, page, limit, search);
-      // const scheduledData =  await this.interviewerScheduledRepository.scheduledInterviews(interviewerId, page, limit, search);
+      const scheduledData = await this.interviewerScheduledRepository.findWithPagination({ interviewerId }, page, limit, search);
+      const scheduledDataDTO: ScheduleDTO[] = ScheduleDTO.fromList(scheduledData.data);
       return {
-        scheduledData: scheduledData.data,
+        scheduledData: scheduledDataDTO,
         totalRecords: scheduledData.total,
         totalPages: Math.ceil(scheduledData.total / limit),
-        currentPage:page        
+        currentPage: page
       };
     } catch (error: any) {
       console.log(error.message);
@@ -119,21 +120,16 @@ export class InterviewerService implements IInterviewerSlotService {
   }
 
 
-  async cancelInterview(id: string, reason: string): Promise<any> {
+  async cancelInterview(id: string, reason: string): Promise<ScheduleDTO> {
     try {
-      console.log(id, reason, 'data in service ');
-      const cancelData = await this.interviewerScheduledRepository.findOneTheSchedule(id);
-      console.log(cancelData, 'this is the data of the cancel')
-
+      const cancelData: ISchedule = await this.interviewerScheduledRepository.findOneTheSchedule(id);
       if (!cancelData) {
         throw new HttpException('Scheduled interview not found', HttpStatus.NOT_FOUND);
       }
+      await this.interviewerScheduledRepository.updateStatus(id, reason);
+      await this.interviewerSlotRepository.updateScheduleDataStatusCancelled(cancelData.scheduleId._id.toString())
 
-      const updateTheScheduledStatus = await this.interviewerScheduledRepository.updateStatus(id, reason);
-      console.log(updateTheScheduledStatus, 'this is update the status');
-      const updateTheSlotStatus = await this.interviewerSlotRepository.updateScheduleDataStatusCancelled(cancelData.scheduleId._id.toString())
-      console.log(updateTheSlotStatus, 'update the slot data');
-      return cancelData;
+      return ScheduleDTO.from(cancelData);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

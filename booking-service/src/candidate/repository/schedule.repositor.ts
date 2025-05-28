@@ -31,27 +31,7 @@ export class ScheduleRepository extends BaseRepository<Scheduled> implements ICa
                     price: scheduleData.scheduledData.price,
                 },
                 status: "pending"
-            } as Partial<ISchedule>);
-
-            // console.log(candidateId, slotId, 'this is schedule repository data');
-            // const schedule = new this.scheduledModel({
-            //     candidateId,
-            //     interviewerId: scheduleData.interviewerId,
-            //     scheduleId: scheduleData.scheduledId,  // Ensure this matches schema
-            //     scheduledSlot: {
-            //         stack: scheduleData.scheduledData.stack,
-            //         technology: scheduleData.scheduledData.technology,
-            //         date: scheduleData.scheduledData.date,
-            //         from: scheduleData.scheduledData.from,
-            //         to: scheduleData.scheduledData.to,
-            //         title: scheduleData.scheduledData.title,
-            //         price: scheduleData.scheduledData.price,
-            //     },
-            //     status: "pending"
-            // });
-
-            // await schedule.save();
-            // return schedule;
+            } as Partial<any>);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -117,17 +97,4 @@ export class ScheduleRepository extends BaseRepository<Scheduled> implements ICa
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-    // async candidateSceduledInterviews(candidateId: string, page: number, limit: number, search: string): Promise<{ total: number, data: ISchedule[] }> {
-    //     try {
-    //         const candidateScheduledData = await this.findWithPagination({ candidateId }, page, limit, search)
-    //         // const candidateScheduledData = await this.findAll({candidateId});
-    //         // const candidateScheduledData = await this.scheduledModel.find({ candidateId: candidateId });
-    //         return candidateScheduledData;
-    //     } catch (error: any) {
-    //         console.log(error.message);
-    //         throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
 }

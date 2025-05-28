@@ -20,7 +20,7 @@ const rooms: Record<string, string[]> = {}; // { roomId: [socketId1, socketId2] 
 const socketToRoom: Record<string, string> = {}
 
 
-@WebSocketGateway({ cors: { origin: '*' } })
+@WebSocketGateway({ cors: true, namespace: '/webrtc' })
 export class WebrtcGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private readonly scheduleRepository: RTCScheduleRepository) { }

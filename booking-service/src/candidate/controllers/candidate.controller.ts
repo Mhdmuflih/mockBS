@@ -5,6 +5,8 @@ import { ClientKafka, EventPattern, GrpcMethod, MessagePattern, Payload, RpcExce
 import { status } from '@grpc/grpc-js';
 import { IInterviewerSlot, ISchedule } from 'src/interface/interface';
 import { IInterviewer } from '../interface/interface';
+import { ScheduleDTO } from '../dto/schedule.dto';
+import { InterviewerSlotDTO } from '../dto/interivewerSlot.response.dto';
 
 
 @Controller('candidate')
@@ -25,7 +27,7 @@ export class CandidateController implements ICandidateController {
   }
 
   @Get('/interviewer-slot-details/:interviewerId')
-  async getinterviewerSlotDetails(@Param('interviewerId') interviewerId: string, @Query('selectedTech') tech: string): Promise<{success: boolean; message: string; slotData: IInterviewerSlot, interviewerData: IInterviewer[]}> {
+  async getinterviewerSlotDetails(@Param('interviewerId') interviewerId: string, @Query('selectedTech') tech: string): Promise<{success: boolean; message: string; slotData: InterviewerSlotDTO, interviewerData: IInterviewer[]}> {
     try {
       const interviewerSlotData: any = await this.candidateService.getinterviewerSlotDetails(interviewerId, tech);
       console.log(interviewerSlotData, 'this is interviewerSlot data')
@@ -43,7 +45,7 @@ export class CandidateController implements ICandidateController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search?: string
-): Promise<{success: boolean; message: string; scheduledData: { scheduledInterview: ISchedule[], totalRecords: number, totalPages: number, currentPage: number }}> {
+): Promise<{success: boolean; message: string; scheduledData: { scheduledInterview: ScheduleDTO[], totalRecords: number, totalPages: number, currentPage: number }}> {
     try {
       const data = await this.candidateService.scheduledInterviews(candidateId, page, limit, search);
       return { success: true, message: "candidate Scheduled interviews", scheduledData: data };
@@ -66,11 +68,11 @@ async getInterviewCounts(@Headers('x-user-id') candidateId: string): Promise<{su
 
 
 @Patch('/cancel-interview')
-async cancelInterview(@Body() body: { data: { selectedId: string; cancelReason: string } }): Promise<{success:boolean; message: string, cancelData: any}>{
+async cancelInterview(@Body() body: { data: { selectedId: string; cancelReason: string } }): Promise<{success:boolean; message: string, cancelData: ScheduleDTO}>{
   try {
     const  {selectedId, cancelReason} = body.data
     console.log(selectedId, cancelReason, ' this isData')
-    const cancelData = await this.candidateService.cancelInterview(selectedId, cancelReason)
+    const cancelData: ScheduleDTO = await this.candidateService.cancelInterview(selectedId, cancelReason)
     return {success: true, message: "interview cacelled successfully", cancelData: cancelData};
   } catch (error: any) {
     console.log(error.message);

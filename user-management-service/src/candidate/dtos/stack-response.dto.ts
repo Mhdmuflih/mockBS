@@ -1,17 +1,21 @@
-import { IsArray, IsOptional, IsString } from "class-validator";
+import { IStack } from "../interface/interface";
 
-export class StackResponseDto {
-    @IsString()
-    stackName: string;
+export class StackDTO {
+    public _id: string;
+    public stackName: string;
+    public technologies?: string[];
 
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    technologies?: string[];
-}
+    constructor(stack: IStack) {
+        this._id = stack._id.toString();
+        this.stackName = stack.stackName;
+        this.technologies = stack.technologies;
+    }
 
-export class GetStackResponseDto {
-    success: boolean;
-    message: string;
-    stackData: StackResponseDto[] | null
+    static from(stack: IStack): StackDTO {
+        return new StackDTO(stack);
+    }
+
+    static fromList(stacks: IStack[]): StackDTO[] {
+        return stacks.map(StackDTO.from);
+    }
 }

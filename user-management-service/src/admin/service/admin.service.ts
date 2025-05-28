@@ -1,10 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { IAdminService } from '../interface/IAdminService';
 import { AdminRepository } from '../repository/admin.repository';
 import { IInterviewer } from 'src/interviewer/interface/interface';
 import { ICandidate, IStack } from 'src/candidate/interface/interface';
 import { AdminCandidateRepository } from '../repository/admin-candidate.repository';
 import { AdminInterviewerRepository } from '../repository/admin-interviewer.repository';
+import { InterviewerDTO } from 'src/interviewer/dto/interviewer-data.dto';
+import { CandidateDTO } from 'src/candidate/dtos/candidate-data.dto';
+import { StackDTO } from 'src/interviewer/dto/stack-response.dto';
 
 @Injectable()
 export class AdminService implements IAdminService {
@@ -14,12 +17,12 @@ export class AdminService implements IAdminService {
     private readonly adminInterviewerRepository: AdminInterviewerRepository
   ) { }
 
-  async findAllApproval(page: number, limit: number, search?: string): Promise<{ approvalData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number }> {
+  async findAllApproval(page: number, limit: number, search?: string): Promise<{ approvalData: InterviewerDTO[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      // const approvalData = await this.adminInterviewerRepository.findAllApproval(page, limit, search);
       const approvalData = await this.adminInterviewerRepository.findWithPagination({ isApproved: false, isDetails: true }, page, limit, search)
+      const interivewes: InterviewerDTO[] = InterviewerDTO.fromList(approvalData.data);
       return {
-        approvalData: approvalData.data,
+        approvalData: interivewes,
         totalRecords: approvalData.total,
         totalPages: Math.ceil(approvalData.total / limit),
         currentPage: page,
@@ -30,32 +33,38 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async findOne(id: string): Promise<IInterviewer> {
+  async findOne(id: string): Promise<InterviewerDTO> {
     try {
-      // const getApprovalDetails = await this.adminInterviewerRepository.findOne(id);
-      const getApprovalDetails = await this.adminInterviewerRepository.findOneById(id);
-      return getApprovalDetails
+      const getApprovalDetails: IInterviewer = await this.adminInterviewerRepository.findOneById(id);
+      if (!getApprovalDetails) {
+        throw new NotFoundException(`Interviewer with id ${id} not found`);
+      }
+      return InterviewerDTO.from(getApprovalDetails);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async approveDetails(id: string): Promise<IInterviewer> {
+  async approveDetails(id: string): Promise<InterviewerDTO> {
     try {
-      return await this.adminInterviewerRepository.approveDetails(id);
+      const data = await this.adminInterviewerRepository.approveDetails(id);
+      if (!data) {
+        throw new NotFoundException(`Interviewer with id ${id} not found`);
+      }
+      return InterviewerDTO.from(data);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async getAllCandidate(page: number, limit: number, search: string): Promise<{ candidatesData: ICandidate[]; totalRecords: number, totalPages: number, currentPage: number }> {
+  async getAllCandidate(page: number, limit: number, search: string): Promise<{ candidatesData: CandidateDTO[]; totalRecords: number, totalPages: number, currentPage: number }> {
     try {
       const candidatesData = await this.adminCandidateRepository.findWithPagination({}, page, limit, search);
-      // const candidatesData = await this.adminCandidateRepository.getAllCandidate(page, limit, search);
+      const candidates: CandidateDTO[] = CandidateDTO.formList(candidatesData.data)
       return {
-        candidatesData: candidatesData.data,
+        candidatesData: candidates,
         totalRecords: candidatesData.total,
         totalPages: Math.ceil(candidatesData.total / limit),
         currentPage: page,
@@ -66,55 +75,48 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async getcandidateDetails(id: string): Promise<ICandidate> {
+  async getcandidateDetails(id: string): Promise<CandidateDTO> {
     try {
-      // const candidateDetails = await this.adminRepository.getcandidateDetails(id);
-      // const candidateDetails = await this.adminCandidateRepository.getcandidateDetails(id);
-      const candidateDetails = await this.adminCandidateRepository.findOneById(id);
-      return candidateDetails;
+      const candidateDetails: ICandidate = await this.adminCandidateRepository.findOneById(id);
+      return CandidateDTO.from(candidateDetails);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async candidateAction(id: string): Promise<ICandidate> {
+  async candidateAction(id: string): Promise<CandidateDTO> {
     try {
-
-      // const updatedCandidate = await this.adminRepository.candidateAction(id);
-      const updatedCandidate = await this.adminCandidateRepository.candidateAction(id);
-
-      return updatedCandidate;
-
+      const updatedCandidate: ICandidate = await this.adminCandidateRepository.candidateAction(id);
+      return CandidateDTO.from(updatedCandidate);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async getAllInterviewers(page: number, limit: number, search?: string): Promise<{ interviewersData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number }> {
+  async getAllInterviewers(page: number, limit: number, search?: string): Promise<{ interviewersData: InterviewerDTO[], totalRecords: number, totalPages: number, currentPage: number }> {
     try {
-      // const interviewersData = await this.adminInterviewerRepository.getAllInterviewers(page, limit, search);
       const interviewersData = await this.adminInterviewerRepository.findWithPagination({ isApproved: true }, page, limit, search);
+      const interviewers: InterviewerDTO[] = InterviewerDTO.fromList(interviewersData.data);
       return {
-        interviewersData: interviewersData.data,
+        interviewersData: interviewers,
         totalRecords: interviewersData.total,
         totalPages: Math.ceil(interviewersData.total / limit),
         currentPage: page,
       }
-      // return interviewersData;
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async interviewerAction(id: string): Promise<IInterviewer> {
+  async interviewerAction(id: string): Promise<InterviewerDTO> {
     try {
 
       const updatedInterviewer = await this.adminInterviewerRepository.interviewerAction(id);
 
-      return updatedInterviewer;
+      return InterviewerDTO.from(updatedInterviewer);
 
     } catch (error: any) {
       console.log(error.message);
@@ -122,27 +124,20 @@ export class AdminService implements IAdminService {
     }
   }
 
-  async addStack(formData: any): Promise<IStack> {
+  async addStack(formData: any): Promise<StackDTO> {
     try {
-
-      // const existingStack = await this.stackModel.find({ stackName: formData.stackName });
-      // if (existingStack) {
-      //   throw new BadRequestException('This stack Name is already existing.');
-      // }
-
       const saveStack = await this.adminRepository.addStack(formData);
-      // const saveStack = await stack.save();
-      return saveStack;
+      return StackDTO.from(saveStack);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async getAllStack(): Promise<IStack[]> {
+  async getAllStack(): Promise<StackDTO[]> {
     try {
-      const stack = await this.adminRepository.getAllStack();
-      return stack;
+      const stack: IStack[] = await this.adminRepository.getAllStack();
+      return StackDTO.fromList(stack);
     } catch (error: any) {
       console.log(error.message);
       throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

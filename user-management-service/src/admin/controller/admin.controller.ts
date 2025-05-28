@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Param, Body, BadRequestException, Query } from '@nestjs/common';
 import { AdminService } from '../service/admin.service';
 import { IAdminController } from '../interface/IAdminController';
-import { IInterviewer } from 'src/interviewer/interface/interface';
-import { ICandidate, IStack } from 'src/candidate/interface/interface';
+import { InterviewerDTO } from 'src/interviewer/dto/interviewer-data.dto';
+import { CandidateDTO } from 'src/candidate/dtos/candidate-data.dto';
+import { StackDTO } from 'src/interviewer/dto/stack-response.dto';
 
 @Controller('admin')
 export class AdminController implements IAdminController {
@@ -13,10 +14,10 @@ export class AdminController implements IAdminController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search?: string
-  ): Promise<{ success: boolean; message: string; approvalData: { approvalData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number } }> {
+  ): Promise<{ success: boolean; message: string; approvalData: { approvalData: InterviewerDTO[], totalRecords: number, totalPages: number, currentPage: number } }> {
     try {
       const approvalData = await this.adminService.findAllApproval(page, limit, search);
-      // console.log(approvalData, 'this is approval data for the pagination ');
+      console.log(approvalData, 'this is approval data');
       return { success: true, message: "interviewer Data.", approvalData: approvalData };
     } catch (error: any) {
       console.log(error.message);
@@ -25,9 +26,11 @@ export class AdminController implements IAdminController {
   }
 
   @Get('approval-details/:id')
-  async getApprovalDetails(@Param('id') id: string): Promise<{ success: boolean; message: string; approvalData: IInterviewer }> {
+  async getApprovalDetails(@Param('id') id: string): Promise<{ success: boolean; message: string; approvalData: InterviewerDTO }> {
     try {
+      console.log(id, 'this is id');
       const getApprovalDetails = await this.adminService.findOne(id);
+      console.log(getApprovalDetails, 'this is approval details');
       return { success: true, message: "interviewerDetails", approvalData: getApprovalDetails };
     } catch (error: any) {
       console.log(error.message);
@@ -40,7 +43,6 @@ export class AdminController implements IAdminController {
     try {
       await this.adminService.approveDetails(id);
       return { success: true, message: "interviewerDetails" };
-
     } catch (error: any) {
       console.log(error.message);
       throw new BadRequestException(error.message || 'An error occurred');
@@ -52,7 +54,7 @@ export class AdminController implements IAdminController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search: string,
-  ): Promise<{ success: boolean; message: string; candidateData: { candidatesData: ICandidate[]; totalRecords: number, totalPages: number, currentPage: number } }> {
+  ): Promise<{ success: boolean; message: string; candidateData: { candidatesData: CandidateDTO[]; totalRecords: number, totalPages: number, currentPage: number } }> {
     try {
       const candidatesData = await this.adminService.getAllCandidate(page, limit, search);
       return { success: true, message: "interviewerDetails", candidateData: candidatesData };
@@ -64,9 +66,9 @@ export class AdminController implements IAdminController {
   }
 
   @Get('candidates/:id')
-  async getCandidateDetails(@Param('id') id: string): Promise<{ success: boolean; message: string; candidateData: ICandidate }> {
+  async getCandidateDetails(@Param('id') id: string): Promise<{ success: boolean; message: string; candidateData: CandidateDTO }> {
     try {
-      const candidateDetails = await this.adminService.getcandidateDetails(id);
+      const candidateDetails: CandidateDTO = await this.adminService.getcandidateDetails(id);
       return { success: true, message: "interviewerDetails", candidateData: candidateDetails };
     } catch (error: any) {
       console.log(error.message);
@@ -75,9 +77,9 @@ export class AdminController implements IAdminController {
   }
 
   @Post('candidate-action/:id')
-  async candidateAction(@Param('id') id: string): Promise<{ success: boolean; message: string; candidateData: ICandidate }> {
+  async candidateAction(@Param('id') id: string): Promise<{ success: boolean; message: string; candidateData: CandidateDTO }> {
     try {
-      const updatedCandidate = await this.adminService.candidateAction(id);
+      const updatedCandidate: CandidateDTO = await this.adminService.candidateAction(id);
       return { success: true, message: "Candidate status updated successfully!", candidateData: updatedCandidate };
     } catch (error: any) {
       console.log(error.message);
@@ -90,7 +92,7 @@ export class AdminController implements IAdminController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search?: string
-  ): Promise<{ success: boolean; message: string; interviewerData: { interviewersData: IInterviewer[], totalRecords: number, totalPages: number, currentPage: number } }> {
+  ): Promise<{ success: boolean; message: string; interviewerData: { interviewersData: InterviewerDTO[], totalRecords: number, totalPages: number, currentPage: number } }> {
     try {
       const interviewersData = await this.adminService.getAllInterviewers(page, limit, search);
       return { success: true, message: "interviewerDetails", interviewerData: interviewersData };
@@ -101,9 +103,9 @@ export class AdminController implements IAdminController {
   }
 
   @Post('interviewer-action/:id')
-  async interviewerAction(@Param('id') id: string): Promise<{ success: boolean; message: string; interviewerData: IInterviewer }> {
+  async interviewerAction(@Param('id') id: string): Promise<{ success: boolean; message: string; interviewerData: InterviewerDTO }> {
     try {
-      const updatedInterviewer = await this.adminService.interviewerAction(id);
+      const updatedInterviewer: InterviewerDTO = await this.adminService.interviewerAction(id);
       return { success: true, message: "Interviewer status updated successfully!", interviewerData: updatedInterviewer };
     } catch (error: any) {
       console.log(error.message);
@@ -112,9 +114,9 @@ export class AdminController implements IAdminController {
   }
 
   @Post('add-stack')
-  async addStack(@Body() formData): Promise<{ success: boolean; message: string; stackData: IStack }> {
+  async addStack(@Body() formData): Promise<{ success: boolean; message: string; stackData: StackDTO }> {
     try {
-      const saveStack = await this.adminService.addStack(formData);
+      const saveStack: StackDTO = await this.adminService.addStack(formData);
       return { success: true, message: 'Stack added successfully!', stackData: saveStack };
     } catch (error: any) {
       console.log(error.message);
@@ -123,9 +125,9 @@ export class AdminController implements IAdminController {
   }
 
   @Get('stack-list')
-  async stackList(): Promise<{ success: boolean; message: string; stackData: IStack[] }> {
+  async stackList(): Promise<{ success: boolean; message: string; stackData: StackDTO[] }> {
     try {
-      const stack = await this.adminService.getAllStack();
+      const stack: StackDTO[] = await this.adminService.getAllStack();
       return { success: true, message: "stack Data", stackData: stack };
     } catch (error: any) {
       console.log(error.message);

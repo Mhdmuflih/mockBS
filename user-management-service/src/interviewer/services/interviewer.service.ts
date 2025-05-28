@@ -2,14 +2,14 @@ import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundExc
 import { IInterviewerService } from "../interface/IInterviewerService";
 import { InterviewerRepository } from "../repository/interviewer.repository";
 import * as bcrypt from 'bcryptjs';
-import { IInterviewer } from "../interface/interface";
 import { CloudinaryService } from "src/Config/cloudinary.service";
-import { InterviewerDataDto, UpdateInterviewerDto } from "../dto/interviewer-data.dto";
 import { ChagnePasswordDTO } from "../dto/change-password.dto";
-import { StackResponseDto } from "../dto/stack-response.dto";
-import { ICandidate } from "src/candidate/interface/interface";
+import { ICandidate, IStack } from "src/candidate/interface/interface";
 import { InterviewerCandidateRepository } from "../repository/interviewer-candidate.repository";
 import { InterviewerStackRepository } from "../repository/interviewer-stack.repository";
+import { InterviewerDTO } from "../dto/interviewer-data.dto";
+import { IInterviewer } from "../interface/interface";
+import { StackDTO } from "../dto/stack-response.dto";
 
 
 @Injectable()
@@ -22,38 +22,35 @@ export class InterviewerService implements IInterviewerService {
 
     ) { }
 
-    async findInterviewer(userId: string): Promise<InterviewerDataDto> {
+    async findInterviewer(userId: string): Promise<InterviewerDTO> {
         try {
             if (!userId) {
                 throw new BadRequestException('User ID is missing from the request');
             }
-
-            // const interviewer = await this.interviewerRepository.findOne(userId);
-
-            const interviewer = await this.interviewerRepository.findOneById(userId);
+            const interviewer: IInterviewer = await this.interviewerRepository.findOneById(userId);
 
             if (!interviewer) {
                 throw new Error('Interviewer not found');
             }
 
-            return interviewer;
+            return InterviewerDTO.from(interviewer);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async addDetails(formData: UpdateInterviewerDto, files: Express.Multer.File[]): Promise<UpdateInterviewerDto> {
+    async addDetails(formData: any, files: Express.Multer.File[]): Promise<InterviewerDTO> {
         try {
 
-            const updateInterviewerDetails: UpdateInterviewerDto = await this.interviewerRepository.addDetails(formData, files)
+            const updateInterviewerDetails: IInterviewer = await this.interviewerRepository.addDetails(formData, files)
 
             if (!updateInterviewerDetails) {
                 throw new Error("Interviewer not found.");
             }
             console.log(updateInterviewerDetails, 'this is update interviewer details');
 
-            return updateInterviewerDetails;
+            return InterviewerDTO.from(updateInterviewerDetails);
 
         } catch (error: any) {
             console.log(error.message);
@@ -61,13 +58,11 @@ export class InterviewerService implements IInterviewerService {
         }
     }
 
-    async editProfileInterviewer(userId: string, formData: UpdateInterviewerDto, file?: Express.Multer.File): Promise<UpdateInterviewerDto> {
+    async editProfileInterviewer(userId: string, formData: any, file?: Express.Multer.File): Promise<InterviewerDTO> {
         try {
             if (!formData || !userId) {
                 throw new BadRequestException('formData or userId is missing');
             }
-
-            // const interviewer = await this.interviewerRepository.findOne(userId);
             const interviewer = await this.interviewerRepository.findOneById(userId);
             if (!interviewer) {
                 throw new NotFoundException('Interviewer not found');
@@ -92,8 +87,8 @@ export class InterviewerService implements IInterviewerService {
                 throw new BadRequestException("Same data update is not allowed.");
             }
 
-            return await this.interviewerRepository.updateInterviewerData(userId, formData, fileName);
-
+            const interviewerData: IInterviewer =  await this.interviewerRepository.updateInterviewerData(userId, formData, fileName);
+            return InterviewerDTO.from(interviewerData);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -103,7 +98,6 @@ export class InterviewerService implements IInterviewerService {
 
     async changePassword(userId: string, formData: ChagnePasswordDTO): Promise<void> {
         try {
-            // const interviewer = await this.interviewerRepository.findOne(userId);
             const interviewer = await this.interviewerRepository.findOneById(userId);
             if (!interviewer) {
                 throw new Error('interviewer not found.');
@@ -133,10 +127,10 @@ export class InterviewerService implements IInterviewerService {
         }
     }
 
-    async fetchStack(): Promise<StackResponseDto[]> {
+    async fetchStack(): Promise<StackDTO[]> {
         try {
-            return await this.interviewerStackRepository.findAll();
-            // return await this.interviewerStackRepository.fetchStack();
+            const stackData: IStack[] = await this.interviewerStackRepository.findAll();
+            return  StackDTO.fromList(stackData);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -146,16 +140,15 @@ export class InterviewerService implements IInterviewerService {
     async getCandidate(candidateId: string): Promise<ICandidate> {
         try {
             return await this.interviewerCandidateRepository.findOneById(candidateId);
-            // return await this.interviewerCandidateRepository.getCandidate(candidateId);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async sendInterviewer(data: any): Promise<InterviewerDataDto[]> {
+    async sendInterviewer(data: any): Promise<IInterviewer[]> {
         try {
-            const interviewers = await this.interviewerRepository.sendInterviewer(data);
+            const interviewers: IInterviewer[] = await this.interviewerRepository.sendInterviewer(data);
             return interviewers;
         } catch (error: any) {
             console.log(error.message);

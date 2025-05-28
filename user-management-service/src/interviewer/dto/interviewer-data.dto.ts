@@ -1,82 +1,42 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { IsBoolean, IsDate, IsNumber, IsOptional, IsString } from "class-validator";
+import { IInterviewer } from "../interface/interface";
 
-export class InterviewerDataDto {
+// interviewer.dto.ts
+export class InterviewerDTO {
+    public _id: string;
+    public name: string;
+    public email: string;
+    public mobile: string;
+    public profileURL?: string;
+    public isVerified?: boolean;
+    public isApproved?: boolean;
+    public isDetails?: boolean;
+    public currentDesignation?: string;
+    public yearOfExperience?: number;
+    public university?: string;
+    public organization?: string;
+    public introduction?: string;
 
-    @IsString()
-    name: string;
+    constructor(interviewer: IInterviewer) {
+        this._id = interviewer._id.toString();
+        this.name = interviewer.name;
+        this.email = interviewer.email;
+        this.mobile = interviewer.mobile;
+        this.profileURL = interviewer.profileURL;
+        this.isVerified = interviewer.isVerified;
+        this.isApproved = interviewer.isApproved;
+        this.isDetails = interviewer.isDetails;
+        this.currentDesignation = interviewer.currentDesignation;
+        this.yearOfExperience = interviewer.yearOfExperience;
+        this.university = interviewer.university;
+        this.organization = interviewer.organization;
+        this.introduction = interviewer.introduction;
+    }
 
-    @IsString()
-    mobile: string;
+    static from(interviewer: IInterviewer): InterviewerDTO {
+        return new InterviewerDTO(interviewer);
+    }
 
-    @IsString()
-    email: string;
-
-    @IsString()
-    @IsOptional()
-    password?: string
-
-    @IsNumber()
-    @IsOptional()
-    OTP?: number;
-
-    @IsString()
-    @IsOptional()
-    currentDesignation?: string;
-
-    @IsNumber()
-    @IsOptional()
-    yearOfExperience?: number;
-
-    @IsString()
-    @IsOptional()
-    university?: string;
-
-    @IsString()
-    @IsOptional()
-    organization?: string;
-
-
-    @IsString()
-    @IsOptional()
-    introduction?: string;
-
-    @IsString()
-    @IsOptional()
-    profileURL?: string;
-
-    @IsString()
-    @IsOptional()
-    resumeURL?: string;
-
-    @IsString()
-    @IsOptional()
-    salarySlipURL?: string;
-
-    @IsDate()
-    @IsOptional()
-    createdAt?: Date;
-
-    @IsDate()
-    @IsOptional()
-    expaireAt?: Date;
-
-    @IsBoolean()
-    @IsOptional()
-    isBlocked?: boolean;
-
-    @IsBoolean()
-    @IsOptional()
-    isVerified?: boolean;
-
-    @IsBoolean()
-    @IsOptional()
-    isApproved?: boolean;
-
-    @IsBoolean()
-    @IsOptional()
-    isDetails?: boolean;
+    static fromList(interviewers: IInterviewer[]): InterviewerDTO[] {
+        return interviewers.map(this.from);
+    }
 }
-
-
-export class UpdateInterviewerDto extends PartialType(InterviewerDataDto) { }

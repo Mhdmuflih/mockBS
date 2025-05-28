@@ -1,39 +1,30 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { IsBoolean, isNumber, IsOptional, IsString } from "class-validator";
+import { ICandidate } from "../interface/interface";
 
-export class CandidateDataDto {
-    @IsString()
-    name: string;
+export class CandidateDTO {
 
-    @IsString()
-    mobile: string;
+    public _id: string;
+    public name: string;
+    public email: string;
+    public mobile: string;
+    public profileURL?: string;
+    public isVerified?: boolean;
+    public premium?: boolean;
 
-    @IsString()
-    email: string;
+    constructor(candidate: ICandidate) {
+        this._id = candidate._id.toString();
+        this.name = candidate.name;
+        this.email = candidate.email;
+        this.mobile = candidate.mobile;
+        this.profileURL = candidate.profileURL;
+        this.isVerified = candidate.isVerified;
+        this.premium = candidate.premium;
+    }
 
-    @IsString()
-    password: string;
+    static from(candidate: ICandidate): CandidateDTO {
+        return new CandidateDTO(candidate);
+    }
 
-    @IsString()
-    @IsOptional()
-    profileURL?: string
-
-    @IsBoolean()
-    @IsOptional()
-    isBlocked?: boolean;
-
-    @IsBoolean()
-    @IsOptional()
-    isVerified?: boolean;
-
-    @IsOptional()
-    OTP?: number;
-
-    @IsOptional()
-    expaireAt?: Date;
+    static formList(candidates: ICandidate[]): CandidateDTO[] {
+        return candidates.map(CandidateDTO.from);
+    }
 }
-
-
-
-
-export class UpdateCandidateDto extends PartialType(CandidateDataDto) {}

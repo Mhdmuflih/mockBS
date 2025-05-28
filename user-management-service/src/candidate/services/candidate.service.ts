@@ -6,10 +6,11 @@ import * as bcrypt from 'bcryptjs';
 import { CloudinaryService } from 'src/Config/cloudinary.service';
 import { IInterviewer } from 'src/interviewer/interface/interface';
 import { ChagnePasswordDTO } from '../dtos/change-password.dto';
-import { CandidateDataDto, UpdateCandidateDto } from '../dtos/candidate-data.dto';
-import { StackResponseDto } from '../dtos/stack-response.dto';
 import { CandidateInterviewerRepository } from '../repository/candidate-interviewer.repository';
 import { CandidateStackRepository } from '../repository/candidate-stack.repository';
+import { CandidateDTO } from '../dtos/candidate-data.dto';
+import { StackDTO } from '../dtos/stack-response.dto';
+import { InterviewerDTO } from 'src/interviewer/dto/interviewer-data.dto';
 
 
 @Injectable()
@@ -22,33 +23,33 @@ export class CandidateService implements ICandidateService {
         private readonly candidateStackRepository: CandidateStackRepository
     ) { }
 
-    async findCandidate(userId: string): Promise<CandidateDataDto | null> {
+    async findCandidate(userId: string): Promise<CandidateDTO | null> {
         try {
             if (!userId) {
                 throw new BadRequestException('User ID is missing from the request');
             }
 
-            const candidate = await this.candidateRepository.findOne(userId);
+            const candidate: ICandidate = await this.candidateRepository.findOne(userId);
 
             if (!candidate) {
                 return null;
             }
 
-            return candidate;
+            return CandidateDTO.from(candidate);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async editProfileCandidate(userId: string, formData: UpdateCandidateDto, file?: Express.Multer.File): Promise<UpdateCandidateDto | null> {
+    async editProfileCandidate(userId: string, formData: any, file?: Express.Multer.File): Promise<CandidateDTO | null> {
         try {
             // console.log(formData, 'this is candidate formData')
             if (!formData || !userId) {
                 throw new BadRequestException('formData or userId is missing');
             }
 
-            const candidate = await this.candidateRepository.findOne(userId);
+            const candidate: ICandidate = await this.candidateRepository.findOne(userId);
 
             let fileName: string | undefined;
             if (file) {
@@ -60,7 +61,9 @@ export class CandidateService implements ICandidateService {
             }
 
 
-            return await this.candidateRepository.updateCandidateData(userId, formData, fileName);
+            const candidateData = await this.candidateRepository.updateCandidateData(userId, formData, fileName);
+
+            return CandidateDTO.from(candidateData)
 
         } catch (error: any) {
             console.log(error.message);
@@ -99,9 +102,10 @@ export class CandidateService implements ICandidateService {
         }
     }
 
-    async getStack(): Promise<StackResponseDto[]> {
+    async getStack(): Promise<StackDTO[]> {
         try {
-            return await this.candidateStackRepository.findAll();
+            const stackData: IStack[] = await this.candidateStackRepository.findAll();
+            return StackDTO.fromList(stackData);
             // return await this.candidateStackRepository.getStack();
         } catch (error: any) {
             console.log(error.message);
@@ -109,10 +113,10 @@ export class CandidateService implements ICandidateService {
         }
     }
 
-    async getInterviewer(interviewerId: string): Promise<IInterviewer | null> {
+    async getInterviewer(interviewerId: string): Promise<InterviewerDTO | null> {
         try {
-            return await this.candidateInterviewerRepository.findOneById(interviewerId);
-            // return await this.candidateInterviewerRepository.findInterviewer(interviewerId);
+            const interviewer: IInterviewer =  await this.candidateInterviewerRepository.findOneById(interviewerId);
+            return InterviewerDTO.from(interviewer);
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

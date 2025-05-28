@@ -10,6 +10,7 @@ export interface ICandidate extends Document {
     isBlocked?: boolean;
     isVerified?: boolean;
     profileURL?: string
+    premium?: boolean;
 }
 
 export interface IStack extends Document {

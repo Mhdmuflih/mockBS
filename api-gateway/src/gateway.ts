@@ -37,11 +37,43 @@ app.use("/payment-service", verifyJWT, proxy(process.env.Payment_Service as stri
 app.use('/review-service', verifyJWT, proxy(process.env.Review_Service as string || "http://localhost:5050"));
 app.use('/chat-service', verifyJWT, proxy(process.env.Chat_Service as string || "http://localhost:6006"));
 
-app.use('/socket.io', createProxyMiddleware({
+// =======================================================
+// app.use('/socket.io', createProxyMiddleware({
+//     target: process.env.Booking_Service as string || "http://localhost:3030",
+//     ws: true,
+//     changeOrigin: true,
+// }));
+
+// app.use('/chat', createProxyMiddleware({
+//     target: process.env.Chat_Service as string || "http://localhost:6006",  // Chat service
+//     ws: true,
+//     changeOrigin: true,
+//     pathRewrite: {
+//         '^/chat': '',  // remove prefix if your chat server uses root `/`
+//     },
+// }));
+// =======================================================
+app.use('/webrtc', createProxyMiddleware({
     target: process.env.Booking_Service as string || "http://localhost:3030",
-    ws: true,
+    ws: true, // Important for WebSocket
     changeOrigin: true,
+    pathRewrite: {
+        '^/webrtc': '/webrtc',
+    },
 }));
+
+// 👉 Proxy Chat Socket.IO
+app.use('/chat', createProxyMiddleware({
+    target: process.env.Chat_Service as string || "http://localhost:6006",  // Chat service
+    ws: true, // Important for WebSocket
+    changeOrigin: true,
+    pathRewrite: {
+        '^/chat': '/chat',
+    },
+}));
+
+
+
 
 
 app.use("*", (req: Request, res: Response) => {

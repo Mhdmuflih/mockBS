@@ -254,7 +254,7 @@ const InterviewerProfile = () => {
                                     <div>
                                         <h2 className="font-medium text-sm">University:</h2>
                                         {editMode.university ? (
-                                            <input type="text" name="organization" value={interviewer.university || ""} onChange={handleInputChange} className="p-1 rounded bg-[#4B4F60] text-white" />
+                                            <input type="text" name="university" value={interviewer.university || ""} onChange={handleInputChange} className="p-1 rounded bg-[#4B4F60] text-white" />
                                         ) : (
                                             <p className="font-semibold mt-1 text-gray-300 text-sm">{interviewer.university || "Not Provided"}</p>
                                         )}
@@ -272,7 +272,7 @@ const InterviewerProfile = () => {
                                     <div>
                                         <h2 className="font-medium text-sm">Introduction:</h2>
                                         {editMode.introduction ? (
-                                            <input type="text" name="organization" value={interviewer.introduction || ""} onChange={handleInputChange} className="p-1 rounded bg-[#4B4F60] text-white" />
+                                            <input type="text" name="introduction" value={interviewer.introduction || ""} onChange={handleInputChange} className="p-1 rounded bg-[#4B4F60] text-white" />
                                         ) : (
                                             <p className="font-semibold mt-1 text-gray-300 text-sm">{interviewer.introduction || "Not Provided"}</p>
                                         )}

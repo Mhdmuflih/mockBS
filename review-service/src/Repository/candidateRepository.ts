@@ -8,7 +8,7 @@ class CandidateRepository extends BaseRepository<IFeedback> implements ICandidat
         super(Feedback)
     }
 
-    async findTheFeedBackData(slotId: string, scheduledId: string): Promise<any> {
+    async findTheFeedBackData(slotId: string, scheduledId: string): Promise<IFeedback | null> {
         try {
             return await Feedback.findOne({slotId: slotId, scheduledId: scheduledId}).exec();
         } catch (error: any) {

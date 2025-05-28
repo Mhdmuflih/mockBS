@@ -7,46 +7,49 @@ import { ICandidate } from "../Models/candidateModel";
 import otpGenerator from "otp-generator";
 import { sendEmail } from "../Utility/email";
 import { passwordCompare, passwordHashing } from "../Utility/bcypt";
+import { CandidateDTO } from "../DTO/Candidate/candidate.dto";
 
 export class CandidateService implements ICandidateService {
     constructor(
         private candidateRepository: ICandidateRepository,
     ) { };
 
-    async googleAuth(googleData: any): Promise<{ accessToken: string; refreshToken: string; candidate: ICandidate }> {
+    async googleAuth(googleData: any): Promise<{ accessToken: string; refreshToken: string; candidate: CandidateDTO }> {
         try {
-          if (!googleData.email || !googleData.name || !googleData.profileImage) {
-            throw new Error("Google data is missing required fields.");
-          }
-      
-          const existingCandidate = await this.candidateRepository.findCandidateByEmail(googleData.email);
-          if (existingCandidate) {
-            const accessToken = generateAccessToken(existingCandidate._id as string);
-            const refreshToken = generateRefreshToken(existingCandidate._id as string);
-            return { accessToken, refreshToken, candidate: existingCandidate };
-          }
-      
-          const newCandidate: ICandidate = await this.candidateRepository.createCandidate({
-            name: googleData.name,
-            email: googleData.email,
-            password: "", // Social login users don't have passwords
-            mobile: "Not Provided",
-            profileURL: googleData.profileImage,
-            isVerified: true,
-          });
-      
-          const accessToken = generateAccessToken(newCandidate._id as string);
-          const refreshToken = generateRefreshToken(newCandidate._id as string);
-      
-          return { accessToken, refreshToken, candidate: newCandidate };
-        } catch (error: any) {
-          console.error("Error in Google Auth Service:", error.message);
-          throw new Error("Failed to authenticate with Google.");
-        }
-      }
-      
+            if (!googleData.email || !googleData.name || !googleData.profileImage) {
+                throw new Error("Google data is missing required fields.");
+            }
 
-    async createCandidate(name: string, mobile: string, email: string, password: string): Promise<any> {
+            const existingCandidate = await this.candidateRepository.findCandidateByEmail(googleData.email);
+            if (existingCandidate) {
+                const candidateDTO: CandidateDTO = CandidateDTO.from(existingCandidate)
+                const accessToken = generateAccessToken(existingCandidate._id.toString() as string);
+                const refreshToken = generateRefreshToken(existingCandidate._id.toString() as string);
+                return { accessToken, refreshToken, candidate: candidateDTO };
+            }
+
+            const newCandidate: ICandidate = await this.candidateRepository.createCandidate({
+                name: googleData.name,
+                email: googleData.email,
+                password: "", // Social login users don't have passwords
+                mobile: "Not Provided",
+                profileURL: googleData.profileImage,
+                isVerified: true,
+            });
+
+            const candidateDTO: CandidateDTO = CandidateDTO.from(newCandidate);
+            const accessToken = generateAccessToken(newCandidate._id.toString() as string);
+            const refreshToken = generateRefreshToken(newCandidate._id.toString() as string);
+
+            return { accessToken, refreshToken, candidate: candidateDTO };
+        } catch (error: any) {
+            console.error("Error in Google Auth Service:", error.message);
+            throw new Error("Failed to authenticate with Google.");
+        }
+    }
+
+
+    async createCandidate(name: string, mobile: string, email: string, password: string): Promise<CandidateDTO> {
         try {
 
             const OTP = parseInt(otpGenerator.generate(4, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false }));
@@ -63,13 +66,14 @@ export class CandidateService implements ICandidateService {
             console.log(password, "real password in candidate signup");
 
             const otpData = await this.candidateRepository.createCandidate({ name, mobile, email, password: securePassword, OTP });
+            const candidateData: CandidateDTO = CandidateDTO.from(otpData);
             if (!otpData) {
                 throw new Error("Failed to save OTP data.");
             }
 
             await sendEmail({ to: email, subject: "OTP Verification", otp: OTP });
 
-            return otpData;
+            return candidateData;
 
         } catch (error: any) {
             console.log("Error creating candidate:", error.message);
@@ -120,7 +124,7 @@ export class CandidateService implements ICandidateService {
         }
     }
 
-    async forgotPassword(email: string): Promise<ICandidate | null> {
+    async forgotPassword(email: string): Promise<CandidateDTO> {
         try {
             const candidate: ICandidate | null = await this.candidateRepository.findCandidateByEmail(email);
             if (!candidate) {
@@ -140,7 +144,8 @@ export class CandidateService implements ICandidateService {
 
             const otpData = await this.candidateRepository.saveOtp({ email, otp: OTP }); // Pass `OTP` field
             console.log(otpData, 'this is the OTP saved in service');
-            return candidate;
+            const candidateDTO: CandidateDTO = CandidateDTO.from(candidate)
+            return candidateDTO;
         } catch (error: any) {
             console.log(error.message);
             throw error;
@@ -205,14 +210,14 @@ export class CandidateService implements ICandidateService {
 
 
 
-    async loginCandidate(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; candidate: ICandidate }> {
+    async loginCandidate(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; candidateDTO: CandidateDTO }> {
         try {
             const candidate = await this.candidateRepository.findCandidateByEmail(email);
             if (!candidate) {
                 throw new Error(MESSAGES.CANDIDATE_NOT_FOUND);
             }
-            
-            if(candidate.isBlocked) {
+
+            if (candidate.isBlocked) {
                 throw new Error("Candidate is Blocked. please contact Admin!");
             }
 
@@ -227,11 +232,12 @@ export class CandidateService implements ICandidateService {
                 throw new Error("Password is Not Match.")
             }
 
-            const accessToken: string = generateAccessToken(candidate._id as string);
-            const refreshToken: string = generateRefreshToken(candidate._id as string);
-            console.log(`accessToken: ${accessToken} and refreshToken ${refreshToken}`)
+            const accessToken: string = generateAccessToken(candidate._id.toString() as string);
+            const refreshToken: string = generateRefreshToken(candidate._id.toString() as string);
+            console.log(`accessToken: ${accessToken} and refreshToken ${refreshToken}`);
+            const candidateDTO: CandidateDTO = CandidateDTO.from(candidate)
 
-            return { accessToken, refreshToken, candidate };
+            return { accessToken, refreshToken, candidateDTO };
         } catch (error: any) {
             console.log(error.message);
             throw error;
@@ -239,21 +245,22 @@ export class CandidateService implements ICandidateService {
     }
 
 
-    async validateRefreshToken(token: string): Promise<{accessToken: string, refreshToken: string, candidate:ICandidate}> {
+    async validateRefreshToken(token: string): Promise<{ accessToken: string, refreshToken: string, candidateDTO: CandidateDTO }> {
         try {
             const decode: any = verifyToken(token);
             const candidate = await this.candidateRepository.findCandidateById(decode.userId);
 
-            if(!candidate) {
+            if (!candidate) {
                 const error: any = new Error("User not Found");
                 error.status = HTTP_STATUS.NOT_FOUND;
                 throw error;
             }
 
-            const accessToken = generateAccessToken(candidate._id as string);
-            const refreshToken = generateRefreshToken(candidate._id as string);
+            const accessToken = generateAccessToken(candidate._id.toString() as string);
+            const refreshToken = generateRefreshToken(candidate._id.toString() as string);
+            const candidateDTO: CandidateDTO  = CandidateDTO.from(candidate);
 
-            return {accessToken, refreshToken, candidate};
+            return { accessToken, refreshToken, candidateDTO };
 
         } catch (error: any) {
             console.log(error.message);

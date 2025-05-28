@@ -174,12 +174,12 @@ export class CandidateControllers implements ICandidateController {
                 return
             }
 
-            const { accessToken, refreshToken, candidate } = await this.candidateService.loginCandidate(email, password);
+            const { accessToken, refreshToken, candidateDTO } = await this.candidateService.loginCandidate(email, password);
 
             
 
             console.log("successfully login in candidate");
-            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, candidateData: candidate, refreshToken: refreshToken });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, candidateData: candidateDTO, refreshToken: refreshToken });
 
         } catch (error: any) {
             if (error instanceof Error) {
@@ -199,9 +199,9 @@ export class CandidateControllers implements ICandidateController {
                 return;
             }
 
-            const { accessToken, refreshToken, candidate } = await this.candidateService.validateRefreshToken(req.body.refreshToken);
+            const { accessToken, refreshToken, candidateDTO } = await this.candidateService.validateRefreshToken(req.body.refreshToken);
             
-            res.status(HTTP_STATUS.OK).json({ success: true, message: "token created", token: accessToken, refreshToken: refreshToken, candidateData: candidate });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "token created", token: accessToken, refreshToken: refreshToken, candidateData: candidateDTO });
         } catch (error: any) {
             if (error instanceof Error) {
                 res.status(409).json({ message: error.message });

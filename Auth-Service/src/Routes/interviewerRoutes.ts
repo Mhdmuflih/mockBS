@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { InterviewerControllers } from "../Controllers/InterviewerControllers";
+import { InterviewerControllers } from "../Controllers/interviewerControllers";
 import interviewerRepository from "../Repositories/interviewerRepository";
 import { InterviewerService } from "../Services/interviewerService";
 

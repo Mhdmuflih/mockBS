@@ -141,10 +141,10 @@ export class InterviewerControllers implements IInterviewerController {
                 return
             }
 
-            const { accessToken, refreshToken, interviewer } = await this.interviewerService.loginInterviewer(email, password);
+            const { accessToken, refreshToken, interviewerDTO } = await this.interviewerService.loginInterviewer(email, password);
 
             console.log("successfull loged in interviewer");
-            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, interviewerData: interviewer, refreshToken: refreshToken });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "Login successfully completed.", token: accessToken, interviewerData: interviewerDTO, refreshToken: refreshToken });
 
 
         } catch (error: any) {
@@ -164,9 +164,9 @@ export class InterviewerControllers implements IInterviewerController {
                 return;
             }
 
-            const { accessToken, refreshToken, interviewer } = await this.interviewerService.validateRefreshToken(req.body.refreshToken);
+            const { accessToken, refreshToken, interviewerDTO } = await this.interviewerService.validateRefreshToken(req.body.refreshToken);
 
-            res.status(HTTP_STATUS.OK).json({ success: true, message: "token created", token: accessToken, refreshToken: refreshToken, interviewerData: interviewer });
+            res.status(HTTP_STATUS.OK).json({ success: true, message: "token created", token: accessToken, refreshToken: refreshToken, interviewerData: interviewerDTO });
         } catch (error: any) {
             if (error instanceof Error) {
                 res.status(409).json({ message: error.message });
@@ -196,26 +196,4 @@ export class InterviewerControllers implements IInterviewerController {
         }
     }
 
-    // async addDetails(req: Request, res: Response): Promise<void> {
-    //     try {
-    //         const { formData, email } = req.body; // Extract formData and email from req.body
-    //         const { experience, designation, organization, university, introduction } = formData || {};
-
-    //         if (!experience || !designation || !organization || !university || !introduction || !email) {
-    //             res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: "All fields are required." });
-    //             return;
-    //         }
-
-    //         const updatedInterviewer = await this.interviewerService.addDetails(experience, designation, organization, university, introduction, email);
-
-    //         res.status(HTTP_STATUS.OK).json({ success: true, message: "Interviewer Data is Added.", interviewerData: updatedInterviewer });
-    //     } catch (error: any) {
-    //         if (error instanceof Error) {
-    //             res.status(HTTP_STATUS.BAD_REQUEST).json({ message: error.message });
-    //         } else {
-    //             console.log(error.message);
-    //             res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
-    //         }
-    //     }
-    // }
 } 

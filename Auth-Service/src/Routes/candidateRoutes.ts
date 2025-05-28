@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { CandidateControllers } from "../Controllers/CandidateController";
+import { CandidateControllers } from "../Controllers/candidateController";
 import candidateRepository from "../Repositories/candidateRepository";
 import { CandidateService } from "../Services/candidateService";
 

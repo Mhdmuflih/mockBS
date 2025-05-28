@@ -8,7 +8,7 @@
 // export default Admin_Route;
 
 import { Router } from "express";
-import { AdminControllers } from "../Controllers/AdminController";
+import { AdminControllers } from "../Controllers/adminController";
 import adminRepository from "../Repositories/adminRepository";
 import { AdminServices } from "../Services/adminService";
 

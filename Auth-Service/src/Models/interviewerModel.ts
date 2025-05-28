@@ -1,8 +1,9 @@
-import { Document, model, Schema } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 
 
 
 export interface IInterviewer extends Document {
+    _id: Types.ObjectId;
     OTP?: number;
     name: string;
     mobile: string;
@@ -19,7 +20,11 @@ export interface IInterviewer extends Document {
     university?: string;
     organization?: string;
     introduction?: string;
+    profileURL?: string;
+    resumeURL?: string;
+    salarySlipURL?: string;
 }
+
 
 
 

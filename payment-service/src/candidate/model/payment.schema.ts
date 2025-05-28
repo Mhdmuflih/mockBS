@@ -51,10 +51,10 @@ export class Payment extends Document {
     @Prop({ type: String, enum: ['pending', 'completed', 'cancelled'] , default:"pending"})
     interviewStatus: string;
 
-    @Prop({ type: String, required: true, enum: ['credit_card', 'debit_card', 'paypal', 'bank_transfer'] })
+    @Prop({ type: String, required: true, enum: ['credit_card', 'debit_card', 'paypal', 'bank_transfer', 'wallet'] })
     paymentMethod: string;
 
-    @Prop({type: String, unique: true})
+    @Prop({type: String})
     transactionId: string;
 
     @Prop({ type: Date, default: Date.now })

@@ -28,7 +28,7 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
         try {
 
             const paymentData = {
-                transactionId: data.sessionId,
+                transactionId: data?.sessionId,
                 slotId: data.slotId,
                 candidateId: candidateId,
                 scheduleId: data.scheduleId,
@@ -44,8 +44,8 @@ export class CandidateRepository extends BaseRepository<Payment> implements ICan
                     title: data.scheduleData.title,
                     price: data.scheduleData.price
                 },
-                status: 'pending',
-                paymentMethod: 'credit_card',
+                status: data.status,
+                paymentMethod: data.paymentMethod,
             };
 
             const saveData = new this.paymentModel(paymentData);

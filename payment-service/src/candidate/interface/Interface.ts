@@ -1,7 +1,7 @@
 import { Document, ObjectId, Types } from 'mongoose';
 
 export interface IPayment extends Document {
-    transactionId: string;
+    transactionId?: string;
     slotId: string | Types.ObjectId;
     candidateId: string | Types.ObjectId;
     scheduleId: string | Types.ObjectId;

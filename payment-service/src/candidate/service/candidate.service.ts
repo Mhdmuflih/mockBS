@@ -9,6 +9,7 @@ import { CandidatePremiumRepository } from '../repository/candidate-premium.repo
 import { sendPremiumData } from 'src/gRPC/updateCandidatePremium.client';
 import { CandidateWalletRepository } from '../repository/candidate-wallet.repository';
 import { CandidateWalletDTO } from '../dto/candidate.wallet.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class CandidateService implements ICandidateService {
@@ -70,7 +71,7 @@ export class CandidateService implements ICandidateService {
         scheduleId: data.scheduleId,
         amount: data.amount,
         status: 'pending',  // Payment status to be updated later
-        paymentMethod: 'card',
+        paymentMethod: 'credit_card',
         sessionId: session.id, // Store Stripe session ID
         scheduleData: data.scheduleData
       };
@@ -198,6 +199,7 @@ export class CandidateService implements ICandidateService {
         amount: data.amount,
         status: 'completed',
         paymentMethod: 'wallet',
+        sessionId: uuidv4(),
         scheduleData: data.scheduleData
       };
 

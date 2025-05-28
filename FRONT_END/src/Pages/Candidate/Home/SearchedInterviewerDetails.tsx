@@ -34,38 +34,38 @@ const SearchedInterviewerDetails: React.FC = () => {
     const [selectedMethod, setSelectedMethod] = useState<'wallet' | 'online' | ''>('');
     const [selectedSlot, setSelectedSlot] = useState<any>(null);
 
-    useEffect(() => {
-
-        const fetchData = async (): Promise<void> => {
-            try {
-                if (!interviewerId || !selectedTech) return;
-                const response: ISlotInterviewerApiResponse = await interviewerSlotDetails(interviewerId, selectedTech);
-                if (response.success) {
-                    const formattedData = response.slotData
-                        .map((slot: ISlotData) =>
-                            slot.slots.flatMap((slotDetail: ISlot) =>
-                                slotDetail.schedules.map((schedule: ISchedule) => ({
-                                    stack: slot.stack.stackName,
-                                    technology: slot.stack.technologies,
-                                    date: new Date(slotDetail.date).toISOString().split('T')[0],
-                                    from: schedule.fromTime,
-                                    to: schedule.toTime,
-                                    title: schedule.title || "N/A",
-                                    price: schedule.price || "N/A",
-                                    description: schedule.description || "N/A",
-                                    status: schedule.status,
-                                    scheduleId: schedule._id,
-                                    slotId: slotDetail._id
-                                }))
-                            )
-                        ).flat();
-                    setSlotData(formattedData);
-                    setInterviewer(response.interviewerData);
-                }
-            } catch (error: unknown) {
-                error instanceof Error ? console.log("Error fetching data:", error.message) : console.log("An unknown error occurred.");
+    const fetchData = async (): Promise<void> => {
+        try {
+            if (!interviewerId || !selectedTech) return;
+            const response: ISlotInterviewerApiResponse = await interviewerSlotDetails(interviewerId, selectedTech);
+            if (response.success) {
+                const formattedData = response.slotData
+                    .map((slot: ISlotData) =>
+                        slot.slots.flatMap((slotDetail: ISlot) =>
+                            slotDetail.schedules.map((schedule: ISchedule) => ({
+                                stack: slot.stack.stackName,
+                                technology: slot.stack.technologies,
+                                date: new Date(slotDetail.date).toISOString().split('T')[0],
+                                from: schedule.fromTime,
+                                to: schedule.toTime,
+                                title: schedule.title || "N/A",
+                                price: schedule.price || "N/A",
+                                description: schedule.description || "N/A",
+                                status: schedule.status,
+                                scheduleId: schedule._id,
+                                slotId: slotDetail._id
+                            }))
+                        )
+                    ).flat();
+                setSlotData(formattedData);
+                setInterviewer(response.interviewerData);
             }
-        };
+        } catch (error: unknown) {
+            error instanceof Error ? console.log("Error fetching data:", error.message) : console.log("An unknown error occurred.");
+        }
+    };
+
+    useEffect(() => {
         fetchData();
     }, [interviewerId, selectedTech]);
 
@@ -112,6 +112,7 @@ const SearchedInterviewerDetails: React.FC = () => {
                     setShowPaymentModal(false);
                     setSelectedMethod('');
                     setSelectedSlot(null);
+                    fetchData();
                 } else {
                     toast.error(walletResponse.message || "Wallet payment failed");
                 }

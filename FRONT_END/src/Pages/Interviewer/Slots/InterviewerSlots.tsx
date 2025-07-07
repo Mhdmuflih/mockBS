@@ -3,7 +3,6 @@ import SideBar from "../../../components/Interviewer/Sidebar";
 import Table from "../../../components/Interviewer/Table";
 import { getSlotData } from "../../../Services/interviewerService";
 import { debounce } from "lodash";
-import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 
 const InterviewerSlots = () => {
@@ -108,6 +107,7 @@ const InterviewerSlots = () => {
                 ...editSlot,
                 technology: Array.isArray(editSlot.technology) ? editSlot.technology : [editSlot.technology]
             };
+            console.log(updatedData);
 
             // await updateSlot(editSlot.id, updatedData); // ← Add actual API call here
             toast.success("Slot updated successfully.");

@@ -4,7 +4,6 @@ import { IoAddCircle } from "react-icons/io5";
 import SideBar from "../../../components/Admin/SideBar";
 import { fetchStackList, updateStack } from "../../../Services/adminService";
 import { IoCloseSharp } from "react-icons/io5";
-import Swal from "sweetalert2";
 import toast, { Toaster } from "react-hot-toast";
 
 const AdminStackList = () => {

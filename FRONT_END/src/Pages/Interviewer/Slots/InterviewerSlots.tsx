@@ -80,21 +80,21 @@ const InterviewerSlots = () => {
         setIsModalOpen(true);
     };
 
-    const handleDelete = async (row: any) => {
-        const result = await Swal.fire({
-            title: "Are you sure?",
-            text: "You want to delete this slot?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-        });
+    // const handleDelete = async (row: any) => {
+    //     const result = await Swal.fire({
+    //         title: "Are you sure?",
+    //         text: "You want to delete this slot?",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonText: "Yes, delete it!",
+    //     });
 
-        if (result.isConfirmed) {
-            // await deleteSlot(row.id); // <-- add actual delete call
-            toast.success("Slot deleted successfully.");
-            fetchSlotData();
-        }
-    };
+    //     if (result.isConfirmed) {
+    //         // await deleteSlot(row.id); // <-- add actual delete call
+    //         toast.success("Slot deleted successfully.");
+    //         fetchSlotData();
+    //     }
+    // };
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -143,7 +143,7 @@ const InterviewerSlots = () => {
                     totalPages={totalPage}
                     searchQuery={rawSearchQuery}
                     setSearchQuery={setRawSearchQuery}
-                    actions={(row) => (
+                    actions={(row: any) => (
                         <div className="flex justify-center gap-2">
                             <button
                                 onClick={() => handleEdit(row)}
@@ -151,12 +151,12 @@ const InterviewerSlots = () => {
                             >
                                 Edit
                             </button>
-                            <button
+                            {/* <button
                                 onClick={() => handleDelete(row)}
                                 className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700"
                             >
                                 Delete
-                            </button>
+                            </button> */}
                         </div>
                     )}
                     

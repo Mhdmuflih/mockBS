@@ -108,29 +108,29 @@ const AdminStackList = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        const confirm = await Swal.fire({
-            title: "Are you sure?",
-            text: "You want to delete this stack?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-        });
+    // const handleDelete = async (id: string) => {
+    //     const confirm = await Swal.fire({
+    //         title: "Are you sure?",
+    //         text: "You want to delete this stack?",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonText: "Yes, delete it!",
+    //     });
 
-        if (confirm.isConfirmed) {
-            try {
-                // const response: any = await deleteStack(id);
-                // if (response.success) {
-                //     toast.success("Stack deleted successfully");
-                //     fetchStackData();
-                // } else {
-                //     toast.error("Delete failed");
-                // }
-            } catch (err: any) {
-                toast.error("Error: " + err.message);
-            }
-        }
-    };
+    //     if (confirm.isConfirmed) {
+    //         try {
+    //             // const response: any = await deleteStack(id);
+    //             // if (response.success) {
+    //             //     toast.success("Stack deleted successfully");
+    //             //     fetchStackData();
+    //             // } else {
+    //             //     toast.error("Delete failed");
+    //             // }
+    //         } catch (err: any) {
+    //             toast.error("Error: " + err.message);
+    //         }
+    //     }
+    // };
 
     return (
         <div className="flex">
@@ -163,12 +163,12 @@ const AdminStackList = () => {
                                     >
                                         Edit
                                     </button>
-                                    <button
+                                    {/* <button
                                         onClick={() => handleDelete(stack._id)}
                                         className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
                                     >
                                         Delete
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                         ))}

@@ -100,6 +100,21 @@ ProtectedAPI.interceptors.response.use(
 
 
 
+// candidate datas chat members
+// ================================
+export const getGroupMembersList = async (members: string[]) => {
+    try {
+        const response = await ProtectedAPI.post('/user-service/candidate/get-members', {
+            members,
+        });
+        return response.data;
+    } catch (error: any) {
+        console.log(error.message);
+        throw new Error(
+            error.response?.data?.message || "An error occurred while fetching member data."
+        );
+    }
+};
 
 
 // profile image take in route protected

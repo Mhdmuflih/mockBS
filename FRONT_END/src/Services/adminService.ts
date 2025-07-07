@@ -183,6 +183,18 @@ export const addStack = async (formData: any) => {
     }
 }
 
+
+export const updateStack = async (id: string, formData: any) => {
+    try {
+        const response = await ProtectedAPI.put('/user-service/admin/edit-stack', { id, ...formData });
+        return response.data;
+    } catch (error: any) {
+        console.error("Update Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "An error occurred during the update process.");
+    }
+};
+
+
 export const fetchStackList = async () => {
     try {
         const response = await ProtectedAPI.get('/user-service/admin/stack-list');

@@ -1,6 +1,6 @@
 import SideBar from "../../../components/Candidate/SideBar";
 import toast, { Toaster } from "react-hot-toast";
-import { fetchCandidateProfileData, TakeThePremium } from "../../../Services/candidateService";
+import { fetchCandidateProfileData, getGroupMembersList, TakeThePremium } from "../../../Services/candidateService";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { FaCheck, FaCheckDouble, FaUserCircle } from "react-icons/fa";
@@ -25,8 +25,13 @@ const CandidateChooseCommunity = () => {
     const [selectedGroup, setSelectedGroup] = useState<string>("")
     const [messages, setMessages] = useState<IGroupMessage[]>([])
     const [message, setMessage] = useState<string>("");
-    const [isModal, setIsModal] = useState<boolean>(false);
     const [chat, setChat] = useState<boolean>(false);
+
+    const [groupMembers, setGroupMembers] = useState<any[]>([]);
+    const [membersData, setMembersData] = useState([]);
+
+    const [isModal, setIsModal] = useState(false);
+    const [isMembersModal, setIsMembersModal] = useState<boolean>(false);
 
     const [hovered, setHovered] = useState<boolean>(false);
 
@@ -80,6 +85,12 @@ const CandidateChooseCommunity = () => {
             setMessages((prevMessages: IGroupMessage[]) => [...prevMessages, newMessage]);
         });
 
+        socket.on("getGroupMembers", (group: any) => {
+            console.log(group, 'this is members')
+            console.log(group.members, 'this is members')
+            setGroupMembers(group.members);
+        });
+
 
         return () => {
             socket.off("groupList");
@@ -87,6 +98,7 @@ const CandidateChooseCommunity = () => {
             socket.off("messageHistory");
             socket.off("receiveMessage");
             socket.off("joinedGroup");
+            socket.off("getGroupMembers");
         };
 
 
@@ -139,12 +151,31 @@ const CandidateChooseCommunity = () => {
         socket.emit("joinMember", { candidateId: candidateData?._id?.toString(), groupName: groupName })
     }
 
-    const chooseToCommunity = (groupName: string): void => {
+    const chooseToCommunity = async (groupName: string) => {
         console.log(groupName, 'choose');
         setSelectedGroup(groupName);
         socket.emit("messageHistory", groupName);
+        socket.emit("getGroupMembers", groupName); // ✅ pass groupName directly
         setChat(true);
     }
+
+    const handleToViewMembers = async () => {
+        console.log(groupMembers, 'groupmembers0987657890');
+
+        const memberIds = groupMembers.map(member => member.candidateId);
+        const response: any = await getGroupMembersList(memberIds);
+        if (response.success) {
+            console.log("ok ok ok");
+            console.log(response.members, 'this is response of the members')
+            setMembersData(response.members);
+        } else {
+            console.log("not ok not ok");
+        }
+
+        if (selectedGroup) {
+            setIsMembersModal(true);
+        }
+    };
 
     const handleToSendMessage = (): void => {
         if (message.trim() === "") {
@@ -266,7 +297,7 @@ const CandidateChooseCommunity = () => {
                                 {chat && (
                                     <div className="flex-1 flex flex-col">
                                         {/* Chat Header */}
-                                        <div className="bg-white p-4 shadow-md flex items-center justify-between">
+                                        <div onClick={handleToViewMembers} className="bg-white p-4 shadow-md flex items-center justify-between">
                                             <h2 className="text-lg font-bold">{selectedGroup}</h2>
                                             {/* <button className="text-sm text-gray-500">Logout</button> */}
                                         </div>
@@ -400,6 +431,61 @@ const CandidateChooseCommunity = () => {
                                         Create Group
                                     </button>
 
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {isMembersModal && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                            <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3">
+                                <h2 className="text-lg font-bold mb-4 text-center">{selectedGroup} Members</h2>
+
+                                <div className="max-h-64 overflow-y-auto space-y-2">
+                                    {membersData.length > 0 ? (
+                                        membersData.map((member: any, index: number) => {
+                                            // Match by _id === candidateId
+                                            const matchedGroupMember = groupMembers.find(
+                                                gm => gm.candidateId === member._id.toString()
+                                            );
+                                            const role = matchedGroupMember?.role || "member";
+
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    className={`p-2 border-b border-gray-200 flex items-center gap-3 ${role === 'admin' ? 'bg-yellow-50' : ''}`}
+                                                >
+                                                    <img
+                                                        src={member.profileURL || "/default-profile.png"}
+                                                        alt="profile"
+                                                        className="w-10 h-10 rounded-full object-cover"
+                                                    />
+                                                    <div>
+                                                        <p className="font-medium flex items-center gap-2">
+                                                            {member.name}
+                                                            {role === 'admin' && (
+                                                                <span className="text-xs bg-yellow-300 text-yellow-800 px-2 py-1 rounded-full ml-1">
+                                                                    Admin
+                                                                </span>
+                                                            )}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500">{member.email}</p>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <p className="text-center text-gray-500">No members found.</p>
+                                    )}
+                                </div>
+
+                                <div className="flex justify-end mt-4">
+                                    <button
+                                        onClick={() => setIsMembersModal(false)}
+                                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                                    >
+                                        Close
+                                    </button>
                                 </div>
                             </div>
                         </div>

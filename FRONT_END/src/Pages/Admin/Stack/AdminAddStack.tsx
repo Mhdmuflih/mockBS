@@ -6,18 +6,14 @@ import { addStack } from "../../../Services/adminService";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { validateStackForm } from "../../../Validations/stackValidation";
-
-import toast from "react-hot-toast"
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 const AdminAddStack = () => {
-
     const navigate = useNavigate();
     const [stackName, setStackName] = useState("");
     const [technologies, setTechnologies] = useState<string[]>([]);
     const [techInput, setTechInput] = useState("");
-
-    const [errors, setErrors] = useState<any>({})
+    const [errors, setErrors] = useState<any>({});
 
     const handleAddTechnology = () => {
         const trimmedInput = techInput.trim();
@@ -36,7 +32,6 @@ const AdminAddStack = () => {
         setTechInput("");
     };
 
-
     const handleRemoveTechnology = (index: number) => {
         setTechnologies(technologies.filter((_, i) => i !== index));
     };
@@ -47,10 +42,7 @@ const AdminAddStack = () => {
         const validation = validateStackForm(stackName, technologies);
         setErrors(validation.errors);
 
-        if (!validation.isValid) {
-            return;
-        }
-
+        if (!validation.isValid) return;
 
         try {
             const formData = { stackName, technologies };
@@ -62,12 +54,12 @@ const AdminAddStack = () => {
                     icon: "success",
                     confirmButtonText: "OK",
                 });
-                navigate('/admin/stack');
+                navigate("/admin/stack");
             } else {
                 Swal.fire({
                     titleText: "Error!",
                     text: response.message,
-                    icon: "success",
+                    icon: "error",
                     confirmButtonText: "OK",
                 });
             }
@@ -75,87 +67,91 @@ const AdminAddStack = () => {
             console.log(error.message);
             Swal.fire({
                 titleText: "Error!",
-                text: error.message || "An unexpected error occurred. Please try again later.",
+                text: error.message || "An unexpected error occurred.",
                 icon: "error",
                 confirmButtonText: "OK",
             });
         }
-    }
-
+    };
 
     return (
-        <>
-            <div className="flex">
-                <SideBar heading="Stack">
+        <div className="flex">
+            <SideBar heading="Stack">
+                <Toaster position="top-right" />
+                <div className="bg-[#30323A] w-full p-4 min-h-screen overflow-auto">
+                    <div className="flex justify-center mt-10 px-4">
+                        <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-xl">
+                            <form onSubmit={handleToSubmit} className="space-y-6">
+                                {/* Stack Name */}
+                                <div>
+                                    <input
+                                        type="text"
+                                        placeholder="Name of the Stack"
+                                        className="bg-black text-white p-3 w-full rounded-md outline-none"
+                                        value={stackName}
+                                        onChange={(e) => setStackName(e.target.value)}
+                                    />
+                                    {errors.stackName && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.stackName}</p>
+                                    )}
+                                </div>
 
-                    <Toaster position="top-right" reverseOrder={false} />
-
-                    <div className="bg-[#30323A]  p-4 shadow-md h-screen overflow-auto">
-
-                        <div className="flex justify-center mt-16">
-                            <div className="bg-white p-10">
-                                <form className="space-y-6" onSubmit={handleToSubmit}>
-                                    <div className="">
+                                {/* Technologies */}
+                                <div>
+                                    <label className="block text-sm mb-2">Add Technologies</label>
+                                    <div className="flex gap-2">
                                         <input
                                             type="text"
-                                            placeholder="Name of the Stack"
-                                            className="bg-black p-2 w-80 text-white"
-                                            value={stackName}
-                                            onChange={(e) => setStackName(e.target.value)}
+                                            className="bg-black text-white p-3 flex-grow rounded-md outline-none"
+                                            placeholder="Enter technology name"
+                                            value={techInput}
+                                            onChange={(e) => setTechInput(e.target.value)}
                                         />
-                                        {errors.stackName && (
-                                            <p className="text-red-500 text-sm ">{errors.stackName}</p>
-                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={handleAddTechnology}
+                                            className="text-3xl text-black hover:text-blue-600"
+                                            title="Add Technology"
+                                        >
+                                            <IoIosAddCircle />
+                                        </button>
                                     </div>
 
-                                    <div>
-                                        <div className="mb-3">
-                                            <span>add Technology :</span>
-                                        </div>
-                                        <div className="flex">
-                                            <input
-                                                type="text"
-                                                className="bg-black p-2 w-72 text-white"
-                                                value={techInput}
-                                                onChange={(e) => setTechInput(e.target.value)}
-                                            />
-                                            <div className="mt-3 ml-3">
-                                                <IoIosAddCircle className="hover:cursor-pointer" onClick={handleAddTechnology} />
-                                            </div>
-
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-3 bg-black w-72 p-3 ">
+                                    {technologies.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mt-4 bg-black p-3 rounded-md">
                                             {technologies.map((tech, index) => (
-                                                <div key={index} className="flex items-center gap-2 ">
-                                                    <span className="bg-white text-black rounded-xl px-3 py-1">
-                                                        {tech}
-                                                    </span>
+                                                <div key={index} className="flex items-center bg-white text-black px-3 py-1 rounded-full">
+                                                    <span>{tech}</span>
                                                     <IoCloseSharp
-                                                        className="text-white cursor-pointer"
                                                         onClick={() => handleRemoveTechnology(index)}
+                                                        className="ml-2 text-red-600 cursor-pointer hover:text-red-800"
                                                     />
                                                 </div>
                                             ))}
                                         </div>
+                                    )}
 
-                                        {errors.technologies && (
-                                            <p className="text-red-500 text-sm ">{errors.technologies}</p>
-                                        )}
-                                    </div>
+                                    {errors.technologies && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.technologies}</p>
+                                    )}
+                                </div>
 
-                                    <div className="ml-64">
-                                        <button className="p-4 rounded-xl bg-black text-white" >Add Stack</button>
-                                    </div>
-
-                                </form>
-                            </div>
+                                {/* Submit Button */}
+                                <div className="flex justify-end">
+                                    <button
+                                        type="submit"
+                                        className="bg-black text-white py-3 px-6 rounded-md hover:bg-gray-800 transition"
+                                    >
+                                        Add Stack
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-
                     </div>
-                </SideBar>
-            </div>
-        </>
-    )
-}
+                </div>
+            </SideBar>
+        </div>
+    );
+};
 
 export default AdminAddStack;

@@ -74,10 +74,10 @@ const InterviewerSlots = () => {
         setCurrentPage(value);
     };
 
-    const handleEdit = (row: any) => {
-        setEditSlot(row);
-        setIsModalOpen(true);
-    };
+    // const handleEdit = (row: any) => {
+    //     setEditSlot(row);
+    //     setIsModalOpen(true);
+    // };
 
     // const handleDelete = async (row: any) => {
     //     const result = await Swal.fire({
@@ -143,22 +143,22 @@ const InterviewerSlots = () => {
                     totalPages={totalPage}
                     searchQuery={rawSearchQuery}
                     setSearchQuery={setRawSearchQuery}
-                    actions={(row: any) => (
-                        <div className="flex justify-center gap-2">
-                            <button
-                                onClick={() => handleEdit(row)}
-                                className="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700"
-                            >
-                                Edit
-                            </button>
-                            {/* <button
-                                onClick={() => handleDelete(row)}
-                                className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700"
-                            >
-                                Delete
-                            </button> */}
-                        </div>
-                    )}
+                    // actions={(row: any) => (
+                    //     <div className="flex justify-center gap-2">
+                    //         <button
+                    //             onClick={() => handleEdit(row)}
+                    //             className="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700"
+                    //         >
+                    //             Edit
+                    //         </button>
+                    //         {/* <button
+                    //             onClick={() => handleDelete(row)}
+                    //             className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700"
+                    //         >
+                    //             Delete
+                    //         </button> */}
+                    //     </div>
+                    // )}
                     
                 />
 

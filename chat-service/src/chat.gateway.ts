@@ -2,7 +2,7 @@ import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage
 import { ChatService } from "./chat.service";
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway( { cors: true, namespace:"/chat" }) // Ensure it runs on the correct port
+@WebSocketGateway({ cors: true, namespace: "/chat" }) // Ensure it runs on the correct port
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @WebSocketServer()
@@ -61,6 +61,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
     }
 
+    @SubscribeMessage("getGroupMembers")
+    async getGroupMembers(client: Socket, @MessageBody() groupName: string) {
+        console.log("Received getGroupMembers event from client");
+        console.log("Group name:", groupName);
+
+        try {
+            const members = await this.chatService.getGroupMembers(groupName);
+            console.log("Fetched members:", members);
+            this.server.emit("getGroupMembers", members);
+        } catch (error: any) {
+            console.error("Error fetching group members:", error);
+            throw new WsException("Failed to fetch group members");
+        }
+    }
+
     @SubscribeMessage("messageHistory")
     async messageHistory(client: Socket, groupName: string) {
         try {
@@ -75,7 +90,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage("sendMessage")
-    async sendMessage(client: Socket, data: {candidateId: string, candidateName: string, message: string , groupName: string}) {
+    async sendMessage(client: Socket, data: { candidateId: string, candidateName: string, message: string, groupName: string }) {
         try {
             console.log(data, 'data');
             const sendMessage = await this.chatService.sendMessage(data.candidateId, data.candidateName, data.groupName, data.message);

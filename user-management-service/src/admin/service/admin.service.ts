@@ -134,6 +134,17 @@ export class AdminService implements IAdminService {
     }
   }
 
+  async updateStack(formData: any): Promise<StackDTO> {
+    try {
+      const updatedStack = await this.adminRepository.updateStack(formData);
+      return StackDTO.from(updatedStack);
+    } catch (error: any) {
+      console.log(error.message);
+      throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
   async getAllStack(): Promise<StackDTO[]> {
     try {
       const stack: IStack[] = await this.adminRepository.getAllStack();

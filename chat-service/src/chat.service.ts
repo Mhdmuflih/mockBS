@@ -41,7 +41,7 @@ export class ChatService implements IChatService {
     async joinGroup(candidateId: string, groupName: string) {
         try {
             const existingMember = await this.groupRepository.findTheExisitingMember(candidateId, groupName)
-            if(existingMember) {
+            if (existingMember) {
                 throw new Error("This candidate already joined this group");
             }
             const joinGroup = await this.groupRepository.joinMember(candidateId, groupName);
@@ -52,13 +52,22 @@ export class ChatService implements IChatService {
         }
     }
 
+    async getGroupMembers(groupName: string) {
+        const groupMembers = await this.groupRepository.findGroup(groupName);
+        console.log(groupMembers, 'this is group members');
+        if (!groupMembers) {
+            throw new Error("Group not found");
+        }
+        return groupMembers;
+    }
+
     async getGroupHistory(groupName: string) {
         try {
             const history = await this.messageRepository.getGroupHistory(groupName);
             // if(history) {
             //     const updateStatus = await this.messageRepository.updateReadMessage(groupName);
             // }
-            console.log(history,' this is history');
+            console.log(history, ' this is history');
             return history;
         } catch (error: any) {
             console.log(error.message);
@@ -68,7 +77,7 @@ export class ChatService implements IChatService {
 
     async sendMessage(candidateId: string, candidateName: string, groupName: string, message: string) {
         try {
-            const sendMessage = await this.messageRepository.saveMessage(candidateId, candidateName, groupName,message);
+            const sendMessage = await this.messageRepository.saveMessage(candidateId, candidateName, groupName, message);
             return sendMessage;
         } catch (error: any) {
             console.log(error.message);

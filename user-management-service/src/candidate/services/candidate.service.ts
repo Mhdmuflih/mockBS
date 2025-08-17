@@ -115,7 +115,7 @@ export class CandidateService implements ICandidateService {
 
     async getInterviewer(interviewerId: string): Promise<InterviewerDTO | null> {
         try {
-            const interviewer: IInterviewer =  await this.candidateInterviewerRepository.findOneById(interviewerId);
+            const interviewer: IInterviewer = await this.candidateInterviewerRepository.findOneById(interviewerId);
             return InterviewerDTO.from(interviewer);
         } catch (error: any) {
             console.log(error.message);
@@ -123,9 +123,20 @@ export class CandidateService implements ICandidateService {
         }
     }
 
+    async getMembers(members: string[]): Promise<any> {
+        try {
+            const membersData = await this.candidateRepository.findMembers(members);
+            return membersData
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     async updateCandidatePremium(candidateId: string): Promise<ICandidate> {
         try {
-            const candidateData = await this.candidateRepository.update(candidateId, {premium: true});
+            const candidateData = await this.candidateRepository.update(candidateId, { premium: true });
             return candidateData;
         } catch (error: any) {
             console.log(error.message);

@@ -28,6 +28,28 @@ export class AdminRepository extends BaseRepository<Stack> implements IAdminRepo
         }
     }
 
+    async updateStack(formData: any): Promise<IStack> {
+        try {
+            const { id, stackName, technologies } = formData;
+
+            const updated = await this.stackModel.findByIdAndUpdate(
+                id,
+                { stackName, technologies },
+                { new: true } // returns the updated document
+            );
+
+            if (!updated) {
+                throw new Error("Stack not found");
+            }
+
+            return updated;
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     async getAllStack(): Promise<IStack[]> {
         try {
             const stack = await this.findAll();

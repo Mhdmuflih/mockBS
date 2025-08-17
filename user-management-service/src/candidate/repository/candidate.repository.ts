@@ -24,6 +24,15 @@ export class CandidateRepository extends BaseRepository<Candidate> implements IC
         }
     }
 
+    async findMembers(ids: string[]): Promise<any> {
+        try {
+            return this.candidateModel.find({ _id: { $in: ids } });
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     async updateCandidateData(userId: string, formData: any, fileName: string): Promise<ICandidate | null> {
         try {
             const updateData: Partial<any> = {

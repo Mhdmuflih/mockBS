@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, BadRequestException, Query, Put } from '@nestjs/common';
 import { AdminService } from '../service/admin.service';
 import { IAdminController } from '../interface/IAdminController';
 import { InterviewerDTO } from 'src/interviewer/dto/interviewer-data.dto';
@@ -123,6 +123,18 @@ export class AdminController implements IAdminController {
       throw new BadRequestException(error.message || 'An error occurred');
     }
   }
+
+  @Put('edit-stack')
+  async updateStack(@Body() formData): Promise<{ success: boolean; message: string }> {
+    try {
+      await this.adminService.updateStack(formData);
+      return { success: true, message: 'Stack updated successfully!' };
+    } catch (error: any) {
+      console.log(error.message);
+      throw new BadRequestException(error.message || 'An error occurred');
+    }
+  }
+
 
   @Get('stack-list')
   async stackList(): Promise<{ success: boolean; message: string; stackData: StackDTO[] }> {

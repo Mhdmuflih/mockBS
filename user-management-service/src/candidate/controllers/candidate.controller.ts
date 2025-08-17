@@ -86,7 +86,7 @@ export class CandidateController implements ICandidateController {
     }
 
     @Get('/stack')
-    async getStack(): Promise<{success: boolean; message: string; stackData: StackDTO[]}> {
+    async getStack(): Promise<{ success: boolean; message: string; stackData: StackDTO[] }> {
         try {
             const stackData: StackDTO[] = await this.candidateService.getStack();
             return { success: true, message: "Candidate Stack successfully.", stackData: stackData }
@@ -101,6 +101,19 @@ export class CandidateController implements ICandidateController {
         try {
             const interviewerData = await this.candidateService.getInterviewer(interviewerId);
             return { success: true, message: "fetch interviewer Data", interviewerData: interviewerData }
+        } catch (error: any) {
+            console.log(error.message);
+            throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // candidate members data for chat 
+    @Post('/get-members')
+    async getMembersList(@Body() body: { members: string[] }): Promise<{ success: boolean, message: string, members: any }> {
+        try {
+            const { members } = body;
+            const membersData = await this.candidateService.getMembers(members);
+            return { success: true, message: "members List", members: membersData }
         } catch (error: any) {
             console.log(error.message);
             throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);

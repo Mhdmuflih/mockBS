@@ -63,7 +63,7 @@ app.use('/webrtc', createProxyMiddleware({
 }));
 
 // 👉 Proxy Chat Socket.IO
-app.use('/chat', createProxyMiddleware({
+app.use('/chat',verifyJWT, createProxyMiddleware({
     target: process.env.Chat_Service as string || "http://localhost:6006",  // Chat service
     ws: true, // Important for WebSocket
     changeOrigin: true,
